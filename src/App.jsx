@@ -1,14 +1,15 @@
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-//voor het meeste gebruikt voor routing
 function App() {
   return (
-    <>
-      <h1 class="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="/" element={</>} /> */}
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App
+
+
