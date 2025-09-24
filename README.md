@@ -1,2 +1,3 @@
 # GeoProfs
 
+> npm i
