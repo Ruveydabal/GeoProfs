@@ -14,8 +14,8 @@ function Header() {
 
   return (
     <>
-    <header className="h-[100px] p-[10px] w-full bg-[#E8641C] flex items-center">
-      <div className="w-[50%] h-full">
+    <header className="h-[10%] w-full bg-[#E8641C] flex items-center">
+      <div className="w-[50%] h-[80%]">
         <a href="/">
           <img src={LogoWit} alt="Geoprofs Logo" className='h-full w-auto'/>
         </a>
@@ -31,16 +31,23 @@ function Header() {
       </div>
     </header>
     {profielMenu ?
-      <div className="w-[200px] h-auto bg-[#fff] border-2 border-solid border-[#D0D0D0] absolute top-28 right-4 p-[5px]">
-        <button className="h-[40px] w-full cursor-pointer border-2 border-solid border-[#D0D0D0] rounded-[15px] mb-[5px]"
-        onClick={() => navigate(`/profiel/${userId}`)}>Profiel</button>
-        {Admin ?
+      <div className='h-[60%] absolute top-0 right-4'>
+        <div className='h-[20%]'/>
+        <div className="w-[200px] h-auto bg-[#fff] border-2 border-solid border-[#D0D0D0] p-[5px]">
           <button className="h-[40px] w-full cursor-pointer border-2 border-solid border-[#D0D0D0] rounded-[15px] mb-[5px]"
-          onClick={() => navigate(`/Admin-paneel`)}>Admin paneel</button>
-          : <></>
-        }
-        <button className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-[#fff]">Uitloggen</button>
-      </div> : <></>
+          onClick={() => navigate(`/profiel/${userId}`)}>Profiel</button>
+          {Admin ?
+            <button className="h-[40px] w-full cursor-pointer border-2 border-solid border-[#D0D0D0] rounded-[15px] mb-[5px]"
+            onClick={() => navigate(`/Admin-paneel`)}>Admin paneel</button>
+            : <></>
+          }
+          <button className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-[#fff]">Uitloggen</button>
+        </div>
+      </div>
+
+
+
+      : <></>
     }
     </>
   );
