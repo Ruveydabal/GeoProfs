@@ -15,6 +15,7 @@ function Header() {
   return (
     <>
     <header className="h-[10%] w-full bg-[#E8641C] flex items-center">
+      <div className='w-[1%]'/>
       <div className="w-[50%] h-[80%]">
         <a href="/">
           <img src={LogoWit} alt="Geoprofs Logo" className='h-full w-auto'/>
@@ -29,7 +30,9 @@ function Header() {
           <img src="" alt="Profiel Foto" className='h-full aspect-square bg-[#fff] rounded-full'/>
         </button>
       </div>
+      <div className='w-[1%]'/>
     </header>
+
     {profielMenu ?
       <div className='h-[60%] absolute top-0 right-4'>
         <div className='h-[20%]'/>
@@ -43,11 +46,7 @@ function Header() {
           }
           <button className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-[#fff]">Uitloggen</button>
         </div>
-      </div>
-
-
-
-      : <></>
+      </div> : <></>
     }
     </>
   );
