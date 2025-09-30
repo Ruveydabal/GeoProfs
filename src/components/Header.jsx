@@ -11,9 +11,7 @@ function Header() {
   const gebruikersRol = "Gebruikers Rol";
   const Admin = true;
   const userId = 1;
-
-  //test
-
+  
   return (
     <>
     <header className="h-[10%] w-full bg-[#E8641C] flex items-center">
