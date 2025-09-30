@@ -34,9 +34,9 @@ function Header() {
     </header>
 
     {profielMenu ?
-      <div className='h-[60%] absolute top-0 right-4'>
+      <div className='h-[60%] absolute top-0 right-4 pointer-events-none'>
         <div className='h-[20%]'/>
-        <div className="w-[200px] h-auto bg-[#fff] border-2 border-solid border-[#D0D0D0] p-[5px]">
+        <div className="w-[200px] h-auto bg-[#fff] border-2 border-solid border-[#D0D0D0] p-[5px] pointer-events-auto">
           <button className="h-[40px] w-full cursor-pointer border-2 border-solid border-[#D0D0D0] rounded-[15px] mb-[5px]"
           onClick={() => navigate(`/profiel/${userId}`)}>Profiel</button>
           {Admin ?
