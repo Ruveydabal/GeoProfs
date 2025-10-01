@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import moment from 'moment';WeekSwitcher
-
 import Header from '../components/Header'
 import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
@@ -29,10 +27,10 @@ function Voorpagina() {
 
 
             <div className='h-[40px] w-[150px] ml-[40px] divide-solid'>
-              <button className={`bg-[${MaandofWeekKalender ? '#ffffff' : '#C9EDFF'}] w-[50%] h-full rounded-l-[15px] border-1 border-solid border-[${MaandofWeekKalender ? '#D0D0D0' : '#2AAFF2'}]`}
+              <button className={`${MaandofWeekKalender ? 'bg-[#ffffff]' : 'bg-[#C9EDFF]'} w-[50%] h-full rounded-l-[15px] border-1 border-solid ${MaandofWeekKalender ? 'border-[#D0D0D0]' : 'border-[#2AAFF2]'}`}
               onClick={() => SetMaandofWeekKalender(false)}
               >Maand</button>
-              <button className={`bg-[${MaandofWeekKalender ? '#C9EDFF' : '#ffffff'}] w-[50%] h-full rounded-r-[15px] border-1 border-solid border-[${MaandofWeekKalender ? '#2AAFF2' : '#D0D0D0'}]`}
+              <button className={`${MaandofWeekKalender ? 'bg-[#C9EDFF]' : 'bg-[#ffffff]'} w-[50%] h-full rounded-r-[15px] border-1 border-solid ${MaandofWeekKalender ? 'border-[#2AAFF2]' : 'border-[#D0D0D0]'}`}
               onClick={() => SetMaandofWeekKalender(true)}
               >Week</button>
             </div>
@@ -50,7 +48,7 @@ function Voorpagina() {
             {MaandofWeekKalender ?
               <WeekKalender/>
               :
-              <MaandKalender/>}
+              <MaandKalender datum={datum}/>}
           </div>
         </div>
       </div>
