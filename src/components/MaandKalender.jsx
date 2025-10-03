@@ -6,8 +6,7 @@ function MaandKalender({ maand, jaar}) {
     //tijdelijke variabelen
     var managerRol = true;
 
-    // checkt of een datum deel is van de geselecteerde maand
-    // niet in maand = true
+    // checkt of een datum deel is van de geselecteerde maand. niet in maand = true
     const DagNietInMaand = (week, datum) => {
         if (week === 0 && datum > 10) {
             return true;
@@ -49,18 +48,12 @@ function MaandKalender({ maand, jaar}) {
                                         <div className='flex h-full flex-1 justify-center items-center'>{/*fetch hier nummer aantal afwezig op een dag*/}</div>
                                     </div>
                                     {managerRol ? 
-                                    <div className='w-full'></div>
-                                    :
-                                    <></>
+                                        <div className='w-full'></div>
+                                        :
+                                        <></>
                                     }
                                 </div>
-                            </td>
-                        ))}
-                    </tr>
-                    )
-                )
-            )
-        }
+        </td>))}</tr>)))}
     }
 
     return (
