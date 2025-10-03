@@ -48,7 +48,9 @@ function MaandKalender({ maand, jaar}) {
                                         <div className='flex h-full flex-1 justify-center items-center'>{/*fetch hier nummer aantal afwezig op een dag*/}</div>
                                     </div>
                                     {managerRol ? 
-                                        <div className='w-full'></div>
+                                        <div className='w-full'>
+                                            {/* map van alle mensen die ziek zijn op die dag */}
+                                        </div>
                                         :
                                         <></>
                                     }
