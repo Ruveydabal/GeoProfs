@@ -3,30 +3,7 @@ import { useState } from 'react';
 
 import Arrow from '../media/Arrow.png'
 
-function MaandSwitcher({datum, SetDatum}) {
-
-    const [jaar, SetJaar] = useState(new Date().getFullYear())
-    const [maand, SetMaand] = useState(new Date().getMonth())
-
-    function MaandVerhogen(){
-        if(maand == 11){
-            SetJaar(jaar+1)
-            SetMaand(0)
-        }
-        else{
-           SetMaand(maand+1) 
-        }
-    }
-
-    function MaandVerlagen(){
-        if(maand == 0){
-            SetJaar(jaar-1)
-            SetMaand(11)
-        }
-        else{
-           SetMaand(maand-1) 
-        }
-    }
+function MaandSwitcher({MaandVerhogen, MaandVerlagen, maand, jaar}) {
 
   return (
     <div className='flex h-auto w-[280px] items-center'>

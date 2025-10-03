@@ -7,10 +7,31 @@ import WeekSwitcher from '../components/WeekSwitcher'
 
 function Voorpagina() {
     const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
-    const [datum, SetDatum] = useState(new Date());
+    // const [datum, SetDatum] = useState(new Date());
 
     const [jaar, SetJaar] = useState(new Date().getFullYear())
     const [maand, SetMaand] = useState(new Date().getMonth())
+
+    function MaandVerhogen(){
+        if(maand == 11){
+            SetJaar(jaar+1)
+            SetMaand(0)
+        }
+        else{
+           SetMaand(maand+1) 
+        }
+    }
+
+    function MaandVerlagen(){
+        if(maand == 0){
+            SetJaar(jaar-1)
+            SetMaand(11)
+        }
+        else{
+           SetMaand(maand-1) 
+        }
+    }
+
 
   return (
     <>
@@ -25,7 +46,7 @@ function Voorpagina() {
             {MaandofWeekKalender ?
             <WeekSwitcher SetDatum={SetDatum} datum={datum}/>
             :
-            <MaandSwitcher SetDatum={SetDatum} datum={datum}/>}
+            <MaandSwitcher MaandVerhogen={MaandVerhogen} MaandVerlagen={MaandVerlagen} maand={maand} jaar={jaar}/>}
 
 
 
@@ -51,7 +72,7 @@ function Voorpagina() {
             {MaandofWeekKalender ?
               <WeekKalender/>
               :
-              <MaandKalender datum={datum}/>}
+              <MaandKalender maand={maand} jaar={jaar}/>}
           </div>
         </div>
       </div>
