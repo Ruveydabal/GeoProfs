@@ -8,13 +8,26 @@ function Login() {
         style={{ backgroundImage: `url(${AchtergrondLogin})` }}
       >
         <div className="flex items-center justify-center h-full">
-          <div className="bg-white w-[500px] h-[475px] rounded-[20px] shadow-lg p-6 flex items-center justify-center">
-            <img src={GeoprofsLogo} alt="Logo" className="w-399 h-auto mb-4" />
-            
+          <div className="bg-white bg-white w-[90%] max-w-[400px] rounded-[20px] shadow-lg p-6 flex flex-col items-center">
+            <img src={GeoprofsLogo} alt="Logo" className="w-40 h-auto mb-6" />
+
+            <input
+              type="email"
+              placeholder="Email..."
+              className="w-full h-[40px] bg-[#F4F4F4] rounded-full px-4 mb-4 focus:outline-none"
+            />
+
+            <input
+              type="password"
+              placeholder="Wachtwoord..."
+              className="w-full h-[40px] bg-[#F4F4F4] rounded-full px-4 mb-6 focus:outline-none"
+            />
+
+            <button className="w-full h-[40px] bg-[#1DA1F2] text-white rounded-full font-semibold hover:bg-[#0d8ddb] transition">
+              Log in
+            </button>
           </div>
-          
         </div>
-        
       </div>
     </>
   );
