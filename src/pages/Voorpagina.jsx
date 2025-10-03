@@ -9,6 +9,9 @@ function Voorpagina() {
     const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
     const [datum, SetDatum] = useState(new Date());
 
+    const [jaar, SetJaar] = useState(new Date().getFullYear())
+    const [maand, SetMaand] = useState(new Date().getMonth())
+
   return (
     <>
       <Header/>
