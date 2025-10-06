@@ -6,7 +6,8 @@ function MaandKalender({ maand, jaar}) {
     //tijdelijke variabelen
     var managerRol = true;
 
-    var test =["naam 1", "naam 2", "naam 3", "naam 4", "naam 1", "naam 2", "naam 3", "naam 4"]
+    // var test =["naam 1", "naam 2", "naam 3", "naam 4", "naam 1", "naam 2", "naam 3", "naam 4"]
+    var test = [];
 
     // checkt of een datum deel is van de geselecteerde maand. niet in maand = true
     const DagNietInMaand = (week, datum) => {
