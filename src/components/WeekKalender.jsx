@@ -1,4 +1,10 @@
-function WeekKalender(props) {
+function WeekKalender({week}) {
+    console.log(week)
+
+    var weekDagen = []
+    weekDagen = moment(week).
+
+
   return (
     <div className="flex bg-[#ff0000] flex-col w-full h-full">
         <div className="flex h-[50px] w-full">

@@ -5,12 +5,15 @@ import WeekKalender from '../components/WeekKalender'
 import MaandSwitcher from '../components/MaandSwitcher'
 import WeekSwitcher from '../components/WeekSwitcher'
 
+import moment from 'moment';
+
 function Voorpagina() {
     const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
     // const [datum, SetDatum] = useState(new Date());
 
     const [jaar, SetJaar] = useState(new Date().getFullYear())
     const [maand, SetMaand] = useState(new Date().getMonth())
+    const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate())
 
     function MaandVerhogen(){
         if(maand == 11){
@@ -32,6 +35,22 @@ function Voorpagina() {
         }
     }
 
+    function WeekVerhogen(){
+      var jaar1 = moment(week).year()
+      var jaar2 = moment(moment(week).endOf('isoWeek').toDate()).year()
+
+      if(jaar1 < jaar2){
+        SetJaar(jaar+1)
+        SetWeek(moment(week).add(7, 'days').startOf('isoWeek').toDate())
+      }
+      else{
+        SetWeek(moment(week).add(7, 'days').startOf('isoWeek').toDate())
+      }
+    }
+
+    function WeekVerlagen(){
+    }
+
 
   return (
     <>
@@ -44,7 +63,7 @@ function Voorpagina() {
           <div className='flex h-full w-[80%] items-center'>
 
             {MaandofWeekKalender ?
-            <WeekSwitcher SetDatum={SetDatum} datum={datum}/>
+            <WeekSwitcher WeekVerhogen={WeekVerhogen} WeekVerlagen={WeekVerlagen} week={week} jaar={jaar} />
             :
             <MaandSwitcher MaandVerhogen={MaandVerhogen} MaandVerlagen={MaandVerlagen} maand={maand} jaar={jaar}/>}
 
@@ -70,7 +89,7 @@ function Voorpagina() {
           </div>
           <div className='h-full w-[80%] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
-              <WeekKalender/>
+              <WeekKalender week={week}/>
               :
               <MaandKalender maand={maand} jaar={jaar}/>}
           </div>
