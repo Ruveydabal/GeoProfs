@@ -6,7 +6,7 @@ function MaandKalender({ maand, jaar}) {
     //tijdelijke variabelen
     var managerRol = true;
 
-    // var test =["naam 1", "naam 2", "naam 3", "naam 4", "naam 1", "naam 2", "naam 3", "naam 4"]
+    // var test =["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
     var test = [];
 
     // checkt of een datum deel is van de geselecteerde maand. niet in maand = true
@@ -44,14 +44,13 @@ function MaandKalender({ maand, jaar}) {
                     <div key={week} className="flex w-full flex-1">
                         {/* map dagen in week array */}
                         {week.map((dag) => (
-                            <div key={dag} className={`flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#D0D0D0]' : 'bg-[#fff]'}`}>
-                                <div className='flex flex-col w-full h-full'>
+                            <div key={dag} className={`relative flex flex-col h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#D0D0D0]' : 'bg-[#fff]'}`}>
                                     <div className='flex w-full h-[40px]'>
                                         <div className='flex h-full w-[40px] justify-center items-center'>{dag}</div>
                                         <div className='flex h-full flex-1 justify-center items-center'>{/*fetch hier nummer aantal afwezig op een dag*/}</div>
                                     </div>
                                     {managerRol ? 
-                                        <div className='w-full flex-1 overflow-y-scroll'>
+                                        <div className='w-full overflow-y-scroll'>
                                             {!DagNietInMaand(index, dag) ? 
 
                                                 test.map((naam, index) => (
@@ -64,7 +63,6 @@ function MaandKalender({ maand, jaar}) {
                                         :
                                         <></>
                                     }
-                                </div>
         </div>))}</div>)))}
     }
 
