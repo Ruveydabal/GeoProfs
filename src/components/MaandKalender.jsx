@@ -41,22 +41,21 @@ function MaandKalender({ maand, jaar}) {
             return (
                 //map week arrays in kalender
                 kalender.map((week, index) => (
-                    <tr key={week} className="flex w-full flex-1">
+                    <div key={week} className="flex w-full flex-1 overflow-auto">
                         {/* map dagen in week array */}
                         {week.map((dag) => (
-                            <td key={dag} className={`flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#D0D0D0]' : 'bg-[#fff]'}`}>
-                                <div className='flex flex-col w-full h-full'>
+                            <div key={dag} className={`overflow-auto flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#D0D0D0]' : 'bg-[#fff]'}`}>
+                                <div className='flex flex-col w-full h-full overflow-auto'>
                                     <div className='flex w-full h-[40px]'>
                                         <div className='flex h-full w-[40px] justify-center items-center'>{dag}</div>
                                         <div className='flex h-full flex-1 justify-center items-center'>{/*fetch hier nummer aantal afwezig op een dag*/}</div>
                                     </div>
                                     {managerRol ? 
-                                        <div className='w-full flex-1 overflow-y-scroll'>
+                                        <div className='w-full flex-1 overflow-auto'>
                                             {!DagNietInMaand(index, dag) ? 
-
                                                 test.map((naam, index) => (
                                                     //fetch verlof data van deze datum
-                                                    <div key={naam} className={`flex items-center w-full h-[30px] border-t-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
+                                                    <div key={naam} className={` flex items-center w-full h-[30px] border-t-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
                                                 ))
                                                 : <></>
                                             }
@@ -65,24 +64,23 @@ function MaandKalender({ maand, jaar}) {
                                         <></>
                                     }
                                 </div>
-        </td>))}</tr>)))}
+        </div>))}</div>)))
+        }
     }
 
     return (
-        <table className="flex w-full h-full flex-col">
-            <tbody className='flex w-full h-full flex-col'>
-                <tr className='flex w-full h-[50px]'>
-                    <th className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Maandag</th>
-                    <th className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Dinsdag</th>
-                    <th className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Woensdag</th>
-                    <th className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Donderdag</th>
-                    <th className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Vrijdag</th>
-                    <th className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Zaterdag</th>
-                    <th className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Zondag</th>
-                </tr>
-                {DagenVanMaand(maand)}
-            </tbody>
-        </table>
+        <div className='flex w-full h-full flex-col overflow-auto'>
+            <div className='flex w-full h-[50px]'>
+                <div className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Maandag</div>
+                <div className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Dinsdag</div>
+                <div className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Woensdag</div>
+                <div className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Donderdag</div>
+                <div className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Vrijdag</div>
+                <div className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Zaterdag</div>
+                <div className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">Zondag</div>
+            </div>
+            {DagenVanMaand(maand)}
+        </div>
     );
 }
 

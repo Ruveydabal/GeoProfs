@@ -83,7 +83,7 @@ function Voorpagina() {
             <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]'>Aanvraag overzicht →</button>
           </div>
         </div>
-        <div className='flex-1 w-full flex'>
+        <div className='h-[calc(100%-120px)] w-full flex'>
           <div className='flex h-full w-[20%] justify-center'>
             <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Ziek Melden</button>
           </div>
