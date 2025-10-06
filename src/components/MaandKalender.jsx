@@ -6,6 +6,8 @@ function MaandKalender({ maand, jaar}) {
     //tijdelijke variabelen
     var managerRol = true;
 
+    var test =["naam 1", "naam 2", "naam 3", "naam 4", "naam 1", "naam 2", "naam 3", "naam 4"]
+
     // checkt of een datum deel is van de geselecteerde maand. niet in maand = true
     const DagNietInMaand = (week, datum) => {
         if (week === 0 && datum > 10) {
@@ -42,14 +44,21 @@ function MaandKalender({ maand, jaar}) {
                         {/* map dagen in week array */}
                         {week.map((dag) => (
                             <td key={dag} className={`flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#D0D0D0]' : 'bg-[#fff]'}`}>
-                                <div className='w-full h-full'>
+                                <div className='flex flex-col w-full h-full'>
                                     <div className='flex w-full h-[40px]'>
                                         <div className='flex h-full w-[40px] justify-center items-center'>{dag}</div>
                                         <div className='flex h-full flex-1 justify-center items-center'>{/*fetch hier nummer aantal afwezig op een dag*/}</div>
                                     </div>
                                     {managerRol ? 
-                                        <div className='w-full'>
-                                            {/* map van alle mensen die ziek zijn op die dag */}
+                                        <div className='w-full flex-1 overflow-y-scroll'>
+                                            {!DagNietInMaand(index, dag) ? 
+
+                                                test.map((naam, index) => (
+                                                    //fetch verlof data van deze datum
+                                                    <div key={naam} className={`flex items-center w-full h-[30px] border-t-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
+                                                ))
+                                                : <></>
+                                            }
                                         </div>
                                         :
                                         <></>
