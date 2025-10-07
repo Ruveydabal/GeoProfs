@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './pages/Login'
-import './App.css'
-import 'moment/dist/locale/nl';
 import moment from 'moment';
+import 'moment/dist/locale/nl';
+import './App.css'
 
+import Login from './pages/Login'
 import Voorpagina from './pages/Voorpagina'
 
 function App() {
