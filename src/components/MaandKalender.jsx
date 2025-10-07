@@ -49,13 +49,13 @@ function MaandKalender({weekDagen, maand, jaar}) {
                                 <div className='flex flex-col w-full h-full overflow-auto'>
                                     <div className='flex w-full h-[40px]'>
                                         <div className='flex h-full w-[40px] justify-center items-center'>{dag}</div>
-                                        <div className='flex h-full flex-1 justify-center items-center'>{mensenAfwezig.length == 0 ? '' : mensenAfwezig.length + ' afwezig'}</div>
+                                        <div className='flex h-full flex-1 justify-center items-center'>{mensenAfwezig.length == 0 ? '' : mensenAfwezig.length + ' Afwezig'}</div>
                                     </div>
                                     {managerRol ? 
-                                        <div className='w-full flex-1 overflow-auto'>
+                                        <div className='w-full flex-1 overflow-auto '>
                                             {!DagNietInMaand(index, dag) ? 
                                                 mensenAfwezig.map((naam, index) => (
-                                                    <div key={naam} className={` flex items-center w-full h-[30px] border-t-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
+                                                    <div key={naam} className={`capitalize flex items-center w-full h-[30px] border-t-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
                                                 ))
                                                 : <></>
                                             }
@@ -72,7 +72,7 @@ function MaandKalender({weekDagen, maand, jaar}) {
         <div className='flex w-full h-full flex-col overflow-auto'>
             <div className='flex w-full h-[50px]'>
                 {weekDagen.map((dag, index) => (
-                    <div key={index} className="flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">{moment(dag).format('dddd')}</div>              
+                    <div key={index} className="capitalize flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">{moment(dag).format('dddd')}</div>              
                 ))}
             </div>
             {DagenVanMaand(maand)}

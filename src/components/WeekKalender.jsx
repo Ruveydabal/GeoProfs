@@ -10,15 +10,17 @@ function WeekKalender({weekDagen}) {
         {weekDagen.map((dag, index) => (
             //fetch hier verlof data van deze datum
             <div key={index} className='flex flex-col w-full h-full border-1 border-solid border-[#D0D0D0]'>
-                <div className="flex w-full flex-col h-[50px] w-[calc(100%/7)] justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0]">
-                    <div className='flex h-[55%] w-full justify-center align-baseline text-[20px]'>{moment(dag).format('dd D')}</div>
-                    <div className='flex h-[45%] w-full justify-center align-top text-[15px]'>{moment(dag).format('MMMM')}</div>
+                <div className="flex w-full flex-col h-[50px] w-[calc(100%/7)] justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0] capitalize">
+                    <div className='flex h-[55%] w-full justify-center align-baseline text-[20px]'>{moment(dag).format('D MMMM')}</div>
+                    <div className='flex h-[45%] w-full justify-center align-top text-[15px]'>{moment(dag).format('dddd')}</div>
                 </div>
-                <div className='flex w-full h-[50px] justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0]'>{mensenAfwezig.length} afwezig</div>
+                {mensenAfwezig.length == 0 ? <></> : 
+                    <div className='flex w-full h-[50px] justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0]'>{mensenAfwezig.length} Afwezig</div>
+                }
                 <div className="flex flex-col w-full h-full w-[calc(100%/7)] bg-[#fff] overflow-auto">
                 {
                     mensenAfwezig.map((naam, index) => (
-                        <div key={naam} className={`flex justify-center items-center w-full min-h-[40px] border-b-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
+                        <div key={naam} className={`flex justify-center items-center w-full min-h-[40px] border-b-1 border-solid border-[#D0D0D0] capitalize ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
                     ))
                 }
                 </div>
