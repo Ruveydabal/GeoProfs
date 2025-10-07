@@ -9,11 +9,14 @@ import moment from 'moment';
 
 function Voorpagina() {
     const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
-    // const [datum, SetDatum] = useState(new Date());
-
     const [jaar, SetJaar] = useState(new Date().getFullYear())
     const [maand, SetMaand] = useState(new Date().getMonth())
     const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate())
+
+    var weekDagen = []
+    for(var i = 0; i < 7; i++ ){
+        weekDagen.push(moment(week).add(i, 'days'));
+    }
 
     function MaandVerhogen(){
         if(maand == 11){
@@ -49,6 +52,16 @@ function Voorpagina() {
     }
 
     function WeekVerlagen(){
+      var jaar1 = moment(week).year()
+      var jaar2 = moment(moment(week).endOf('isoWeek').toDate()).year()
+
+      if(jaar1 < jaar2){
+        SetJaar(jaar-1)
+        SetWeek(moment(week).subtract(7, 'days').startOf('isoWeek').toDate())
+      }
+      else{
+        SetWeek(moment(week).subtract(7, 'days').startOf('isoWeek').toDate())
+      }
     }
 
 
@@ -89,9 +102,9 @@ function Voorpagina() {
           </div>
           <div className='h-full w-[80%] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
-              <WeekKalender week={week}/>
+              <WeekKalender week={week} weekDagen={weekDagen}/>
               :
-              <MaandKalender maand={maand} jaar={jaar}/>}
+              <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar}/>}
           </div>
         </div>
       </div>

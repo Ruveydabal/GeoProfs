@@ -13,7 +13,7 @@ function WeekSwitcher({WeekVerhogen, WeekVerlagen, week, jaar}) {
         <img src={Arrow} alt="" />
         </button>
         <div className='flex w-[120px] mx-[40px] flex-col items-center'>
-            <p className='text-[20px] h-auto max-w-fit'>{moment(week).isoWeek()}</p>
+            <p className='text-[20px] h-auto max-w-fit'>Week {moment(week).isoWeek()}</p>
             <p className='text-[15px] h-auto max-w-fit'>{jaar1 != jaar2 ? jaar1 + " - " + jaar2 : jaar1}</p>
         </div>
         <button className='w-[40px] h-[40px] rounded-full border-1 border-solid border-[#D0D0D0]' onClick={() => WeekVerhogen()}>
