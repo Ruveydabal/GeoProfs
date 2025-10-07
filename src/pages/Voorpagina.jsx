@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
@@ -8,62 +9,67 @@ import WeekSwitcher from '../components/WeekSwitcher'
 import moment from 'moment';
 
 function Voorpagina() {
-    const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
-    const [jaar, SetJaar] = useState(new Date().getFullYear())
-    const [maand, SetMaand] = useState(new Date().getMonth())
-    const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate())
+  let navigate = useNavigate();
+  const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
+  const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
+  const [maand, SetMaand] = useState(new Date().getMonth()) //pakt de huidige maand in integer (0-11)
+  const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate()) //pakt de eerste dag van de huidige week (maandag)
 
-    var weekDagen = []
-    for(var i = 0; i < 7; i++ ){
-        weekDagen.push(moment(week).add(i, 'days'));
+  //array met alle dagen van de geselecteerde week
+  var weekDagen = []
+  for(var i = 0; i < 7; i++ ){
+    weekDagen.push(moment(week).add(i, 'days'));
+  }
+
+  //verhoogt de geselecteerde maand met 1 maand. met jaarsovergang wordt jaar ook verhoogd met 1 jaar.
+  function MaandVerhogen(){
+    if(maand == 11){
+      SetJaar(jaar+1)
+      SetMaand(0)
     }
-
-    function MaandVerhogen(){
-        if(maand == 11){
-            SetJaar(jaar+1)
-            SetMaand(0)
-        }
-        else{
-           SetMaand(maand+1) 
-        }
+    else{
+      SetMaand(maand+1) 
     }
+  }
 
-    function MaandVerlagen(){
-        if(maand == 0){
-            SetJaar(jaar-1)
-            SetMaand(11)
-        }
-        else{
-           SetMaand(maand-1) 
-        }
+  //verlaagd de geselecteerde maand met 1 maand. met jaarsovergang wordt jaar ook verlaagd met 1 jaar.
+  function MaandVerlagen(){
+    if(maand == 0){
+      SetJaar(jaar-1)
+      SetMaand(11)
     }
-
-    function WeekVerhogen(){
-      var jaar1 = moment(week).year()
-      var jaar2 = moment(moment(week).endOf('isoWeek').toDate()).year()
-
-      if(jaar1 < jaar2){
-        SetJaar(jaar+1)
-        SetWeek(moment(week).add(7, 'days').startOf('isoWeek').toDate())
-      }
-      else{
-        SetWeek(moment(week).add(7, 'days').startOf('isoWeek').toDate())
-      }
+    else{
+      SetMaand(maand-1) 
     }
+  }
 
-    function WeekVerlagen(){
-      var jaar1 = moment(week).year()
-      var jaar2 = moment(moment(week).endOf('isoWeek').toDate()).year()
+  //verhoogt de geselecteerde week met 1 week. met jaarsovergang wordt jaar ook verhoogd met 1 jaar.
+  function WeekVerhogen(){
+    var jaar1 = moment(week).year()
+    var jaar2 = moment(moment(week).endOf('isoWeek').toDate()).year()
 
-      if(jaar1 < jaar2){
-        SetJaar(jaar-1)
-        SetWeek(moment(week).subtract(7, 'days').startOf('isoWeek').toDate())
-      }
-      else{
-        SetWeek(moment(week).subtract(7, 'days').startOf('isoWeek').toDate())
-      }
+    if(jaar1 < jaar2){
+      SetJaar(jaar+1)
+      SetWeek(moment(week).add(7, 'days').startOf('isoWeek').toDate())
     }
+    else{
+      SetWeek(moment(week).add(7, 'days').startOf('isoWeek').toDate())
+    }
+  }
 
+  //verlaagd de geselecteerde week met 1 week. met jaarsovergang wordt jaar ook verlaagd met 1 jaar.
+  function WeekVerlagen(){
+    var jaar1 = moment(week).year()
+    var jaar2 = moment(moment(week).endOf('isoWeek').toDate()).year()
+
+    if(jaar1 < jaar2){
+      SetJaar(jaar-1)
+      SetWeek(moment(week).subtract(7, 'days').startOf('isoWeek').toDate())
+    }
+    else{
+      SetWeek(moment(week).subtract(7, 'days').startOf('isoWeek').toDate())
+    }
+  }
 
   return (
     <>
@@ -74,14 +80,10 @@ function Voorpagina() {
             <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Verlof Aanvragen</button>
           </div>
           <div className='flex h-full w-[80%] items-center'>
-
             {MaandofWeekKalender ?
             <WeekSwitcher WeekVerhogen={WeekVerhogen} WeekVerlagen={WeekVerlagen} week={week} jaar={jaar} />
             :
             <MaandSwitcher MaandVerhogen={MaandVerhogen} MaandVerlagen={MaandVerlagen} maand={maand} jaar={jaar}/>}
-
-
-
             <div className='h-[40px] w-[150px] ml-[40px] divide-solid'>
               <button className={`${MaandofWeekKalender ? 'bg-[#ffffff]' : 'bg-[#C9EDFF]'} w-[50%] h-full rounded-l-[15px] border-1 border-solid ${MaandofWeekKalender ? 'border-[#D0D0D0]' : 'border-[#2AAFF2]'}`}
               onClick={() => SetMaandofWeekKalender(false)}
@@ -90,15 +92,14 @@ function Voorpagina() {
               onClick={() => SetMaandofWeekKalender(true)}
               >Week</button>
             </div>
-
             <div className='flex-1'></div>
-
-            <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]'>Aanvraag overzicht →</button>
+            <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]' onClick={() => navigate('/verlof-overzicht')}>Aanvraag overzicht →</button>
           </div>
         </div>
         <div className='h-[calc(100%-120px)] w-full flex'>
           <div className='flex h-full w-[20%] justify-center'>
             <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Ziek Melden</button>
+            <div></div>
           </div>
           <div className='h-full w-[80%] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
