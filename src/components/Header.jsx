@@ -1,4 +1,4 @@
-import LogoWit from '../media/LogoWit.png'
+import GeoprofsLogoWit from '../media/GeoprofsLogoWit.png'
 import {useNavigate} from 'react-router-dom'
 import { useState } from 'react';
 
@@ -18,7 +18,7 @@ function Header() {
       <div className='w-[1%]'/>
       <div className="w-[50%] h-[80%]">
         <a href="/voorpagina">
-          <img src={LogoWit} alt="Geoprofs Logo" className='h-full w-auto'/>
+          <img src={GeoprofsLogoWit} alt="Geoprofs Logo" className='h-full w-auto'/>
         </a>
       </div>
       <div className="flex justify-end w-[50%] h-[80%]">
