@@ -50,15 +50,14 @@ function Login() {
       if (juistWachtwoord !== wachtwoord) throw new Error("Onjuist wachtwoord.");
 
       // Login gelukt, nu navigeren op basis van de rol
-      const rolPad = gebruikerData.rol_id?.path || "";
+      const navigatieRol = gebruikerData.rol_id?.path || "";
 
-      // Hier word je doorgestuurd naar de pagina's 
-      if (rolPad.includes("1")) navigate("/office-manager"); 
-      else if (rolPad.includes("2")) navigate("/manager");
-      else if (rolPad.includes("3")) navigate("/medewerker");
+      // Hier word je doorgestuurd naar de pagina's bij de bijbehorende rol
+      if (navigatieRol.includes("1")) navigate("/office-manager"); 
+      else if (navigatieRol.includes("2")) navigate("/manager");
+      else if (navigatieRol.includes("3")) navigate("/medewerker");
       else navigate("/"); //als er iemand inlogd die geen rol 1/2/3 heeft gaat ie terug naar login pagina
 
-      console.log("Succesvol ingelogd als:", gebruikerData.naam);
     } catch (fout) {
       setFoutmelding(fout.message);
     } finally {
