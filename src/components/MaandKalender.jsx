@@ -1,10 +1,10 @@
 import moment from 'moment';
+import MaandKalenderDag from './MaandKalenderDag';
+
 
 function MaandKalender({weekDagen, maand, jaar}) {
     //tijdelijke variabelen
     var managerRol = true;
-    // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    var mensenAfwezig = [];
 
     // checkt of een datum in het weekend valt. weekend = true
     const DagIsWeekend = (datum) => {
@@ -55,25 +55,7 @@ function MaandKalender({weekDagen, maand, jaar}) {
                     <div key={week} className="flex w-full flex-1 overflow-auto">
                         {/* map dagen in week array */}
                         {week.map((dag) => (
-                            //fetch hier verlof data van deze datum
-                            <div key={dag} className={`overflow-auto flex h-full w-[calc(100%/7)] border-x-1 border-b-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#E5E5E5]' : 'bg-[#fff]'} ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''} `}>
-                                <div className='flex flex-col w-full h-full overflow-auto'>
-                                    <div className='flex w-full max-h-[40px] h-[40%]'>
-                                        <div className='flex h-full w-[40px] justify-center items-center'>{moment(dag).format("D")}</div>
-                                        <div className='flex h-full flex-1 justify-center items-center'>{DagNietInMaand(index, dag) ? '' : mensenAfwezig.length == 0 ? '' : mensenAfwezig.length + ' Afwezig'}</div>
-                                    </div>
-                                    {managerRol ? 
-                                        <div className='w-full flex-1 overflow-auto '>
-                                            {!DagNietInMaand(index, dag) ? 
-                                                mensenAfwezig.map((naam, index) => (
-                                                    <div key={naam} className={`capitalize flex items-center w-full h-[30px] border-t-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
-                                                ))
-                                                : <></>
-                                            }
-                                        </div> : <></>
-                                    }
-                                </div>
-                            </div>
+                            <MaandKalenderDag key={dag} dag={dag} index={index} managerRol={managerRol} DagNietInMaand={DagNietInMaand} DagIsWeekend={DagIsWeekend}/>
                         ))}
                     </div>
                 ))

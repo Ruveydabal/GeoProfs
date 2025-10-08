@@ -5,7 +5,7 @@ function WeekKalender({weekDagen}) {
     //tijdelijke variabelen
     var managerRol = true;
     // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    var mensenAfwezig = [];
+    // var mensenAfwezig = [];
 
     const DagIsWeekend = (datum) => {
         if(moment(datum).day() == 6){
@@ -22,6 +22,8 @@ function WeekKalender({weekDagen}) {
         {weekDagen.map((dag, index) => (
             //fetch hier verlof data van deze datum
             <div key={index} className='flex flex-col w-full h-full border-1 border-solid border-[#D0D0D0]'>
+                {/* {mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]} */}
+                {mensenAfwezig = []}
                 <div className="flex w-full flex-col h-auto flex-1 justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0] capitalize">
                     <div className='flex h-auto w-full justify-center align-baseline text-[20px] text-center'>{moment(dag).format('D MMMM')}</div>
                     <div className={`flex h-auto w-full justify-center align-top text-[15px] text-center ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''}`}>{moment(dag).format('dddd')}</div>
