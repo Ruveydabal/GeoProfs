@@ -6,18 +6,32 @@ function MaandKalender({weekDagen, maand, jaar}) {
     //tijdelijke variabelen
     var managerRol = true;
 
-    // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    var mensenAfwezig = [];
+    var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
+    // var mensenAfwezig = [];
 
     // checkt of een datum deel is van de geselecteerde maand. niet in maand = true
+    const DagIsWeekend = (datum) => {
+        if(moment(datum).day() == 6){
+            return true;
+        }
+        if(moment(datum).day() == 0){
+            return true;
+        }
+        return false;
+    }
+
+
     const DagNietInMaand = (week, datum) => {
-        if (week === 0 && datum > 10) {
+        if(DagIsWeekend(datum)){
             return true;
         }
-        else if (week === 5 && datum < 10) {
+        if (week === 0 && moment(datum).format("D") > 10) {
             return true;
         }
-        else if (week === 4 && datum < 10) {
+        else if (week === 5 && moment(datum).format("D") < 10) {
+            return true;
+        }
+        else if (week === 4 && moment(datum).format("D") < 10) {
             return true;
         }
         else {
@@ -34,7 +48,7 @@ function MaandKalender({weekDagen, maand, jaar}) {
 
         //zet een array van een week in de 'kalender' array
         while (dag.isBefore(einddatum, "day")) {
-            kalender.push(Array(7).fill(0).map(() => dag.add(1, "day").clone().format("D")));
+            kalender.push(Array(7).fill(0).map(() => dag.add(1, "day").clone()));
         }
 
         if (kalender.length > 0) {
@@ -45,11 +59,11 @@ function MaandKalender({weekDagen, maand, jaar}) {
                         {/* map dagen in week array */}
                         {week.map((dag) => (
                             //fetch verlof data van deze datum
-                            <div key={dag} className={`overflow-auto flex h-full w-[calc(100%/7)] border-x-1 border-b-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#E5E5E5]' : 'bg-[#fff]'}`}>
+                            <div key={dag} className={`overflow-auto flex h-full w-[calc(100%/7)] border-x-1 border-b-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#E5E5E5]' : 'bg-[#fff]'} ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''} `}>
                                 <div className='flex flex-col w-full h-full overflow-auto'>
-                                    <div className='flex w-full h-[40px]'>
-                                        <div className='flex h-full w-[40px] justify-center items-center'>{dag}</div>
-                                        <div className='flex h-full flex-1 justify-center items-center'>{mensenAfwezig.length == 0 ? '' : mensenAfwezig.length + ' Afwezig'}</div>
+                                    <div className='flex w-full max-h-[40px] h-[40%]'>
+                                        <div className='flex h-full w-[40px] justify-center items-center'>{moment(dag).format("D")}</div>
+                                        <div className='flex h-full flex-1 justify-center items-center'>{DagNietInMaand(index, dag) ? '' : mensenAfwezig.length == 0 ? '' : mensenAfwezig.length + ' Afwezig'}</div>
                                     </div>
                                     {managerRol ? 
                                         <div className='w-full flex-1 overflow-auto '>

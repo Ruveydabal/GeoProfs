@@ -1,9 +1,7 @@
 import moment from 'moment';
-
 import Arrow from '../media/Arrow.png'
 
-function WeekSwitcher({WeekVerhogen, WeekVerlagen, week, jaar}) {
-
+function WeekNavigatie({WeekVerhogen, WeekVerlagen, week, jaar}) {
   var jaar1 = moment(week).year()
   var jaar2 = moment(moment(week).endOf('isoWeek').toDate()).year()
 
@@ -17,10 +15,10 @@ function WeekSwitcher({WeekVerhogen, WeekVerlagen, week, jaar}) {
             <p className='text-[15px] h-auto max-w-fit'>{jaar1 != jaar2 ? jaar1 + " - " + jaar2 : jaar1}</p>
         </div>
         <button className='w-[40px] h-[40px] rounded-full border-1 border-solid border-[#D0D0D0]' onClick={() => WeekVerhogen()}>
-        <img src={Arrow} alt="" className='rotate-180'/>
+          <img src={Arrow} alt="" className='rotate-180'/>
         </button>
     </div>
   );
 }
 
-export default WeekSwitcher;
+export default WeekNavigatie;

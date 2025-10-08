@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
-import MaandSwitcher from '../components/MaandSwitcher'
-import WeekSwitcher from '../components/WeekSwitcher'
+import MaandNavigatie from '../components/MaandNavigatie'
+import WeekNavigatie from '../components/WeekNavigatie'
 
 import moment from 'moment';
 
@@ -14,6 +14,9 @@ function Voorpagina() {
   const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
   const [maand, SetMaand] = useState(new Date().getMonth()) //pakt de huidige maand in integer (0-11)
   const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate()) //pakt de eerste dag van de huidige week (maandag)
+
+  //tijdelijke variabelen
+  var verlofSaldo = 50;
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -75,15 +78,19 @@ function Voorpagina() {
     <>
       <Header/>
       <div className='flex w-full h-[90%] flex-col'>
+        {/* topbalk */}
         <div className='h-[120px] w-full flex'>
           <div className='flex h-[120px] w-[20%] justify-center items-center'>
-            <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Verlof Aanvragen</button>
+            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Verlof Aanvragen</button>
           </div>
           <div className='flex h-full w-[80%] items-center'>
-            {MaandofWeekKalender ?
-            <WeekSwitcher WeekVerhogen={WeekVerhogen} WeekVerlagen={WeekVerlagen} week={week} jaar={jaar} />
-            :
-            <MaandSwitcher MaandVerhogen={MaandVerhogen} MaandVerlagen={MaandVerlagen} maand={maand} jaar={jaar}/>}
+            {/* vorige/volgende week/maand selecteren */
+              MaandofWeekKalender ?
+              <WeekNavigatie WeekVerhogen={WeekVerhogen} WeekVerlagen={WeekVerlagen} week={week} jaar={jaar} />
+              :
+              <MaandNavigatie MaandVerhogen={MaandVerhogen} MaandVerlagen={MaandVerlagen} maand={maand} jaar={jaar}/>
+            }
+            {/* maand of week kalender selecteren */}
             <div className='h-[40px] w-[150px] ml-[40px] divide-solid'>
               <button className={`${MaandofWeekKalender ? 'bg-[#ffffff]' : 'bg-[#C9EDFF]'} w-[50%] h-full rounded-l-[15px] border-1 border-solid ${MaandofWeekKalender ? 'border-[#D0D0D0]' : 'border-[#2AAFF2]'}`}
               onClick={() => SetMaandofWeekKalender(false)}
@@ -93,14 +100,25 @@ function Voorpagina() {
               >Week</button>
             </div>
             <div className='flex-1'></div>
-            <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]' onClick={() => navigate('/verlof-overzicht')}>Aanvraag overzicht →</button>
+            <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]' onClick={() => navigate('/verlof-overzicht')}>Aanvraag overzicht →</button>
           </div>
         </div>
+        {/* zijbalk */}
         <div className='h-[calc(100%-120px)] w-full flex'>
-          <div className='flex h-full w-[20%] justify-center'>
-            <button className='h-[40px] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Ziek Melden</button>
-            <div></div>
+          <div className='flex flex-col h-full w-[20%] items-center'>
+            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Ziek Melden</button>
+            {/* saldo vakje */
+              typeof verlofSaldo !== 'undefined' ?
+              <div className='flex flex-col h-auto max-w-[90%] w-[250px] bg-[#fff] rounded-[15px] mt-[40px] py-[5px] border-1 border-solid border-[#D0D0D0]'>
+                <div className='flex w-full flex-1 text-[20px] justify-center text-center'>U heeft</div>
+                <div className='flex w-full flex-1 text-[25px] justify-center text-center'>{verlofSaldo}</div>
+                <div className='flex w-full flex-1 text-[20px] justify-center text-center'>dagen verlof over</div>
+              </div>
+              :
+              <></>
+            }
           </div>
+          {/* render de kalender */}
           <div className='h-full w-[80%] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
               <WeekKalender week={week} weekDagen={weekDagen}/>

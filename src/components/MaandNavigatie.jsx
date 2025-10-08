@@ -2,7 +2,7 @@ import moment from 'moment';
 
 import Arrow from '../media/Arrow.png'
 
-function MaandSwitcher({MaandVerhogen, MaandVerlagen, maand, jaar}) {
+function MaandNavigatie({MaandVerhogen, MaandVerlagen, maand, jaar}) {
   return (
     <div className='flex h-auto w-[280px] items-center'>
         <button className='w-[40px] h-[40px] rounded-full border-1 border-solid border-[#D0D0D0]' onClick={() => MaandVerlagen()}>
@@ -19,4 +19,4 @@ function MaandSwitcher({MaandVerhogen, MaandVerlagen, maand, jaar}) {
   );
 }
 
-export default MaandSwitcher;
+export default MaandNavigatie;
