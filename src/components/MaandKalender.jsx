@@ -1,15 +1,12 @@
 import moment from 'moment';
 
 function MaandKalender({weekDagen, maand, jaar}) {
-    //https://ajshah7.medium.com/simple-calendar-using-reactjs-momentjs-861737c6cc8c
-
     //tijdelijke variabelen
     var managerRol = true;
+    // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
+    var mensenAfwezig = [];
 
-    var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    // var mensenAfwezig = [];
-
-    // checkt of een datum deel is van de geselecteerde maand. niet in maand = true
+    // checkt of een datum in het weekend valt. weekend = true
     const DagIsWeekend = (datum) => {
         if(moment(datum).day() == 6){
             return true;
@@ -20,7 +17,7 @@ function MaandKalender({weekDagen, maand, jaar}) {
         return false;
     }
 
-
+    // checkt of een datum deel is van de geselecteerde maand. niet in maand = true
     const DagNietInMaand = (week, datum) => {
         if(DagIsWeekend(datum)){
             return true;
@@ -58,7 +55,7 @@ function MaandKalender({weekDagen, maand, jaar}) {
                     <div key={week} className="flex w-full flex-1 overflow-auto">
                         {/* map dagen in week array */}
                         {week.map((dag) => (
-                            //fetch verlof data van deze datum
+                            //fetch hier verlof data van deze datum
                             <div key={dag} className={`overflow-auto flex h-full w-[calc(100%/7)] border-x-1 border-b-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#E5E5E5]' : 'bg-[#fff]'} ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''} `}>
                                 <div className='flex flex-col w-full h-full overflow-auto'>
                                     <div className='flex w-full max-h-[40px] h-[40%]'>
@@ -73,12 +70,14 @@ function MaandKalender({weekDagen, maand, jaar}) {
                                                 ))
                                                 : <></>
                                             }
-                                        </div>
-                                        :
-                                        <></>
+                                        </div> : <></>
                                     }
                                 </div>
-        </div>))}</div>)))
+                            </div>
+                        ))}
+                    </div>
+                ))
+            )
         }
     }
 

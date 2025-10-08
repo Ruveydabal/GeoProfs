@@ -1,5 +1,4 @@
 import moment from 'moment';
-
 import Arrow from '../media/Arrow.png'
 
 function MaandNavigatie({MaandVerhogen, MaandVerlagen, maand, jaar}) {

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment';
 import Header from '../components/Header'
 import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
 import MaandNavigatie from '../components/MaandNavigatie'
 import WeekNavigatie from '../components/WeekNavigatie'
-
-import moment from 'moment';
 
 function Voorpagina() {
   let navigate = useNavigate();
