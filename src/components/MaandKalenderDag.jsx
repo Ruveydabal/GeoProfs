@@ -1,44 +1,70 @@
 import moment from 'moment';
 import { db } from "../firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, Timestamp } from "firebase/firestore";
 
 function MaandKalenderDag({dag, index, managerRol, DagNietInMaand, DagIsWeekend}) {
 
-    var mensenAfwezig = fetch(dag);
+    // function fetchVerlofData(dag) {
+    //     var data = [];
+    //     const seededRandom = (seed) => (Math.sin(seed) * 10000) % 1;
+    //     // Function to generate random number from a Moment date
+    //     const randomNumberFromDate = (dag) => {
+    //         const seed = moment(dag).unix(); // convert to Unix timestamp
+    //         return Math.floor(seededRandom(seed) * 100) + 1; // 1-100
+    //     };
+    //     const number = randomNumberFromDate(dag);
 
-    function fetchVerlofData(dag) {
-        var data = [];
-        const seededRandom = (seed) => (Math.sin(seed) * 10000) % 1;
-        // Function to generate random number from a Moment date
-        const randomNumberFromDate = (dag) => {
-            const seed = moment(dag).unix(); // convert to Unix timestamp
-            return Math.floor(seededRandom(seed) * 100) + 1; // 1-100
-        };
-        const number = randomNumberFromDate(dag);
+    //     //fetch hier verlof data van deze datum
+    //     if(number % 2 == 0){
+    //         data = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
+    //     }
+    //     return(data)
+    // }
 
-        //fetch hier verlof data van deze datum
-        if(number % 2 == 0){
-            data = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-        }
-        return(data)
-    }
+    // const fetch = async (dag) => {
+    //     try {
+    //         const verlof = await getDocs(
+    //             query(collection(db, "Verlof"), where("startdate", "<=", timestamp), where("enddate", ">=", timestamp))
+    //         );
+
+    //         console.log(verlof);
+    //     }
+    //     catch {
+    //         // console.error("nope");
+    //     }
+    // }
 
     const fetch = async (dag) => {
         try {
-            var timestamp = moment(dag).unix();
+            const timestampDatum = Timestamp.fromDate(moment(dag).toDate());            
+            const verlofRef = collection(db, "verlof");
 
-            const verlof = await getDocs(
-                query(collection(db, "Verlof"), where("startdate", "<=", timestamp), where("enddate", ">=", timestamp))
+            //index nodig
+            const q = query(verlofRef,
+                where("startDatum", "<=", timestampDatum),
+                where("eindDatum", ">=", timestampDatum)
             );
+            const verlof = await getDocs(q);
 
-            console.log(verlof)
+            if (verlof.empty) {
+                console.log('nope');
+                return [];
+            } else {
+                const verlofData = verlof.docs.map(doc => doc.data());
+                console.log('yep ', verlofData);
+            } 
         }
-        catch {
-        console.error("nope");
+        catch (error) {
+            console.error(error);
+            return [];
         }
     }
 
 
+    if (!DagNietInMaand(index, dag)) fetch(dag);
+
+    var mensenAfwezig = [];
+    // mensenAfwezig = fetch(dag);
 
 
 
