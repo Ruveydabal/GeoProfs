@@ -1,9 +1,6 @@
 import moment from 'moment';
 
 function MaandKalenderDag({dag, index, managerRol, DagNietInMaand, DagIsWeekend}) {
-
-    var mensenAfwezig = [];
-
     //tijdelijke variabelen
     // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
     var mensenAfwezig = [];
