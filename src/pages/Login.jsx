@@ -9,8 +9,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [wachtwoord, setWachtwoord] = useState("");
   const [laden, setLaden] = useState(false);
-  const [foutmelding, setFoutmelding] = useState(""); 
-  
+  const [foutmelding, setFoutmelding] = useState("");
   const navigate = useNavigate();
 
   const inloggen = async () => {
@@ -35,7 +34,7 @@ function Login() {
       const gebruikerData = gebruiker.data();
       const gebruikerRef = gebruiker.ref;
 
-      // Zoek wachtwoord dat bij de gebruiker hoort in 
+      // Zoekt wachtwoord dat hoort bij gebruiker
       const wachtwoorden = await getDocs(
         query(collection(db, "userPassword"), where("user_id", "==", gebruikerRef))
       );
@@ -49,15 +48,22 @@ function Login() {
       // Error message bij onjuist wachtwoord
       if (juistWachtwoord !== wachtwoord) throw new Error("Onjuist wachtwoord.");
 
-      // Login gelukt, nu navigeren op basis van de rol
+      // Login geslaagd → loginstatus + rol opslaan
       const navigatieRol = gebruikerData.rol_id?.path || "";
+      let rol = "";
 
-      // Hier word je doorgestuurd naar de pagina's bij de bijbehorende rol
-      if (navigatieRol.includes("1")) navigate("/office-manager"); 
-      else if (navigatieRol.includes("2")) navigate("/manager");
-      else if (navigatieRol.includes("3")) navigate("/medewerker");
-      else navigate("/"); //als er iemand inlogd die geen rol 1/2/3 heeft gaat ie terug naar login pagina
+      if (navigatieRol.includes("1")) rol = "office-manager";
+      else if (navigatieRol.includes("2")) rol = "manager";
+      else if (navigatieRol.includes("3")) rol = "medewerker";
+      else throw new Error("Onbekende rol. Neem contact op met de beheerder.");
 
+      // Sla inlogstatus en rol op in localStorage
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("rol", rol);
+
+      // Navigeer naar de juiste pagina
+      navigate(`/${rol}`);
+      
     } catch (fout) {
       setFoutmelding(fout.message);
     } finally {
@@ -74,7 +80,6 @@ function Login() {
         <div className="bg-white w-[90%] max-w-[400px] rounded-[15px] shadow-lg p-6 flex flex-col items-center">
           <img src={GeoprofsLogo} alt="Logo" className="w-40 h-auto mb-6" />
 
-          {/* Foutmelding worden boven e-mailveld getoond */}
           {foutmelding && (
             <div className="text-red-500 text-sm mb-3 text-center">
               {foutmelding}
@@ -106,7 +111,7 @@ function Login() {
                 : "bg-[#1DA1F2] hover:bg-[#0d8ddb]"
             }`}
           >
-            {laden ? "Even geduld..." : "Log in"}
+            {laden ? "Bezig met inloggen..." : "Log in"}
           </button>
         </div>
       </div>
