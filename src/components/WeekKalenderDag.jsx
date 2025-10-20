@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-function WeekKalenderDag({dag, index, managerRol, DagIsWeekend}) {
+function WeekKalenderDag({dag, index, rol, DagIsWeekend}) {
     //tijdelijke variabelen
     // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
     var mensenAfwezig = [];
@@ -18,10 +18,11 @@ function WeekKalenderDag({dag, index, managerRol, DagIsWeekend}) {
         }
         <div className={`flex flex-col w-full h-full w-[calc(100%/7)] overflow-auto ${DagIsWeekend(dag) ? 'bg-[#E5E5E5]' : 'bg-[#fff]'}`}>
         {
-            !managerRol || DagIsWeekend(dag) ? <></> :
+            (rol == "manager" || rol == "ceo" || rol == "office manager") && !DagIsWeekend(dag) ?
             mensenAfwezig.map((naam, index) => (
                 <div key={naam} className={`flex justify-center items-center w-full min-h-[40px] border-b-1 border-solid border-[#D0D0D0] capitalize ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
             ))
+            : <></>
         }
         </div>
     </div>

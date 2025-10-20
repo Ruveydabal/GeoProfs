@@ -16,6 +16,7 @@ function Voorpagina() {
 
   //tijdelijke variabelen
   var verlofSaldo = 50;
+  var rol = "manager";
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -98,6 +99,14 @@ function Voorpagina() {
               onClick={() => SetMaandofWeekKalender(true)}
               >Week</button>
             </div>
+
+            {
+              rol == "manager" ?
+              <button className='h-[40px] max-w-[90%] w-[200px] ml-[40px] bg-[#2AAFF2] text-white rounded-[15px]'>Gegevens exporteren</button>
+              : <></>
+              }
+
+
             <div className='flex-1'></div>
             <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]' onClick={() => navigate('/verlof-overzicht')}>Aanvraag overzicht →</button>
           </div>
@@ -120,9 +129,9 @@ function Voorpagina() {
           {/* render de kalender */}
           <div className='h-full w-[80%] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
-              <WeekKalender week={week} weekDagen={weekDagen}/>
+              <WeekKalender week={week} weekDagen={weekDagen} rol={rol}/>
               :
-              <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar}/>}
+              <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar} rol={rol}/>}
           </div>
         </div>
       </div>

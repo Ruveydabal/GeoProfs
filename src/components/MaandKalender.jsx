@@ -2,10 +2,7 @@ import moment from 'moment';
 import MaandKalenderDag from './MaandKalenderDag';
 
 
-function MaandKalender({weekDagen, maand, jaar}) {
-    //tijdelijke variabelen
-    var managerRol = true;
-
+function MaandKalender({weekDagen, maand, jaar, rol}) {
     // checkt of een datum in het weekend valt. weekend = true
     const DagIsWeekend = (datum) => {
         if(moment(datum).day() == 6){
@@ -55,7 +52,7 @@ function MaandKalender({weekDagen, maand, jaar}) {
                     <div key={week} className="flex w-full flex-1 overflow-auto">
                         {/* map dagen in week array */}
                         {week.map((dag) => (
-                            <MaandKalenderDag key={dag} dag={dag} index={index} managerRol={managerRol} DagNietInMaand={DagNietInMaand} DagIsWeekend={DagIsWeekend}/>
+                            <MaandKalenderDag key={dag} dag={dag} index={index} rol={rol} DagNietInMaand={DagNietInMaand} DagIsWeekend={DagIsWeekend}/>
                         ))}
                     </div>
                 ))

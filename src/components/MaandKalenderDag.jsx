@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-function MaandKalenderDag({dag, index, managerRol, DagNietInMaand, DagIsWeekend}) {
+function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend}) {
     //tijdelijke variabelen
     // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
     var mensenAfwezig = [];
@@ -14,7 +14,7 @@ function MaandKalenderDag({dag, index, managerRol, DagNietInMaand, DagIsWeekend}
                 <div className='flex h-full w-[40px] justify-center items-center'>{moment(dag).format("D")}</div>
                 <div className='flex h-full flex-1 justify-center items-center'>{DagNietInMaand(index, dag) ? '' : mensenAfwezig.length == 0 ? '' : mensenAfwezig.length + ' Afwezig'}</div>
             </div>
-            {managerRol ? 
+            {rol == "manager" || rol == "ceo" || rol == "office manager" ? 
                 <div className='w-full flex-1 overflow-auto'>
                     {DagNietInMaand(index, dag) ? <></> : mensenAfwezig.length == 0 ? <></> :
                         mensenAfwezig.map((naam, index) => (
