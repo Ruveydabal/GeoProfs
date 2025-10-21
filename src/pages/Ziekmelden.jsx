@@ -1,8 +1,53 @@
-import React from 'react'
-import Header from '../components/Header'
+import React, { useState, useEffect} from 'react';
+import Header from '../components/Header';
+import {db} from '../firebase';
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
+function Ziekmelden({ userId}) {
+  const [vandaag, setVandaag] = useState(""); 
+  const [volgendeDag, setVolgendeDag] = useState("");
+  const [loading, setLoading] = useState(false);//???
 
-const Ziekmelden = () => {
+  useEffect(() => {
+    const vandaagDatum = new Date();
+    const volgende = new Date();
+    volgende.setDate(vandaagDatum.getDate() +1);
+u
+    //format naar YYYY-MMMM-DDDD
+    const format = (d) =>
+      d.toISOString().split("T")[0];
+
+    setVandaag(format(vandaagDatum));
+    setVolgendeDag(format(volgende))
+  }, []);
+
+  const handleZiekmelding = async () => {
+    setLoading(true);
+    try{//code die kan mislukken
+      const verlofId = `verlof${userId}_${Date.now()}`;
+      await setDoc(doc(db, "verlof", verlofId), {
+        userId: userId,
+        typeVerlof_id: "1", //1 = ziek
+        startDatum: vandaag,
+        eindDatum: volgendeDag,
+        omschrijvingRedenVerlof: "Ziekmelding gemaakt",
+        opmerkingAfkeuring: "",
+        statusVerlof_id: "", //kijken of dit wel nodig is of niet
+        createdAt: serverTimestamp(),
+        });
+        alert("Ziekmelding is verstuurd");
+      }
+      catch (error) {//wat er gebeurt bij fout
+        console.error("Fout bij ziekmelding: ", error);
+        alert("Er ging iets mis bij het ziekmelden.");
+      } 
+      finally{//code die altijd uitgevoerd wordt
+        setLoading(false);
+      }
+  }
+};
+
+const ZiekmeldenPagina = () => {
   return (
     <>
       <Header/>
@@ -33,4 +78,4 @@ const Ziekmelden = () => {
   )
 }
 
-export default Ziekmelden
+export default ZiekmeldenPagina
