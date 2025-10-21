@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* verander ziekmelden terug naar login!!!!!!! */}
-        <Route path="/" element={<Ziekmelden/>} />
+        <Route path="/" element={<Login/>} />
       </Routes>
     </BrowserRouter>
   );
