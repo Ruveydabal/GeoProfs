@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login'
 import './App.css'
+import Ziekmelden from './pages/Ziekmelden';
 
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>} />
+        <Route path="/Ziekmelden" element={<Ziekmelden/>} />
       </Routes>
     </BrowserRouter>
   );
