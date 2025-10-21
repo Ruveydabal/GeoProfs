@@ -23,7 +23,7 @@ const Ziekmelden = () => {
                     <div className="bg-white w-[80%] h-[15%]  text-1l font-bold text-black  py-2 px-6 rounded-[15px] flex items-center justify-center transition-colors duration-300">
                       Verlof type vast ziekmelden
                     </div>
-                    <button className="bg-[#2AAFF2] w-[80%] h-[15%] hover:bg-[#1A8FD0] text-white  font-bold py-2 px-6 rounded-[15px] flex items-center justify-center transition-colors duration-300">
+                    <button className="bg-[#2AAFF2] w-[80%] h-[40px] hover:bg-[#1A8FD0] text-white  font-bold py-2 px-6 rounded-[15px] flex items-center justify-center transition-colors duration-300">
                       Verzend
                     </button>
                 </div>

@@ -8,7 +8,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* verander ziekmelden terug naar login!!!!!!! */}
         <Route path="/" element={<Login/>} />
       </Routes>
     </BrowserRouter>
