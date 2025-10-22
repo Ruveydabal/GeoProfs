@@ -64,7 +64,7 @@ function MaandKalender({weekDagen, maand, jaar, rol}) {
         <div className='flex w-full h-full flex-col overflow-auto'>
             <div className='flex w-full h-[50px]'>
                 {weekDagen.map((dag, index) => (
-                    <div key={index} className="capitalize flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff] text-[20px] font-normal">{moment(dag).format('dddd')}</div>              
+                    <div key={index} className="capitalize flex h-full w-[calc(100%/7)] border-1 border-solid border-[#D0D0D0] justify-center items-center bg-[#fff]  text-[2.5vh] font-normal">{moment(dag).format('dddd')}</div>              
                 ))}
             </div>
             {DagenVanMaand(maand)}
