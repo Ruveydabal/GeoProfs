@@ -1,13 +1,15 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import { useEffect } from 'react';
 
 import Header from '../components/Header.jsx'
 import ProfielLijstItem from '../components/ProfielLijstItem.jsx'
 
 function Profiel() {
     let { id } = useParams();
+    let navigate = useNavigate();
 
     //temp variables
-    var rol = "manager";
+    var rol = "medewerker";
     const jouwId = 2;
     const data = {
         voornaam: "John",
@@ -18,6 +20,19 @@ function Profiel() {
         afdeling: "geo-ICT",
         rol: "medewerker"
     };
+    //
+
+    useEffect(() => {
+        if(id != jouwId && rol != "manager"){
+            navigate("/");
+            return
+        }
+    }, []);
+
+    if(id != jouwId && rol != "manager"){
+        navigate("/");
+        return
+    }
 
   return (
     <>
