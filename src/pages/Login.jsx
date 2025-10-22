@@ -62,7 +62,7 @@ function Login() {
       localStorage.setItem("rol", rol);
 
       // Navigeer naar de juiste pagina
-      navigate(`/${rol}`);
+      navigate(`/${rol}/voorpagina`);
       
     } catch (fout) {
       setFoutmelding(fout.message);

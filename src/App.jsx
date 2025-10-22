@@ -1,16 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/dist/locale/nl';
 import './App.css'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import OfficeManager from './pages/OfficeManager';
-import Manager from './pages/Manager';
-import Medewerker from './pages/Medewerker';
+
 import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
-import './App.css';
-
-import Login from './pages/Login'
 import Voorpagina from './pages/Voorpagina'
 import Ziekmelden from './pages/Ziekmelden';
 
@@ -34,30 +28,25 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login/>} />
-        <Route path="/voorpagina" element={<Voorpagina />} />
-        <Route path="/Ziekmelden" element={<Ziekmelden/>} />
+        <Route path="/" element={<Login />} />
+        <Route path="/ziekmelden" element={<Ziekmelden />} />
 
-        {/* Office Manager pagina */}
-        <Route path="/office-manager" element={
+        {/* Voorpagina voor alle rollen, beschermd */}
+        <Route path="/office-manager/voorpagina" element={
           <ProtectedRoute allowedRoles={["office-manager"]}>
-            {/* "childeren" */}
-            <OfficeManager />
-          </ProtectedRoute>
-        }/>
-    
-        {/* Manager pagina */}
-        <Route path="/manager" element={
-          <ProtectedRoute allowedRoles={["manager"]}>
-            {/* dit zijn de "childeren" */}
-            <Manager />
+            <Voorpagina />
           </ProtectedRoute>
         }/>
 
-        {/* Medewerker pagina */}
-        <Route path="/medewerker" element={
+        <Route path="/manager/voorpagina" element={
+          <ProtectedRoute allowedRoles={["manager"]}>
+            <Voorpagina />
+          </ProtectedRoute>
+        }/>
+
+        <Route path="/medewerker/voorpagina" element={
           <ProtectedRoute allowedRoles={["medewerker"]}>
-            <Medewerker />
+            <Voorpagina />
           </ProtectedRoute>
         }/>
 
