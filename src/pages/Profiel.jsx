@@ -22,13 +22,13 @@ function Profiel() {
     };
     //
 
+    //naar voorpagina als je niet manager bent of je eigen profiel bekijkt.
     useEffect(() => {
         if(id != jouwId && rol != "manager"){
             navigate("/");
             return
         }
     }, []);
-
     if(id != jouwId && rol != "manager"){
         navigate("/");
         return
