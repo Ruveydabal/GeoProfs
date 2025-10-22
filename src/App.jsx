@@ -1,13 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/dist/locale/nl';
-import Login from './pages/Login'
-import Profiel from './pages/Profiel'
 import './App.css'
 
 import Login from './pages/Login'
 import Voorpagina from './pages/Voorpagina'
 import Ziekmelden from './pages/Ziekmelden';
+import Profiel from './pages/Profiel'
 
 function App() {
   moment.locale('nl'); //zet de taal van momentJS op nederlands
