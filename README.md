@@ -3,6 +3,7 @@
 > npm i
 > npm install tailwindcss @tailwindcss/vite
 > npm install react-router-dom
+> npm install moment --save
 > npm install bcryptjs
 > npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
 > npm install -D jsdom

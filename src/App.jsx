@@ -1,3 +1,7 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import moment from 'moment';
+import 'moment/dist/locale/nl';
+import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import OfficeManager from './pages/OfficeManager';
 import Manager from './pages/Manager';
@@ -6,6 +10,9 @@ import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
 import './App.css';
 
+import Login from './pages/Login'
+import Voorpagina from './pages/Voorpagina'
+import Ziekmelden from './pages/Ziekmelden';
 
 function App() {
   // Extra beveiliging: als iemand handmatig /medewerker intypt zonder login
@@ -23,10 +30,13 @@ function App() {
     window.location.href = "/";
   }
 
+  moment.locale('nl'); //zet de taal van momentJS op nederlands
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>} />
+        <Route path="/voorpagina" element={<Voorpagina />} />
+        <Route path="/Ziekmelden" element={<Ziekmelden/>} />
 
         {/* Office Manager pagina */}
         <Route path="/office-manager" element={
