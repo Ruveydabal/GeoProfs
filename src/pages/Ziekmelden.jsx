@@ -2,6 +2,9 @@
   import Header from '../components/Header';
   import { db } from '../firebase';
   import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+  import moment from 'moment';
+  import 'moment/locale/nl';
+  moment.locale('nl');
 
   function Ziekmelden({ userId }) {  
     const [vandaag, setVandaag] = useState(""); 
@@ -11,12 +14,12 @@
 
     useEffect(()=> {
        // voor UI
-        const vandaagDate = new Date();
-        const volgendeDate = new Date();
-        volgendeDate.setDate(vandaagDate.getDate() + 1);
+        const vandaagDatum = new Date();
+        const volgendeDatum = new Date();
+        volgendeDatum.setDate(vandaagDatum.getDate() + 1);
 
-        setVandaag(vandaagDate.toLocaleDateString('nl-NL'));
-        setVolgendeDag(volgendeDate.toLocaleDateString('nl-NL'));
+        setVandaag(moment(vandaagDatum).format('D-MM-YYYY'));
+        setVolgendeDag(moment(volgendeDatum).format('D-MM-YYYY'));
     }, []);
 
     // Haal verloftype op uit DB
