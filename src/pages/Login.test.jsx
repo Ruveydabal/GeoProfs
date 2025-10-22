@@ -34,7 +34,7 @@ beforeAll(() => {
   };
 });
 
-//import Login 
+// Import Login component
 import Login from './Login.jsx';
 
 describe('Login Component', () => {
@@ -92,13 +92,13 @@ describe('Login Component', () => {
     expect(await screen.findByText('Onjuist wachtwoord.')).toBeInTheDocument();
   });
 
+  // Gebruikersdata met nieuwe navigatie paden
   const gebruikers = [
-    { email: 'officemanager@gmail.com', wachtwoord: 'officemanager', rolId: '1', rol: 'office-manager', pad: '/office-manager' },
-    { email: 'manager@gmail.com', wachtwoord: 'manager', rolId: '2', rol: 'manager', pad: '/manager' },
-    { email: 'medewerker@gmail.com', wachtwoord: 'medewerker', rolId: '3', rol: 'medewerker', pad: '/medewerker' },
+    { email: 'officemanager@gmail.com', wachtwoord: 'officemanager', rolId: '1', rol: 'office-manager', pad: '/office-manager/voorpagina' },
+    { email: 'manager@gmail.com', wachtwoord: 'manager', rolId: '2', rol: 'manager', pad: '/manager/voorpagina' },
+    { email: 'medewerker@gmail.com', wachtwoord: 'medewerker', rolId: '3', rol: 'medewerker', pad: '/medewerker/voorpagina' },
   ];
 
-  //de ${rol} staat voor de persoon die inlogd, dus uiteindelijk, office manager, manager of medewerker
   gebruikers.forEach(({ email, wachtwoord, rolId, rol, pad }) => {
     it(`logt succesvol in en navigeert naar juiste pagina voor ${rol}`, async () => {
       const { getDocs } = await import('firebase/firestore');
@@ -123,7 +123,7 @@ describe('Login Component', () => {
 
       expect(localStorage.getItem('isLoggedIn')).toBe('true');
       expect(localStorage.getItem('rol')).toBe(rol);
-      expect(mockNavigate).toHaveBeenCalledWith(pad);
+      expect(mockNavigate).toHaveBeenCalledWith(pad); // nu met /voorpagina
     });
   });
 });
