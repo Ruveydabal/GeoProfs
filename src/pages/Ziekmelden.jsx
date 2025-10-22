@@ -14,9 +14,9 @@
 
     useEffect(()=> {
        // voor UI
-        const vandaagDatum = new Date();
-        const volgendeDatum = new Date();
-        volgendeDatum.setDate(vandaagDatum.getDate() + 1);
+        const vandaagDatum = moment();
+        const volgendeDatum = moment(vandaagDatum ).add(1, "days")
+        
 
         setVandaag(moment(vandaagDatum).format('D-MM-YYYY'));
         setVolgendeDag(moment(volgendeDatum).format('D-MM-YYYY'));
