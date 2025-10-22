@@ -10,8 +10,8 @@ function WeekKalenderDag({dag, index, rol, DagIsWeekend}) {
   return (
     <div key={index} className='flex flex-col w-full h-full border-1 border-solid border-[#D0D0D0]'>
         <div className="flex w-full flex-col h-auto flex-1 justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0] capitalize">
-            <div className='flex h-auto w-full justify-center align-baseline text-[20px] text-center'>{moment(dag).format('D MMMM')}</div>
-            <div className={`flex h-auto w-full justify-center align-top text-[15px] text-center ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''}`}>{moment(dag).format('dddd')}</div>
+            <div className='flex h-auto w-full justify-center align-baseline text-center text-[2.5vh]'>{moment(dag).format('D MMMM')}</div>
+            <div className={`flex h-auto w-full justify-center align-top text-center text-[2vh] ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''}`}>{moment(dag).format('dddd')}</div>
         </div>
         {DagIsWeekend(dag) || mensenAfwezig.length == 0 ? <></> : 
             <div className='flex w-full h-[50px] justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0]'>{mensenAfwezig.length} Afwezig</div>

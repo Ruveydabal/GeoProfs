@@ -77,7 +77,7 @@ function Voorpagina() {
   return (
     <>
       <Header/>
-      <div className='flex w-full h-[90%] flex-col'>
+      <div className='flex w-full h-[90%] flex-col text-[1.5vh]'>
         {/* topbalk */}
         <div className='h-[120px] w-full flex'>
           <div className='flex h-[120px] w-[20%] justify-center items-center'>
@@ -127,7 +127,7 @@ function Voorpagina() {
             }
           </div>
           {/* render de kalender */}
-          <div className='h-full w-[80%] bg-[#f0f0f0]'>
+          <div className='h-[calc(100%-20px)] w-[calc(80%-50px)] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
               <WeekKalender week={week} weekDagen={weekDagen} rol={rol}/>
               :
