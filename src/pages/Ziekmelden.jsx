@@ -45,8 +45,8 @@
         await setDoc(doc(db, "verlof", verlofId), {
           userId: userId,
           typeVerlof_id: "1",
-          startDatum: serverTimestamp(),
-          eindDatum: serverTimestamp(),
+          startDatum: vandaagDatum.toDate(),
+          eindDatum: volgendeDatum.toDate(),
           omschrijvingRedenVerlof: "Ziekmelding gemaakt",
           createdAt: serverTimestamp(),
         });
