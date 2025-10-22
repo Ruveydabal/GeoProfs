@@ -114,7 +114,7 @@ function Voorpagina() {
         {/* zijbalk */}
         <div className='h-[calc(100%-120px)] w-full flex'>
           <div className='flex flex-col h-full w-[20%] items-center'>
-            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Ziek melden</button>
+            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]' onClick={() => navigate('/ziekmelden')}>Ziek melden</button>
             {/* saldo vakje */
               typeof verlofSaldo !== 'undefined' ?
               <div className='flex flex-col h-auto max-w-[90%] w-[250px] bg-[#fff] rounded-[15px] mt-[40px] py-[5px] border-1 border-solid border-[#D0D0D0]'>
