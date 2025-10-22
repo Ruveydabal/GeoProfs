@@ -5,6 +5,7 @@ import './App.css'
 
 import Login from './pages/Login'
 import Voorpagina from './pages/Voorpagina'
+import Ziekmelden from './pages/Ziekmelden';
 
 function App() {
   moment.locale('nl'); //zet de taal van momentJS op nederlands
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login/>} />
         <Route path="/voorpagina" element={<Voorpagina />} />
+        <Route path="/Ziekmelden" element={<Ziekmelden/>} />
       </Routes>
     </BrowserRouter>
   );
