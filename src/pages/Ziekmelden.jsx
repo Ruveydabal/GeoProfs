@@ -34,7 +34,7 @@
       haalVerlofTypeOp();
     }, []);
 
-    const handleZiekmelding = async () => {
+    const behandelZiekmelding = async () => {
       setLoading(true);
       try {
         const verlofId = `verlof${userId}_${Date.now()}`;
@@ -90,7 +90,7 @@
                 />
               </div>
               <button 
-                onClick={handleZiekmelding}
+                onClick={behandelZiekmelding}
                 disabled={loading}
                 className="bg-[#2AAFF2] w-[80%] h-[40px] hover:bg-[#1A8FD0] text-white font-bold py-2 px-6 rounded-[15px] flex items-center justify-center transition-colors duration-300"
               >
