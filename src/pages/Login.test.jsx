@@ -64,7 +64,7 @@ describe('Login Component', () => {
     render(<Login />);
     const user = userEvent.setup();
     await user.type(screen.getByPlaceholderText('E-mail...'), 'test@test.com');
-    await user.type(screen.getByPlaceholderText('Wachtwoord...'), '1234');
+    await user.type(screen.getByPlaceholderText('Wachtwoord...'), 'medewerker');
     await user.click(screen.getByText('Log in'));
 
     expect(await screen.findByText('Gebruiker niet gevonden.')).toBeInTheDocument();
@@ -85,7 +85,7 @@ describe('Login Component', () => {
 
     render(<Login />);
     const user = userEvent.setup();
-    await user.type(screen.getByPlaceholderText('E-mail...'), 'test@test.com');
+    await user.type(screen.getByPlaceholderText('E-mail...'), 'medewerker@gmail.com');
     await user.type(screen.getByPlaceholderText('Wachtwoord...'), '1234');
     await user.click(screen.getByText('Log in'));
 
