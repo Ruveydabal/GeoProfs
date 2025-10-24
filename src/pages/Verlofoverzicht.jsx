@@ -1,0 +1,62 @@
+import Header from "../components/Header.jsx";
+
+function Verlofoverzicht() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded">
+            Home
+          </button>
+          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded">
+            Verlof Aanvragen
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-4">
+            <div className="border rounded-md bg-white shadow-sm p-4">
+              <h3 className="font-semibold">Jezelf</h3>
+              <p className="text-sm text-gray-600">Vakantie</p>
+              <p className="text-sm text-gray-600">
+                Van: 29-09-2025 t/m 25-09-2025
+              </p>
+              <p className="text-sm text-gray-600 mb-2">Opmerking: …</p>
+              <p className="text-gray-600 font-medium">Goedgekeurd</p>
+            </div>
+
+            <div className="border rounded-md bg-white shadow-sm p-4">
+              <h3 className="font-semibold">Jezelf</h3>
+              <p className="text-sm text-gray-600">Vakantie</p>
+              <p className="text-sm text-gray-600"></p>
+              <p className="text-sm text-gray-600 mb-2">Opmerking: …</p>
+              <p className="text-gray-600 font-medium">Afgekeurd</p>
+            </div>
+          </div>
+
+          <div className="border rounded-md bg-white shadow-sm p-4">
+            <h3 className="font-semibold">Jezelf</h3>
+            <p className="text-sm text-gray-600">Vakantie</p>
+            <p className="text-sm text-gray-600">
+              Van: 29-09-2025 t/m 25-09-2025
+            </p>
+            <p className="text-sm text-gray-600 mb-2">Opmerking: …</p>
+
+            <div className="flex gap-2 mt-2">
+              <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                Wijzig verlof
+              </button>
+              <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm">
+                Annuleer Verzoek
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Verlofoverzicht;
