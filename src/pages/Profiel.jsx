@@ -25,8 +25,6 @@ function Profiel() {
     useEffect(() => {
         const fetch = async () => {
             //temp data
-            
-
             SetVoornaam("John");
             SetAchternaam("Doe");
             SetEmail("johndoe@geoprofs.com");
@@ -89,10 +87,16 @@ function Profiel() {
                                     <div>Rol: </div>
                                 </div>
                                 {aanHetWijzigen ? 
-                                //dropdown
-                                <></>
-                                :
                                 <div className='w-[200px] h-[40px] items-center flex'>
+                                <select className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]" name="rollen" id="rollen">
+                                    <option value="medewerker">Medewerker</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="officeManager">Office manager</option>
+                                    <option value="ceo">CEO</option>
+                                </select>
+                                </div>
+                                :
+                                <div className='w-auto h-[40px] items-center flex'>
                                     <p>{rol}</p>
                                 </div>
                             }
@@ -100,13 +104,17 @@ function Profiel() {
 
                             <div className='flex flex-wrap w-full h-[auto] mb-[20px]'>
                                 <div className='w-[200px] h-[40px] items-center flex'>
-                                    <div>afdeling: </div>
+                                    <div>Afdeling: </div>
                                 </div>
                                 {aanHetWijzigen ? 
-                                //dropdown
-                                <></>
-                                :
                                 <div className='w-[200px] h-[40px] items-center flex'>
+                                <select className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]" name="Afdelingen" id="Afdelingen">
+                                    <option value="filler">filler</option>
+
+                                </select>
+                                </div>
+                                :
+                                <div className='w-auto h-[40px] items-center flex'>
                                     <p>{afdeling}</p>
                                 </div>
                             }
@@ -117,11 +125,18 @@ function Profiel() {
                                     <div>In dienst sinds: </div>
                                 </div>
                                 {aanHetWijzigen ? 
-                                //datumselect
-                                <></>
-                                :
                                 <div className='w-[200px] h-[40px] items-center flex'>
-                                    <p>{moment(datumInDienst).format("DD-MM-yyyy")}</p>
+                                    <input
+                                        className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
+                                        
+                                        type="date"
+                                        value={moment(datumInDienst).format("yyyy-MM-DD")}
+                                        onChange={(e) => SetDatumInDienst(moment(e.target.value).format("yyyy-MM-DD"))}
+                                    />
+                                </div>
+                                :
+                                <div className='w-auto h-[40px] items-center flex'>
+                                    <p>{moment(datumInDienst).format("DD-MM-YYYY")}</p>
                                 </div>
                             }
                             </div>
