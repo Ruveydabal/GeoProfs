@@ -1,6 +1,18 @@
 import Header from "../components/Header.jsx";
+import BevestigingsVenster from "../components/BevestigingsVenster.jsx";
+import { useState } from "react";
 
 function Verlofoverzicht() {
+  const [toonVenster, stelToonVensterIn] = useState(false);
+
+  const openVenster = () => stelToonVensterIn(true);
+  const sluitVenster = () => stelToonVensterIn(false);
+
+  const bevestigAnnulering = () => {
+
+    console.log("Verzoek geannuleerd!");
+    stelToonVensterIn(false);
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -48,13 +60,19 @@ function Verlofoverzicht() {
               <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
                 Wijzig verlof
               </button>
-              <button className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm">
+              <button  onClick={openVenster} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm">
                 Annuleer Verzoek
               </button>
             </div>
           </div>
         </div>
       </div>
+      <BevestigingsVenster
+        zichtbaar={toonVenster}
+        tekst="Weet u zeker dat u dit verzoek wilt annuleren?"
+        onBevestig={bevestigAnnulering}
+        onAnnuleer={sluitVenster}
+      />
     </div>
   );
 }
