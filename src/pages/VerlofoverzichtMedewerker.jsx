@@ -19,10 +19,10 @@ function Verlofoverzicht() {
 
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-[15px] ">
             Home
           </button>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-[15px] ">
             Verlof Aanvragen
           </button>
         </div>
@@ -57,10 +57,10 @@ function Verlofoverzicht() {
             <p className="text-sm text-gray-600 mb-2">Opmerking: …</p>
 
             <div className="flex gap-2 mt-2">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+              <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-[15px]  text-sm">
                 Wijzig verlof
               </button>
-              <button  onClick={openVenster} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm">
+              <button  onClick={openVenster} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-[15px] text-sm">
                 Annuleer Verzoek
               </button>
             </div>
