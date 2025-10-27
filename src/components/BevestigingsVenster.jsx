@@ -7,13 +7,13 @@ function BevestigingsVenster({ zichtbaar, tekst, onBevestig, onAnnuleer }) {
         <div className="flex justify-center gap-4">
           <button
             onClick={onAnnuleer}
-            className="border border-gray-300 hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-[15px] "
+            className="border border-gray-300 text-gray-700 px-4 py-2 rounded-[15px] "
           >
             Nee
           </button>
           <button
             onClick={onBevestig}
-            className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-[15px] "
+            className="bg-sky-500 text-white px-4 py-2 rounded-[15px] "
           >
             Ja
           </button>

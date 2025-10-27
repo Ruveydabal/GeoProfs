@@ -1,28 +1,44 @@
 import Header from "../components/Header.jsx";
 import BevestigingsVenster from "../components/BevestigingsVenster.jsx";
+import VerlofAanvraagVenster from "../components/VerlofaanvraagVenster.jsx";
 import { useState } from "react";
 
 function Verlofoverzicht() {
+  // === Annuleer bevestiging venster ===
   const [toonVenster, stelToonVensterIn] = useState(false);
-
   const openVenster = () => stelToonVensterIn(true);
   const sluitVenster = () => stelToonVensterIn(false);
 
   const bevestigAnnulering = () => {
-
     console.log("Verzoek geannuleerd!");
     stelToonVensterIn(false);
   };
+
+  // === Verlof aanvraag venster ===
+  const [toonVerlofVenster, stelToonVerlofVensterIn] = useState(false);
+
+  const openVerlofVenster = () => stelToonVerlofVensterIn(true);
+  const sluitVerlofVenster = () => stelToonVerlofVensterIn(false);
+
+  const verstuurVerlof = (data) => {
+    console.log("Verzonden verlofaanvraag:", data);
+    // Hier kun je straks een API-call naar Laravel maken
+    stelToonVerlofVensterIn(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-[15px] ">
+          <button className="bg-blue-500  text-white font-medium px-4 py-2 rounded-[15px] ">
             Home
           </button>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-[15px] ">
+          <button
+            onClick={openVerlofVenster}
+            className="bg-blue-500  text-white font-medium px-4 py-2 rounded-[15px] "
+          >
             Verlof Aanvragen
           </button>
         </div>
@@ -57,21 +73,33 @@ function Verlofoverzicht() {
             <p className="text-sm text-gray-600 mb-2">Opmerking: …</p>
 
             <div className="flex gap-2 mt-2">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-[15px]  text-sm">
+              <button className="bg-blue-500  text-white px-3 py-1 rounded-[15px]  text-sm">
                 Wijzig verlof
               </button>
-              <button  onClick={openVenster} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-[15px] text-sm">
+              <button
+                onClick={openVenster}
+                className="bg-gray-200  text-gray-700 px-3 py-1 rounded-[15px] text-sm"
+              >
                 Annuleer Verzoek
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Bevestigingsvenster */}
       <BevestigingsVenster
         zichtbaar={toonVenster}
         tekst="Weet u zeker dat u dit verzoek wilt annuleren?"
         onBevestig={bevestigAnnulering}
         onAnnuleer={sluitVenster}
+      />
+
+      {/* Verlof aanvraag venster */}
+      <VerlofAanvraagVenster
+        zichtbaar={toonVerlofVenster}
+        opSluiten={sluitVerlofVenster}
+        opVersturen={verstuurVerlof}
       />
     </div>
   );
