@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import Header from '../components/Header.jsx'
 import ProfielLijstItem from '../components/ProfielLijstItem.jsx'
+import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx'
 
 function Profiel() {
     let { id } = useParams();
@@ -17,6 +18,8 @@ function Profiel() {
     const [rol, SetRol] = useState("");
     const [afdeling, SetAfdeling] = useState("");
     const [datumInDienst, SetDatumInDienst] = useState(null);
+
+    const [wachtwoordPopup, SetWachtwoordPopup] = useState(false)
 
     //temp variable
     var gebruikersRol = "manager";
@@ -128,7 +131,6 @@ function Profiel() {
                                 <div className='w-[200px] h-[40px] items-center flex'>
                                     <input
                                         className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
-                                        
                                         type="date"
                                         value={moment(datumInDienst).format("yyyy-MM-DD")}
                                         onChange={(e) => SetDatumInDienst(moment(e.target.value).format("yyyy-MM-DD"))}
@@ -148,16 +150,17 @@ function Profiel() {
 
                         <div className="flex flex-col mb-[30px]">
                         {id == jouwId ? 
-                            <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px]'>Wachtwoord wijzigen</button> : <></>
+                            <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => SetWachtwoordPopup(true)}>Wachtwoord wijzigen</button> : <></>
                         }
                         {gebruikersRol == "manager" ? 
-                            <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px]' onClick={() => updateData()}>{aanHetWijzigen ? "Opslaan" : "Gegevens wijzigen"}</button> : <></>
+                            <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => updateData()}>{aanHetWijzigen ? "Opslaan" : "Gegevens wijzigen"}</button> : <></>
                         }
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        {wachtwoordPopup ? <WachtwoordVeranderenPopup SetWachtwoordPopup={SetWachtwoordPopup}/> : <></>}
     </>
   );
 }
