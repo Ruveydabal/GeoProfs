@@ -1,63 +1,36 @@
-// tests/Ziekmelden.test.jsx
 import React from 'react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
 import Ziekmelden from '../src/pages/Ziekmelden'
 
-
-// 🔧 Mock Firestore functies
-vi.mock('firebase/firestore', async () => {
-  return {
-    doc: vi.fn(() => ({})),
-    setDoc: vi.fn(() => Promise.resolve()),
-    getDoc: vi.fn(() => Promise.resolve({ exists: () => true, data: () => ({ naam: 'Ziek' }) })),
-    serverTimestamp: vi.fn(() => new Date()),
-  }
-})
-
-
-vi.mock('../src/firebase', () => ({
-  db: {},
-}))
-
-describe('Ziekmelden component', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('toont standaard datums en verloftype in de UI', async () => {
+describe('Ziekmelden - velden niet aanpasbaar', () => {
+  it('laat niet toe dat datumvelden aangepast worden', async () => {
     render(<Ziekmelden userId="medewerker1" />)
 
-    // Check of de titel zichtbaar is
-    expect(await screen.findByText('Ziekmelden')).toBeInTheDocument()
+    const vandaagInput = await screen.findByDisplayValue(/\d{1,2}-\d{2}-\d{4}/)
+    const volgendeDagInput = screen.getAllByDisplayValue(/\d{1,2}-\d{2}-\d{4}/)[1]
 
-    // Check of het verloftype standaard 'Ziek' is
+    fireEvent.change(vandaagInput, { target: { value: '01-01-2000' } })
+    fireEvent.change(volgendeDagInput, { target: { value: '02-01-2000' } })
+
+    expect(vandaagInput.value).not.toBe('01-01-2000')
+    expect(volgendeDagInput.value).not.toBe('02-01-2000')
+    expect(vandaagInput).toHaveAttribute('readonly')
+    expect(volgendeDagInput).toHaveAttribute('readonly')
+  })
+
+  it('laat niet toe dat verloftype aangepast wordt', async () => {
+    render(<Ziekmelden userId="medewerker1" />)
+
     const verlofInput = await screen.findByDisplayValue('Ziek')
-    expect(verlofInput).toBeInTheDocument()
-  })
 
-  it('roept Firestore aan met juiste data bij ziekmelding', async () => {
-    // Mock Firestore document
-    getDoc.mockResolvedValueOnce({ exists: () => true, data: () => ({ naam: 'Ziek' }) })
-    setDoc.mockResolvedValueOnce()
+    // Probeert waarde te veranderen
+    fireEvent.change(verlofInput, { target: { value: 'Vakantie' } })
 
-    render(<Ziekmelden userId="medewerker1" />)
+    // Controleert dat waarde zelfde blijft
+    expect(verlofInput.value).toBe('Ziek')
 
-    // Wacht tot Firestore wordt opgeroepen
-    await waitFor(() => expect(getDoc).toHaveBeenCalled())
-
-    // Klik op de knop
-    const button = await screen.findByRole('button', { name: /Ziekmelden/i })
-    fireEvent.click(button)
-
-    await waitFor(() => expect(setDoc).toHaveBeenCalled())
-
-    // Controleer of juiste data naar Firestore gaat
-    const args = setDoc.mock.calls[0]
-    expect(args[1]).toMatchObject({
-      userId: 'medewerker1',
-      typeVerlof_id: '1',
-      omschrijvingRedenVerlof: 'Ziekmelding gemaakt',
-    })
+    //   checkt of veld readOnly is
+    expect(verlofInput).toHaveAttribute('readonly')
   })
 })
