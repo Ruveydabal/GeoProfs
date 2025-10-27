@@ -1,10 +1,9 @@
 import Header from "../components/Header.jsx";
 import BevestigingsVenster from "../components/BevestigingsVenster.jsx";
-import VerlofAanvraagVenster from "../components/VerlofaanvraagVenster.jsx";
+import VerlofAanvraagVenster from "../components/VerlofAanvraagVenster.jsx";
 import { useState } from "react";
 
 function Verlofoverzicht() {
-  // === Annuleer bevestiging venster ===
   const [toonVenster, stelToonVensterIn] = useState(false);
   const openVenster = () => stelToonVensterIn(true);
   const sluitVenster = () => stelToonVensterIn(false);
@@ -14,7 +13,6 @@ function Verlofoverzicht() {
     stelToonVensterIn(false);
   };
 
-  // === Verlof aanvraag venster ===
   const [toonVerlofVenster, stelToonVerlofVensterIn] = useState(false);
 
   const openVerlofVenster = () => stelToonVerlofVensterIn(true);
@@ -22,7 +20,7 @@ function Verlofoverzicht() {
 
   const verstuurVerlof = (data) => {
     console.log("Verzonden verlofaanvraag:", data);
-    // Hier kun je straks een API-call naar Laravel maken
+
     stelToonVerlofVensterIn(false);
   };
 
@@ -87,7 +85,6 @@ function Verlofoverzicht() {
         </div>
       </div>
 
-      {/* Bevestigingsvenster */}
       <BevestigingsVenster
         zichtbaar={toonVenster}
         tekst="Weet u zeker dat u dit verzoek wilt annuleren?"
@@ -95,7 +92,6 @@ function Verlofoverzicht() {
         onAnnuleer={sluitVenster}
       />
 
-      {/* Verlof aanvraag venster */}
       <VerlofAanvraagVenster
         zichtbaar={toonVerlofVenster}
         opSluiten={sluitVerlofVenster}

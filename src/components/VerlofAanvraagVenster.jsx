@@ -14,7 +14,6 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
     setFoutmelding("");
     setSuccesMelding("");
 
-
     if (!verlofType || !startDatum || !eindDatum) {
       setFoutmelding("Vul alle verplichte velden in.");
       return;
@@ -25,12 +24,9 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
       return;
     }
 
-   
     const data = { verlofType, startDatum, eindDatum, redenering };
 
-  
     opVersturen(data);
-
 
     setSuccesMelding("Verzoek succesvol verzonden!");
 
@@ -48,7 +44,10 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-96 text-center">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        <h2
+          aria-label="Titel"
+          className="text-lg font-semibold text-gray-800 mb-4"
+        >
           Verlof Aanvragen
         </h2>
 
@@ -56,7 +55,6 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
           <p className="text-red-500 text-sm mb-3">{foutmelding}</p>
         )}
 
-     
         {succesMelding && (
           <p className="text-green-600 text-sm mb-3">{succesMelding}</p>
         )}
@@ -64,6 +62,7 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
         <select
           className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
           value={verlofType}
+          aria-label="Verloftype"
           onChange={(e) => setVerlofType(e.target.value)}
         >
           <option value="">Verlof Type *</option>
@@ -75,12 +74,14 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
         <div className="flex gap-2 mb-4">
           <input
             type="date"
+            aria-label="Startdatum"
             className="w-1/2 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={startDatum}
             onChange={(e) => setStartDatum(e.target.value)}
           />
           <input
             type="date"
+            aria-label="Einddatum"
             className="w-1/2 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={eindDatum}
             onChange={(e) => setEindDatum(e.target.value)}
@@ -90,12 +91,13 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
         <textarea
           className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
           placeholder="Redenering..."
+          aria-label="Redenering"
           rows="3"
           value={redenering}
           onChange={(e) => setRedenering(e.target.value)}
         />
 
-        <p className="text-sm text-gray-600 mb-4">
+        <p aria-label="Uren" className="text-sm text-gray-600 mb-4">
           U heeft nog <span className="font-semibold">24 vrije uren</span>
         </p>
 
@@ -103,12 +105,14 @@ function VerlofAanvraagVenster({ zichtbaar, opSluiten, opVersturen }) {
           <button
             onClick={opSluiten}
             className="border border-gray-300 text-gray-700 px-4 py-2 rounded-[15px] hover:bg-gray-100"
+            aria-label="Annuleren"
           >
             Annuleren
           </button>
           <button
             onClick={verstuurFormulier}
             className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-[15px]"
+            aria-label="Versturen"
           >
             Opsturen
           </button>
