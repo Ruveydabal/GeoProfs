@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import Ziekmelden from '../src/pages/Ziekmelden'
+import Ziekmelden from '../pages/Ziekmelden.jsx'
 
 describe('Ziekmelden - velden niet aanpasbaar', () => {
   it('laat niet toe dat datumvelden aangepast worden', async () => {
