@@ -48,17 +48,8 @@ function App() {
             <Voorpagina />
           </ProtectedRoute>
         }/>
-        
-        <Route path="/office-manager/profiel/:id" element={
-          <ProtectedRoute allowedRoles={["office-manager"]}>
-            <Profiel />
-          </ProtectedRoute>
-        }/>
-        <Route path="/medewerker/profiel/:id" element={
-          <ProtectedRoute allowedRoles={["medewerker"]}>
-            <Profiel />
-          </ProtectedRoute>
-        }/>
+
+        <Route path="/profiel/:id" element={<Profiel />}/>
 
         {/* Onbekende route → terug naar login */}
         <Route path="*" element={<Navigate to="/" replace />} />
