@@ -43,7 +43,6 @@ function Profiel() {
     const updateData = () => {
         if(aanHetWijzigen){
             //hier naar DB pushen
-            console.log([voornaam, achternaam, email, BSNNummer]);
             SetAanHetWijzigen(!aanHetWijzigen)
         }
         else{
