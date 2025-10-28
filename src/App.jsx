@@ -38,16 +38,25 @@ function App() {
             <Voorpagina />
           </ProtectedRoute>
         }/>
-
         <Route path="/manager/voorpagina" element={
           <ProtectedRoute allowedRoles={["manager"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
-
         <Route path="/medewerker/voorpagina" element={
           <ProtectedRoute allowedRoles={["medewerker"]}>
             <Voorpagina />
+          </ProtectedRoute>
+        }/>
+        
+        <Route path="/office-manager/profiel/:id" element={
+          <ProtectedRoute allowedRoles={["office-manager"]}>
+            <Profiel />
+          </ProtectedRoute>
+        }/>
+        <Route path="/medewerker/profiel/:id" element={
+          <ProtectedRoute allowedRoles={["medewerker"]}>
+            <Profiel />
           </ProtectedRoute>
         }/>
 
