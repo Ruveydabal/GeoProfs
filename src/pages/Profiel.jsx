@@ -148,7 +148,7 @@ function Profiel() {
                         <div className='w-full h-0 mb-[20px] border-b-1 border-solid border-[#D0D0D0]'/>
 
                         <div className="flex flex-col mb-[30px]">
-                        {id == jouwId ? 
+                        {id == jouwId && !aanHetWijzigen ? 
                             <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => SetWachtwoordPopup(true)}>Wachtwoord wijzigen</button> : <></>
                         }
                         {gebruikersRol == "manager" ? 
