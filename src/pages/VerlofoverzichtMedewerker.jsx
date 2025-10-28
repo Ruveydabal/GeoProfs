@@ -9,12 +9,12 @@ function Verlofoverzicht() {
   const [toonVenster, stelToonVensterIn] = useState(false);
   const openVenster = () => stelToonVensterIn(true);
   const sluitVenster = () => stelToonVensterIn(false);
-
+//Bevestigings venster
   const bevestigAnnulering = () => {
     console.log("Verzoek geannuleerd!");
     stelToonVensterIn(false);
   };
-
+//Verlof venster 
   const [toonVerlofVenster, stelToonVerlofVensterIn] = useState(false);
 
   const openVerlofVenster = () => stelToonVerlofVensterIn(true);
