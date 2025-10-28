@@ -13,7 +13,7 @@ function BevestigingsVenster({ zichtbaar, tekst, onBevestig, onAnnuleer }) {
           </button>
           <button
             onClick={onBevestig}
-            className="bg-sky-500 text-white px-4 py-2 rounded-[15px] "
+            className="bg-[#2AAFF2] text-white px-4 py-2 rounded-[15px] "
           >
             Ja
           </button>

@@ -27,12 +27,12 @@ function Verlofoverzicht() {
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={gaNaarVoorpagina}
-            className="bg-blue-500  text-white font-medium px-4 py-2 rounded-[15px] "
+            className="bg-[#2AAFF2] text-white font-medium px-4 py-2 h-10 rounded-[15px] "
           >
             Home
           </button>
           <button
-            className="bg-blue-500  text-white font-medium px-4 py-2 rounded-[15px] "
+            className="bg-[#2AAFF2] h-10 text-white font-medium px-4 py-2 rounded-[15px] "
           >
             Verlof Aanvragen
           </button>
@@ -40,7 +40,7 @@ function Verlofoverzicht() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col gap-4">
-            <div className="border rounded-md bg-white shadow-sm p-4">
+            <div className="border rounded-md border-[#D0D0D0] bg-white p-4">
               <h3 className="font-semibold">Jezelf</h3>
               <p className="text-sm text-gray-600">Vakantie</p>
               <p className="text-sm text-gray-600">
@@ -50,7 +50,7 @@ function Verlofoverzicht() {
               <p className="text-gray-600 font-medium">Goedgekeurd</p>
             </div>
 
-            <div className="border rounded-md bg-white shadow-sm p-4">
+            <div className="border border-[#D0D0D0]  rounded-md bg-white shadow-sm p-4">
               <h3 className="font-semibold">Jezelf</h3>
               <p className="text-sm text-gray-600">Vakantie</p>
               <p className="text-sm text-gray-600"></p>
@@ -59,7 +59,7 @@ function Verlofoverzicht() {
             </div>
           </div>
 
-          <div className="border rounded-md bg-white shadow-sm p-4">
+          <div className="border border-[#D0D0D0]   bg-white shadow-sm p-4">
             <h3 className="font-semibold">Jezelf</h3>
             <p className="text-sm text-gray-600">Vakantie</p>
             <p className="text-sm text-gray-600">
@@ -68,12 +68,12 @@ function Verlofoverzicht() {
             <p className="text-sm text-gray-600 mb-2">Opmerking: …</p>
 
             <div className="flex gap-2 mt-2">
-              <button className="bg-blue-500  text-white px-3 py-1 rounded-[15px]  text-sm">
+              <button className="bg-[#2AAFF2] h-10 text-white px-3 py-1 rounded-[15px]  text-sm">
                 Wijzig verlof
               </button>
               <button
                 onClick={openVenster}
-                className="bg-gray-200  text-gray-700 px-3 py-1 rounded-[15px] text-sm"
+                className="bg-gray-200 h-10 text-gray-700 px-3 py-1 rounded-[15px] text-sm"
               >
                 Annuleer Verzoek
               </button>
