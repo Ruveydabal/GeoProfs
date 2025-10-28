@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
 import Voorpagina from './pages/Voorpagina'
 import Ziekmelden from './pages/Ziekmelden';
+import VerlofAanvraag from './pages/VerlofAanvraag';
 
 function App() {
   // Extra beveiliging: als iemand handmatig /medewerker intypt zonder login
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
+        <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
 
         {/* Voorpagina voor alle rollen, beschermd */}
         <Route path="/office-manager/voorpagina" element={
