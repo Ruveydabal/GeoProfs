@@ -14,18 +14,8 @@ function Verlofoverzicht() {
     console.log("Verzoek geannuleerd!");
     stelToonVensterIn(false);
   };
-//Verlof venster 
-  const [toonVerlofVenster, stelToonVerlofVensterIn] = useState(false);
 
-  const openVerlofVenster = () => stelToonVerlofVensterIn(true);
-  const sluitVerlofVenster = () => stelToonVerlofVensterIn(false);
-
-  const verstuurVerlof = (data) => {
-    console.log("Verzonden verlofaanvraag:", data);
-
-    stelToonVerlofVensterIn(false);
-  };
-  //voorpgaina knop
+  //voorpagina knop
   const gaNaarVoorpagina = () => {
     navigate("/voorpagina");
   };
@@ -43,7 +33,6 @@ function Verlofoverzicht() {
             Home
           </button>
           <button
-            onClick={openVerlofVenster}
             className="bg-blue-500  text-white font-medium px-4 py-2 rounded-[15px] "
           >
             Verlof Aanvragen
@@ -101,11 +90,6 @@ function Verlofoverzicht() {
         onAnnuleer={sluitVenster}
       />
 
-      <VerlofAanvraagVenster
-        zichtbaar={toonVerlofVenster}
-        opSluiten={sluitVerlofVenster}
-        opVersturen={verstuurVerlof}
-      />
     </div>
   );
 }
