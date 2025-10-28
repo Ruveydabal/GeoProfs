@@ -1,6 +1,5 @@
 import Header from "../components/Header.jsx";
 import BevestigingsVenster from "../components/BevestigingsVenster.jsx";
-import VerlofAanvraagVenster from "../components/VerlofAanvraagVenster.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
