@@ -1,9 +1,11 @@
 import Header from "../components/Header.jsx";
 import BevestigingsVenster from "../components/BevestigingsVenster.jsx";
 import VerlofAanvraagVenster from "../components/VerlofAanvraagVenster.jsx";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Verlofoverzicht() {
+  const navigate = useNavigate();
   const [toonVenster, stelToonVensterIn] = useState(false);
   const openVenster = () => stelToonVensterIn(true);
   const sluitVenster = () => stelToonVensterIn(false);
@@ -23,6 +25,10 @@ function Verlofoverzicht() {
 
     stelToonVerlofVensterIn(false);
   };
+  //voorpgaina knop
+  const gaNaarVoorpagina = () => {
+    navigate("/voorpagina");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -30,7 +36,10 @@ function Verlofoverzicht() {
 
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <button className="bg-blue-500  text-white font-medium px-4 py-2 rounded-[15px] ">
+          <button
+            onClick={gaNaarVoorpagina}
+            className="bg-blue-500  text-white font-medium px-4 py-2 rounded-[15px] "
+          >
             Home
           </button>
           <button
