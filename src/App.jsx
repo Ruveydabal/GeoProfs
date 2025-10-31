@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
 import Voorpagina from './pages/Voorpagina'
 import Ziekmelden from './pages/Ziekmelden';
+import GebruikerToevoegen from './pages/GebruikerToevoegen';
 
 function App() {
   // Extra beveiliging: als iemand handmatig /medewerker intypt zonder login
@@ -28,7 +29,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* deze straks uit comments halen */}
+        {/* <Route path="/" element={<Login />} /> */}
+        <Route path="/" element={<GebruikerToevoegen />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
 
         {/* Voorpagina voor alle rollen, beschermd */}
