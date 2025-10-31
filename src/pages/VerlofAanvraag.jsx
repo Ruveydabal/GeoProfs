@@ -1,4 +1,4 @@
- import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, use } from 'react';
   import Header from '../components/Header';
   import { db } from '../firebase';
   import { doc, setDoc, getDocs, getDoc, serverTimestamp, QuerySnapshot, collection } from "firebase/firestore";
@@ -18,8 +18,8 @@ function VerlofAanvraag() {
         const start = moment();
         const eind = moment();
 
-        setVerlofAanvraagDag(moment(start).format('D-MM-YYYY'));
-        setVerlofAanvraagTotDag(moment(eind).format('D-MM-YYYY'));
+        setVerlofAanvraagDag(moment(start).format('YYYY-MM-DD'));
+        setVerlofAanvraagTotDag(moment(eind).format('YYYY-MM-DD'));
     }, []);
 
    useEffect(() => {
@@ -45,6 +45,11 @@ function VerlofAanvraag() {
       alert("Kies een verloftype voordat je verzendt.");
       return;
     }
+     // Check of reden is ingevuld
+    if (!reden || reden.trim() === "") {
+        alert("Vul een reden voor het verlof in.");
+        return;
+    }
 
     setLoading(true);
     try {
@@ -52,8 +57,8 @@ function VerlofAanvraag() {
       await setDoc(doc(db, "verlof", verlofId), {
         userId: userId,
         typeVerlof_id: verlofType,
-        startDatum: moment(verlofAanvraagDag, 'D-MM-YYYY').toDate(),
-        eindDatum: moment(verlofAanvraagTotDag, 'D-MM-YYYY').toDate(),
+        startDatum: moment(verlofAanvraagDag, 'YYYY-MM-DD').toDate(),
+        eindDatum: moment(verlofAanvraagTotDag, 'YYYY-MM-DD').toDate(),
         omschrijvingRedenVerlof: reden || "Geen reden opgegeven",
         createdAt: serverTimestamp(),
       });
@@ -80,37 +85,41 @@ function VerlofAanvraag() {
             {/* Datums */}
             <div className='h-[20%] w-[80%] flex flex-row items-center justify-between'>
               <div className='h-[80%] w-[45%] bg-white flex flex-col items-center justify-center rounded-[15px] text-lg font-bold'>
-                <input
-                  type="text"
+                <input 
+                  type="date"
                   value={verlofAanvraagDag}
-                  readOnly
-                  className="text-center"
+                  onChange={(e) => setVerlofAanvraagDag(e.target.value)}
+                  className='h-[45%] w-[75%] text-center'
                 />
               </div>
               <div className='h-[80%] w-[45%] bg-white flex flex-col items-center justify-center rounded-[15px] text-lg font-bold'>
                 <input
-                  type="text"
+                  type="date"
                   value={verlofAanvraagTotDag}
-                  readOnly
-                  className="text-center"
+                  onChange={(e) => setVerlofAanvraagTotDag(e.target.value)}
+                  className='h-[45%] w-[75%] text-center'
                 />
               </div>
             </div>
 
             {/* Verloftype dropdown */}
             <div className="bg-white w-[80%] h-[15%] text-lg font-bold text-black py-2 px-6 rounded-[15px] flex flex-col items-center justify-center">
-              <select
-                id="verlofType"
-                className="border border-gray-300 rounded-lg p-2 h-[80%] w-[70%] text-center text-black bg-white"
-                value={verlofType}
-                onChange={(e) => setVerlofType(e.target.value)}>
-                <option value="">-- Kies een verloftype --</option>
-                {alleVerlofTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.naam}
-                  </option>
-                ))}
-              </select>
+                <select
+                    id="verlofType"
+                    className="border border-gray-300 rounded-lg p-2 h-[80%] w-[70%] text-center text-black bg-white"
+                    value={verlofType}
+                    onChange={(e) => setVerlofType(e.target.value)}>
+                    <option value="" disabled hidden>
+                        -- Kies een verloftype --
+                    </option>
+                    {alleVerlofTypes
+                        .filter(({ type }) => type !== "Ziek" && type !== "Bijzonder verlof")
+                        .map(({ id, type }) => (
+                        <option key={id} value={id}>
+                            {type}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Reden */}
