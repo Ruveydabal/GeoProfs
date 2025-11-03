@@ -1,10 +1,11 @@
-import React, { useState, useEffect, use } from 'react';
-  import Header from '../components/Header';
-  import { db } from '../firebase';
-  import { doc, setDoc, getDocs, getDoc, serverTimestamp, QuerySnapshot, collection } from "firebase/firestore";
-  import moment from 'moment';
-  import 'moment/locale/nl';
-  moment.locale('nl');
+import React, { useState, useEffect } from 'react';
+import Header from '../components/Header';
+import { db } from '../firebase';
+import { doc, setDoc, getDocs, serverTimestamp, addDoc, collection } from "firebase/firestore";
+import moment from 'moment';
+import 'moment/locale/nl';
+moment.locale('nl');
+//import { useAuth } from './AuthContext';
 
 function VerlofAanvraag() {
     const [verlofAanvraagDag, setVerlofAanvraagDag ] = useState("");
@@ -13,13 +14,13 @@ function VerlofAanvraag() {
     const [alleVerlofTypes, setAlleVerlofTypes] = useState([]); // lijst db
     const [reden, setReden] = useState(""); 
     const [loading, setLoading] = useState(false);
+    const [userId, setUserId] = useState(null);
+    //const {gebruikerData, laadGebruiker} = useAuth();
 
     useEffect(() => {
-        const start = moment();
-        const eind = moment();
-
-        setVerlofAanvraagDag(moment(start).format('YYYY-MM-DD'));
-        setVerlofAanvraagTotDag(moment(eind).format('YYYY-MM-DD'));
+        const vandaag = moment().format('YYYY-MM-DD');
+        setVerlofAanvraagDag(vandaag);
+        setVerlofAanvraagTotDag(vandaag);
     }, []);
 
    useEffect(() => {
@@ -41,6 +42,14 @@ function VerlofAanvraag() {
 
   // Versturen  verlofaanvraag
   const handleVerzend = async () => {
+
+    // if (!gebruikerData){
+    //     alert("Je bent niet ingelogd!");
+    //     return;
+    // }
+
+    // const userId = gebruikerData.uid;
+
     if (!verlofType) {
       alert("Kies een verloftype voordat je verzendt.");
       return;
@@ -69,8 +78,7 @@ function VerlofAanvraag() {
     } finally {
       setLoading(false);
     }
-  }
-
+  };
 
  return (
     <>
@@ -136,7 +144,7 @@ function VerlofAanvraag() {
             {/* Verzendknop */}
             <button
               onClick={handleVerzend}
-              disabled={loading}
+              disabled={loading} //|| laadGebruiker || !gebruikerData}
               className="bg-[#2AAFF2] w-[80%] h-[40px] hover:bg-[#1A8FD0] text-white font-bold py-2 px-6 rounded-[15px] flex items-center justify-center transition-colors duration-300">
               {loading ? "Bezig met verzenden..." : "Verzend"}
             </button>
