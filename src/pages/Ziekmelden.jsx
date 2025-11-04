@@ -15,40 +15,41 @@
     const [userIdState, setUserIdState] = useState(userId || null);
     const navigate = useNavigate();
 
-    useEffect(()=> {
-       // voor UI
-        const vandaagDatum = moment();
-        const volgendeDatum = moment(vandaagDatum ).add(1, "days")
-        
-        setVandaag(moment(vandaagDatum).format('D-MM-YYYY'));
-        setVolgendeDag(moment(volgendeDatum).format('D-MM-YYYY'));
-    }, []);
-
-    // Haal verloftype op uit DB
     useEffect(() => {
+      //voor UI: vandaag en volgende dag
+      const vandaagDatum = moment();
+      const volgendeDatum = moment(vandaagDatum).add(1, "days");
+
+      setVandaag(moment(vandaagDatum).format('D-MM-YYYY'));
+      setVolgendeDag(moment(volgendeDatum).format('D-MM-YYYY'));
+
+      //haal verloftype uit DB
       const haalVerlofTypeOp = async () => {
-        const docRef = doc(db, "verloftype", "1");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setVerlofType(docSnap.data().naam); 
-        } else {
-          console.log("Verloftype niet gevonden");
-        }
+          try {
+              const docRef = doc(db, "verloftype", "1");
+              const docSnap = await getDoc(docRef);
+              if (docSnap.exists()) {
+                  setVerlofType(docSnap.data().naam);
+              } else {
+                  console.log("Verloftype niet gevonden");
+              }
+          } catch (error) {
+              console.error("Fout bij ophalen verloftype:", error);
+          }
       };
 
       haalVerlofTypeOp();
-    }, []);
 
-    useEffect(() => {
+      //haal userId uit localStorage (alleen als niet gezet)
       if (!userIdState) {
-        const opgeslagenUserId = localStorage.getItem("userId");
-        if (opgeslagenUserId) {
-          setUserIdState(opgeslagenUserId);
-        } else {
-          console.warn("Geen userId gevonden in localStorage. Gebruiker niet ingelogd.");
-        }
+          const opgeslagenUserId = localStorage.getItem("userId");
+          if (opgeslagenUserId) {
+              setUserIdState(opgeslagenUserId);
+          } else {
+              console.warn("Geen userId gevonden in localStorage. Gebruiker niet ingelogd.");
+          }
       }
-    }, []);
+  }, []);
 
   const behandelZiekmelding = async () => {
     setLoading(true);
