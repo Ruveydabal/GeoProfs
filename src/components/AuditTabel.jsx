@@ -1,12 +1,11 @@
 import { db } from "../firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useState, useEffect } from 'react';
+import moment from 'moment';
 
 function AuditTabel() {
 
     const [auditTrailData, SetAuditTrailData] = useState([])
-    const [auditActionData, SetAuditActionData] = useState([])
-    const [usersData, SetUserData] = useState([])
 
     useEffect(() => {
         const FetchLogs = async () => {
@@ -20,45 +19,14 @@ function AuditTabel() {
             const auditTrailsdata = auditTrails.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
             SetAuditTrailData(auditTrailsdata);
-
-            //fetchActions
-            var auditActions = await getDocs(
-                query(collection(db, "auditActie"))
-            );
-            if (auditActions.empty) 
-                throw new Error("2 niet gevonden.");
-
-            const auditActionsdata = auditActions.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-            SetAuditActionData(auditActionsdata);
-
-            //fetch users
-            var users = await getDocs(
-                query(collection(db, "user"))
-            );
-            if (users.empty) 
-                throw new Error("3 niet gevonden.");
-
-            const usersData = users.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-            SetUserData(usersData);
         }
         FetchLogs()
     }, []);
 
-    function PakVoornaamEnAchternaam(audit){
-        var user = usersData.filter(x => x.id == audit.uitgevoerdDoorUserId.id)
-
-        console.log(usersData)
-        return (user[0]?.naam + " " + user[0]?.achternaam)
-    }
-
-    if(!auditTrailData || !auditActionData || !usersData){
+    if(!auditTrailData || auditTrailData.length == 0){
         return("loading")
     }
-    if(usersData.length == 0){
-        return ("users not found")
-    }
+
   return (
     <div className="flex w-full h-auto overflow-auto">
         <table className="h-auto border-collapse">
@@ -67,23 +35,67 @@ function AuditTabel() {
                     <td className="min-w-[300px] h-full">
                         <div className="h-[80px]">
                             <input
-                                className="w-[250px] h-[40px] rounded-[15px] border border-[#D0D0D0]"
+                                className="w-[250px] h-[40px] bg-[#F4F4F4] rounded-[15px] border border-[#D0D0D0]"
                                 type="text"
                             />
                         </div>
-                        <div className="h-[40px] border border-[#D0D0D0]">
-                            <p></p>
+                        <div className="flex justify-center items-center h-[40px] border border-[#D0D0D0]">
+                            <p>Actie</p>
                         </div>
                     </td>
                     <td className="min-w-[300px] h-full">
                         <div className="h-[80px]">
                             <input
-                                className="w-[250px] h-[40px] rounded-[15px] border border-[#D0D0D0]"
+                                className="w-[250px] h-[40px] bg-[#F4F4F4] rounded-[15px] border border-[#D0D0D0]"
                                 type="text"
                             />
                         </div>
-                        <div className="h-[40px] border border-[#D0D0D0]">
-                            <p></p>
+                        <div className="flex justify-center items-center h-[40px] border border-[#D0D0D0]">
+                            <p>Uitgevoerd op tabel</p>
+                        </div>
+                    </td>
+                    <td className="min-w-[300px] h-full">
+                        <div className="h-[80px]">
+                            <input
+                                className="w-[250px] h-[40px] bg-[#F4F4F4] rounded-[15px] border border-[#D0D0D0]"
+                                type="text"
+                            />
+                        </div>
+                        <div className="flex justify-center items-center h-[40px] border border-[#D0D0D0]">
+                            <p>Uitgevoerd door</p>
+                        </div>
+                    </td>
+                    <td className="min-w-[300px] h-full">
+                        <div className="h-[80px]">
+                            <input
+                                className="w-[250px] h-[40px] bg-[#F4F4F4] rounded-[15px] border border-[#D0D0D0]"
+                                type="text"
+                            />
+                        </div>
+                        <div className="flex justify-center items-center h-[40px] border border-[#D0D0D0]">
+                            <p>Uitgevoerd op</p>
+                        </div>
+                    </td>
+                    <td className="min-w-[300px] h-full">
+                        <div className="h-[80px]">
+                            <input
+                                className="flex justify-center items-center w-[250px] h-[40px] bg-[#F4F4F4] rounded-[15px] border border-[#D0D0D0]"
+                                type="text"
+                            />
+                        </div>
+                        <div className="flex justify-center items-center h-[40px] border border-[#D0D0D0]">
+                            <p>Type uitvoering</p>
+                        </div>
+                    </td>
+                    <td className="min-w-[300px] h-full">
+                        <div className="h-[80px]">
+                            <input
+                                className="w-[250px] h-[40px] bg-[#F4F4F4] rounded-[15px] border border-[#D0D0D0]"
+                                type="text"
+                            />
+                        </div>
+                        <div className="flex justify-center items-center h-[40px] border border-[#D0D0D0]">
+                            <p>Datum en tijd</p>
                         </div>
                     </td>
                 </tr>
@@ -92,14 +104,36 @@ function AuditTabel() {
             <tbody>
                 {
                     auditTrailData.map(audit => (
-                        <tr className={`h-[40px] ${audit.id % 2 == 0 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>
+                        <tr key={audit.id} className={`h-[40px] ${audit.id % 2 == 0 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>
+                            {console.log(audit)}
                             <td className="min-w-[300px] border border-[#D0D0D0]">
-                                <p>
-                                    {PakVoornaamEnAchternaam(audit)}
+                                <p className="pl-[10px]">
+                                    {audit?.actie.titel}
                                 </p>
                             </td>
                             <td className="min-w-[300px] border border-[#D0D0D0]">
-                                <p></p>
+                                <p className="pl-[10px]">{audit?.tabel.tabelNaam}</p>
+                            </td>
+                            <td className="min-w-[300px] border border-[#D0D0D0]">
+                                <p className="pl-[10px]">{audit?.uitgevoerdDoorUser.naam + " " + audit?.uitgevoerdDoorUser.achternaam}</p>
+                            </td>
+                            <td className="min-w-[300px] border border-[#D0D0D0]">
+                                <p className="pl-[10px]">{
+                                    audit?.uitgevoerdOp.tabel.tabelNaam == "user" ?
+                                    audit?.uitgevoerdOp.naam :
+                                    audit?.uitgevoerdOp.tabel.tabelNaam == "verlof" ?
+                                    "verlof id: " + audit?.uitgevoerdOp.id :
+                                    ""
+                                    }</p>
+                            </td>
+                            <td className="min-w-[300px] border border-[#D0D0D0]">
+                                <p className="pl-[10px]">
+                                    {audit?.typeUitvoering == undefined ?
+                                    "" : audit?.typeUitvoering.titel}
+                                </p>
+                            </td>
+                            <td className="min-w-[300px] border border-[#D0D0D0]">
+                                <p className="pl-[10px]">{moment(audit?.laatstGeupdate.toDate()).format("DD-MM-YYYY HH:mm:ss")}</p>
                             </td>
                         </tr>
                     ))
