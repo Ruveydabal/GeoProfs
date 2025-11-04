@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { db } from '../firebase';
 import { doc, setDoc, getDocs, serverTimestamp, addDoc, collection } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import moment from 'moment';
 import 'moment/locale/nl';
 moment.locale('nl');
-//import { useAuth } from './AuthContext';
+
 
 function VerlofAanvraag() {
     const [verlofAanvraagDag, setVerlofAanvraagDag ] = useState("");
@@ -15,7 +16,8 @@ function VerlofAanvraag() {
     const [reden, setReden] = useState(""); 
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
-    //const {gebruikerData, laadGebruiker} = useAuth();
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const vandaag = moment().format('YYYY-MM-DD');
@@ -38,17 +40,23 @@ function VerlofAanvraag() {
     };
 
     haalVerlofTypesOp();
-  }, []);
+    }, []);
 
-  // Versturen  verlofaanvraag
-  const handleVerzend = async () => {
+    useEffect(() => {
+        const opgeslagenUserId = localStorage.getItem("userId");
+        if (opgeslagenUserId) {
+            setUserId(opgeslagenUserId);
+        } else {
+            console.warn("Geen userId gevonden in localStorage. Gebruiker is mogelijk niet ingelogd.");
+        }
+    }, []);
 
-    // if (!gebruikerData){
-    //     alert("Je bent niet ingelogd!");
-    //     return;
-    // }
-
-    // const userId = gebruikerData.uid;
+    // Versturen  verlofaanvraag
+    const handleVerzend = async () => {
+    if (!userId) {
+        alert("Geen gebruiker gevonden. Log opnieuw in.");
+        return;
+    }
 
     if (!verlofType) {
       alert("Kies een verloftype voordat je verzendt.");
@@ -64,23 +72,31 @@ function VerlofAanvraag() {
     try {
       const verlofId = `verlof_${userId}_${Date.now()}`;
       await setDoc(doc(db, "verlof", verlofId), {
-        userId: userId,
-        typeVerlof_id: verlofType,
+        user_id: doc(db, "user", userId),
+        typeVerlof_id: doc(db, "typeVerlof", verlofType),
         startDatum: moment(verlofAanvraagDag, 'YYYY-MM-DD').toDate(),
         eindDatum: moment(verlofAanvraagTotDag, 'YYYY-MM-DD').toDate(),
         omschrijvingRedenVerlof: reden || "Geen reden opgegeven",
         createdAt: serverTimestamp(),
       });
       alert("Verlofaanvraag is verzonden!");
+
+      const rol = localStorage.getItem("rol");
+      if (rol) {
+        navigate(`/${rol}/voorpagina`);
+        } else {
+        navigate("/"); //geen rol gevonden
+        }
+
     } catch (error) {
       console.error("Fout bij verzenden verlofaanvraag:", error);
       alert("Er ging iets mis bij aanvragen van verlof.");
     } finally {
       setLoading(false);
     }
-  };
+};
 
- return (
+return (
     <>
       <Header />
       <div className="h-[90%] w-full bg-white-500 flex items-center justify-center">
@@ -104,6 +120,7 @@ function VerlofAanvraag() {
                 <input
                   type="date"
                   value={verlofAanvraagTotDag}
+                  min={verlofAanvraagDag} 
                   onChange={(e) => setVerlofAanvraagTotDag(e.target.value)}
                   className='h-[45%] w-[75%] text-center'
                 />
@@ -144,7 +161,7 @@ function VerlofAanvraag() {
             {/* Verzendknop */}
             <button
               onClick={handleVerzend}
-              disabled={loading} //|| laadGebruiker || !gebruikerData}
+              disabled={loading}
               className="bg-[#2AAFF2] w-[80%] h-[40px] hover:bg-[#1A8FD0] text-white font-bold py-2 px-6 rounded-[15px] flex items-center justify-center transition-colors duration-300">
               {loading ? "Bezig met verzenden..." : "Verzend"}
             </button>
