@@ -41,12 +41,12 @@ function WachtwoordVeranderenPopup({SetWachtwoordPopup}) {
 
                 <div className="h-auto w-[70%] mt-[20px]">
                     <p>Nieuw wachtwoord</p>
-                    <input className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]" type="password" onChange={(e) => SetEersteInvoer(e.target.value)}/> 
+                    <input className="h-[40px] w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]" type="password" name='eersteInvoer' onChange={(e) => SetEersteInvoer(e.target.value)}/> 
                 </div>
                 
                 <div className="h-auto w-[70%] mt-[20px]">
                     <p>Wachtwoord herhalen</p>
-                    <input className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]" type="password" onChange={(e) => SetTweedeInvoer(e.target.value)}/> 
+                    <input className="h-[40px] w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]" type="password" name='tweedeInvoer'  onChange={(e) => SetTweedeInvoer(e.target.value)}/> 
                 </div>
                 
 
