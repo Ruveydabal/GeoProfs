@@ -33,6 +33,8 @@ function Login() {
       const gebruiker = gebruikers.docs[0];
       const gebruikerData = gebruiker.data();
       const gebruikerRef = gebruiker.ref;
+      //Sla de firebase uid op
+      localStorage.setItem("userId", gebruiker.id);
 
       // Zoekt wachtwoord dat hoort bij gebruiker
       const wachtwoorden = await getDocs(
@@ -60,7 +62,7 @@ function Login() {
       // Sla inlogstatus en rol op in localStorage
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("rol", rol);
-
+      
       // Navigeer naar de juiste pagina
       navigate(`/${rol}/voorpagina`);
       

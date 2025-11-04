@@ -16,7 +16,6 @@
        // voor UI
         const vandaagDatum = moment();
         const volgendeDatum = moment(vandaagDatum ).add(1, "days")
-        
 
         setVandaag(moment(vandaagDatum).format('D-MM-YYYY'));
         setVolgendeDag(moment(volgendeDatum).format('D-MM-YYYY'));
