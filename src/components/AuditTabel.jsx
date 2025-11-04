@@ -5,7 +5,8 @@ import { useState, useEffect } from 'react';
 function AuditTabel() {
 
     const [auditTrailData, SetAuditTrailData] = useState([])
-    const [auditActionsData, SetAuditActionsData] = useState([])
+    const [auditActionData, SetAuditActionData] = useState([])
+    const [usersData, SetUserData] = useState([])
 
     useEffect(() => {
         const FetchLogs = async () => {
@@ -16,9 +17,9 @@ function AuditTabel() {
             if (auditTrails.empty) 
                 throw new Error("1 niet gevonden.");
 
-            const data = auditTrails.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const auditTrailsdata = auditTrails.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-            SetAuditTrailData(data);
+            SetAuditTrailData(auditTrailsdata);
 
             //fetchActions
             var auditActions = await getDocs(
@@ -27,70 +28,84 @@ function AuditTabel() {
             if (auditActions.empty) 
                 throw new Error("2 niet gevonden.");
 
-            SetAuditActionsData(auditActions);
+            const auditActionsdata = auditActions.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+            SetAuditActionData(auditActionsdata);
 
+            //fetch users
+            var users = await getDocs(
+                query(collection(db, "user"))
+            );
+            if (users.empty) 
+                throw new Error("3 niet gevonden.");
 
+            const usersData = users.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            SetUserData(usersData);
         }
         FetchLogs()
     }, []);
 
+    function PakVoornaamEnAchternaam(audit){
+        var user = usersData.filter(x => x.id == audit.uitgevoerdDoorUserId.id)
 
+        console.log(usersData)
+        return (user[0]?.naam + " " + user[0]?.achternaam)
+    }
 
-    console.log(auditTrailData)
-
+    if(!auditTrailData || !auditActionData || !usersData){
+        return("loading")
+    }
+    if(usersData.length == 0){
+        return ("users not found")
+    }
   return (
     <div className="flex w-full h-auto overflow-auto">
-        {
-            auditTrailData.length == 0 ?
-            <div className="flex w-full h-full justify-center items-center border-1 border-solid border-[#D0D0D0]">
-                <p>no Logs Found</p>
-            </div>
-            : 
-            <table className="h-auto border-collapse">
-                <thead className="h-[120px]">
-                    <tr>
-                        <td className="min-w-[300px] h-full">
-                            <div className="h-[80px]">
-                                <input
-                                    className="w-[250px] h-[40px] rounded-[15px] border border-[#D0D0D0]"
-                                    type="text"
-                                />
-                            </div>
-                            <div className="h-[40px] border border-[#D0D0D0]">
-                                <p></p>
-                            </div>
-                        </td>
-                        <td className="min-w-[300px] h-full">
-                            <div className="h-[80px]">
-                                <input
-                                    className="w-[250px] h-[40px] rounded-[15px] border border-[#D0D0D0]"
-                                    type="text"
-                                />
-                            </div>
-                            <div className="h-[40px] border border-[#D0D0D0]">
-                                <p></p>
-                            </div>
-                        </td>
-                    </tr>
-                </thead>
+        <table className="h-auto border-collapse">
+            <thead className="h-[120px]">
+                <tr>
+                    <td className="min-w-[300px] h-full">
+                        <div className="h-[80px]">
+                            <input
+                                className="w-[250px] h-[40px] rounded-[15px] border border-[#D0D0D0]"
+                                type="text"
+                            />
+                        </div>
+                        <div className="h-[40px] border border-[#D0D0D0]">
+                            <p></p>
+                        </div>
+                    </td>
+                    <td className="min-w-[300px] h-full">
+                        <div className="h-[80px]">
+                            <input
+                                className="w-[250px] h-[40px] rounded-[15px] border border-[#D0D0D0]"
+                                type="text"
+                            />
+                        </div>
+                        <div className="h-[40px] border border-[#D0D0D0]">
+                            <p></p>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {
-                        auditTrailData.map(audit => (
-                            <tr className={`h-[40px] ${audit.id % 2 == 0 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>
-                                <td className="min-w-[300px] border border-[#D0D0D0]">
-                                    <p></p>
-                                </td>
-                                <td className="min-w-[300px] border border-[#D0D0D0]">
-                                    <p></p>
-                                </td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
-        }
+            <tbody>
+                {
+                    auditTrailData.map(audit => (
+                        <tr className={`h-[40px] ${audit.id % 2 == 0 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>
+                            <td className="min-w-[300px] border border-[#D0D0D0]">
+                                <p>
+                                    {PakVoornaamEnAchternaam(audit)}
+                                </p>
+                            </td>
+                            <td className="min-w-[300px] border border-[#D0D0D0]">
+                                <p></p>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
     </div>
   );
 }
