@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
 import Voorpagina from './pages/Voorpagina'
 import Ziekmelden from './pages/Ziekmelden';
+import Profiel from './pages/Profiel'
 
 function App() {
   // Extra beveiliging: als iemand handmatig /medewerker intypt zonder login
@@ -37,18 +38,18 @@ function App() {
             <Voorpagina />
           </ProtectedRoute>
         }/>
-
         <Route path="/manager/voorpagina" element={
           <ProtectedRoute allowedRoles={["manager"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
-
         <Route path="/medewerker/voorpagina" element={
           <ProtectedRoute allowedRoles={["medewerker"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
+
+        <Route path="/profiel/:id" element={<Profiel />}/>
 
         {/* Onbekende route → terug naar login */}
         <Route path="*" element={<Navigate to="/" replace />} />
