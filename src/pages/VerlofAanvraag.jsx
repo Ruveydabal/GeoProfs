@@ -20,36 +20,35 @@ function VerlofAanvraag() {
 
 
     useEffect(() => {
-        const vandaag = moment().format('YYYY-MM-DD');
-        setVerlofAanvraagDag(vandaag);
-        setVerlofAanvraagTotDag(vandaag);
-    }, []);
+      //zet standaard datum
+      const vandaag = moment().format('YYYY-MM-DD');
+      setVerlofAanvraagDag(vandaag);
+      setVerlofAanvraagTotDag(vandaag);
 
-   useEffect(() => {
-    const haalVerlofTypesOp = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "typeVerlof"));
-        const types = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setAlleVerlofTypes(types);
-      } catch (error) {
-        console.error("Fout bij ophalen verloftypes:", error);
+      //haal userId uit localStorage
+      const opgeslagenUserId = localStorage.getItem("userId");
+      if (opgeslagenUserId) {
+          setUserId(opgeslagenUserId);
+      } else {
+          console.warn("Geen userId gevonden in localStorage. Gebruiker is mogelijk niet ingelogd.");
       }
-    };
 
-    haalVerlofTypesOp();
-    }, []);
+      //haal verloftypes uit Firestore
+      const haalVerlofTypesOp = async () => {
+          try {
+              const querySnapshot = await getDocs(collection(db, "typeVerlof"));
+              const types = querySnapshot.docs.map(doc => ({
+                  id: doc.id,
+                  ...doc.data(),
+              }));
+              setAlleVerlofTypes(types);
+          } catch (error) {
+              console.error("Fout bij ophalen verloftypes:", error);
+          }
+      };
 
-    useEffect(() => {
-        const opgeslagenUserId = localStorage.getItem("userId");
-        if (opgeslagenUserId) {
-            setUserId(opgeslagenUserId);
-        } else {
-            console.warn("Geen userId gevonden in localStorage. Gebruiker is mogelijk niet ingelogd.");
-        }
-    }, []);
+      haalVerlofTypesOp();
+  }, []);
 
     // Versturen  verlofaanvraag
     const handleVerzend = async () => {
