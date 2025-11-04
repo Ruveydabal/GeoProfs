@@ -4,8 +4,6 @@
   import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
   import { useNavigate } from "react-router-dom";
   import moment from 'moment';
-  import 'moment/locale/nl';
-  moment.locale('nl');
 
   function Ziekmelden({ userId }) {  
     const [vandaag, setVandaag] = useState(""); 
@@ -58,7 +56,6 @@
       alert("Geen gebruiker gevonden. Log opnieuw in.");
       return;
       }
-
 
       const vandaagDatum = moment(); // vandaag
       const volgendeDatum = moment().add(1, "days"); // morgen
