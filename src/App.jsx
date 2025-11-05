@@ -34,7 +34,6 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
         <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
-
         <Route path="/auditoverzicht" element={<AuditOverzicht />} />
 
         {/* Voorpagina voor alle rollen, beschermd */}
