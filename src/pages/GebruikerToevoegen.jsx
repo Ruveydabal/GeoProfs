@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import { db } from "../firebase";
-import { collection, addDoc, doc } from "firebase/firestore";
+import { collection, addDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
@@ -22,7 +22,7 @@ function GebruikerToevoegen() {
     e.preventDefault(); // voorkomt dat de pagina herlaadt
 
     try {
-      // 🔹 Bepaal rol-documentreferentie
+      // Bepaal rol-documentreferentie
       let rolRef;
       switch (rol) {
         case "Office Manager":
@@ -36,8 +36,21 @@ function GebruikerToevoegen() {
           rolRef = doc(db, "rol", "3");
           break;
       }
+      
+      // Bepaal het hoogste bestaande nummer voor de document-ID
+      const userSnapshot = await getDocs(collection(db, "user"));
+      let maxNummer = 0;
+      userSnapshot.forEach((doc) => {
+        const id = doc.id;
+        const num = parseInt(id);
+        if (!isNaN(num) && num > maxNummer) maxNummer = num;
+      });
+      const nieuweGebruikersNummer = maxNummer + 1;
+
+
       // Gebruiker opslaan in de database tabel "user"
-      const userRef = await addDoc(collection(db, "user"), {
+      const userRef = doc(db, "user", nieuweGebruikersNummer.toString());
+      await setDoc(userRef, {
         voornaam,
         achternaam,
         email,
