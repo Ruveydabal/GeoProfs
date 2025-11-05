@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
 import Voorpagina from './pages/Voorpagina'
 import Ziekmelden from './pages/Ziekmelden';
+import GebruikerToevoegen from './pages/GebruikerToevoegen';
 import VerlofAanvraag from './pages/VerlofAanvraag';
 import Profiel from './pages/Profiel'
 
@@ -32,6 +33,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
+        <Route path="/gebruiker-registratie" element={<GebruikerToevoegen />} />
         <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
 
         {/* Voorpagina voor alle rollen, beschermd */}
