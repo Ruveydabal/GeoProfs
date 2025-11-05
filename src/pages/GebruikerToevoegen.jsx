@@ -4,8 +4,6 @@ import { db } from "../firebase";
 import { collection, addDoc, doc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
-import 'moment/locale/nl';
-moment.locale('nl');
 
 function GebruikerToevoegen() {
   const navigate = useNavigate();
@@ -48,7 +46,7 @@ function GebruikerToevoegen() {
         afdeling,
         inDienst: moment(inDienst).format("YYYY-MM-DD"),
         verlofSaldo: Number(verlofSaldo),
-        aangemaaktOp: new Date().toISOString(),
+        laatstGeupdate: new Date().toISOString(),
       });
 
       // Wachtwoord opslaan in collectie "userPassword"
@@ -60,16 +58,6 @@ function GebruikerToevoegen() {
       alert("Gebruiker succesvol aangemaakt!");
       navigate("/office-manager/voorpagina"); // automatisch terug na succesvol toevoegen, moet nog veranderd worden naar goede pagina, voor nu deze
 
-      // velden resetten na "gebruiker aanmaken"
-      setVoornaam("");
-      setAchternaam("");
-      setEmail("");
-      setBsnNummer("");
-      setWachtwoord("");
-      setRol("");
-      setAfdeling("");
-      setInDienst("");
-      setVerlofSaldo("");
     } catch (error) {
       console.error("Fout bij registratie:", error);
       alert("Fout bij aanmaken gebruiker: " + error.message);
