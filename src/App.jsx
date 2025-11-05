@@ -34,7 +34,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
         <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
-        <Route path="/auditoverzicht" element={<AuditOverzicht />} />
+        <Route path="/audit-overzicht" element={<AuditOverzicht />} />
 
         {/* Voorpagina voor alle rollen, beschermd */}
         <Route path="/office-manager/voorpagina" element={
