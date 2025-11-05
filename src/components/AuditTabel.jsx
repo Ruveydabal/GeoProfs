@@ -8,21 +8,31 @@ function AuditTabel() {
     const [ladenOfFaalText, SetLadenOfFaalText] = useState("Aan het laden...")
 
     useEffect(() => {
-        const FetchAudits = async () => {
-            var auditTrails = await getDocs(
-                //orderBy hier zorgt ervoor dat nieuwere logs boven staan, maar haalt dan logs waar datum mist niet op.
-                query(collection(db, "auditTrail"), orderBy('laatstGeupdate', 'desc'))
-            );
-            if (auditTrails.empty) {
-                SetLadenOfFaalText("Er is een fout opgetreden.")
-                throw new Error("Geen Audits Gevonden");
-            }
+    const FetchAudits = async () => {
+        try {
+        const auditTrailsSnap = await getDocs(
+            query(collection(db, "auditTrail"), orderBy('laatstGeupdate', 'desc'))
+        );
 
-            const auditTrailsdata = auditTrails.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-            SetAuditTrailData(auditTrailsdata);
+        if (auditTrailsSnap.empty) {
+            SetLadenOfFaalText("Er zijn geen audits gevonden.");
+            SetAuditTrailData([]);
+            return;
         }
-        FetchAudits()
+
+        const auditTrailsData = auditTrailsSnap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        SetAuditTrailData(auditTrailsData);
+        } catch (err) {
+        console.error("Fout bij het ophalen van audits:", err);
+        SetLadenOfFaalText("Er is iets misgegaan bij het ophalen van de audits.");
+        }
+    };
+
+    FetchAudits();
     }, []);
 
     if(!auditTrailData || auditTrailData.length == 0){
