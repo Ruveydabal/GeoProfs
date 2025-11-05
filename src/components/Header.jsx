@@ -41,7 +41,7 @@ function Header() {
           onClick={() => navigate(`/profiel/${userId}`)}>Profiel</button>
           {Admin ?
             <button className="h-[40px] w-full cursor-pointer border-2 border-solid border-[#D0D0D0] rounded-[15px] mb-[5px]"
-            onClick={() => navigate(`/Admin-paneel`)}>Admin paneel</button>
+            onClick={() => navigate(`/audit-overzicht`)}>Audit Overzicht</button>
             : <></>
           }
           <button className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-[#fff]">Uitloggen</button>
