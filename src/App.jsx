@@ -7,7 +7,6 @@ import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
 import Voorpagina from './pages/Voorpagina'
 import Ziekmelden from './pages/Ziekmelden';
-import GebruikerToevoegen from './pages/GebruikerToevoegen';
 import VerlofAanvraag from './pages/VerlofAanvraag';
 import Profiel from './pages/Profiel'
 import AuditOverzicht from './pages/AuditOverzicht'
@@ -34,7 +33,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
-        <Route path="/gebruiker-registratie" element={<GebruikerToevoegen />} />
         <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
         <Route path="/audit-overzicht" element={<AuditOverzicht />} />
 
@@ -44,18 +42,18 @@ function App() {
             <Voorpagina />
           </ProtectedRoute>
         }/>
-
         <Route path="/manager/voorpagina" element={
           <ProtectedRoute allowedRoles={["manager"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
-
         <Route path="/medewerker/voorpagina" element={
           <ProtectedRoute allowedRoles={["medewerker"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
+
+        <Route path="/profiel/:id" element={<Profiel />}/>
 
         {/* Onbekende route → terug naar login */}
         <Route path="*" element={<Navigate to="/" replace />} />

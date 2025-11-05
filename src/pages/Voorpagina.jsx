@@ -81,7 +81,7 @@ function Voorpagina() {
         {/* topbalk */}
         <div className='h-[120px] w-full flex'>
           <div className='flex h-[120px] w-[20%] justify-center items-center'>
-            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'>Verlof aanvragen</button>
+            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]' onClick={() => navigate('/verlofAanvraag')}>Verlof aanvragen</button>
           </div>
           <div className='flex h-full w-[80%] items-center'>
             {/* vorige/volgende week/maand selecteren */

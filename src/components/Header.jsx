@@ -27,7 +27,7 @@ function Header() {
             <div className='flex w-full h-[55%] text-xl items-end justify-end text-[#fff]'><p className=''>{gebruikersNaam}</p></div>
             <div className='flex w-full h-[45%] text-sm justify-end text-[#fff]'>{gebruikersRol}</div>
           </div>
-          <img src="null" alt="Profiel Foto" className='h-full aspect-square bg-[#fff] rounded-full'/>
+          <img src="" alt="Profiel Foto" className='h-full aspect-square bg-[#fff] rounded-full'/>
         </button>
       </div>
       <div className='w-[1%]'/>
@@ -53,3 +53,5 @@ function Header() {
 }
 
 export default Header
+
+
