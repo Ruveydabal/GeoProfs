@@ -2,91 +2,63 @@
   import Header from '../components/Header';
   import { db } from '../firebase';
   import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-  import { useNavigate } from "react-router-dom";
   import moment from 'moment';
+  import 'moment/locale/nl';
+  moment.locale('nl');
 
   function Ziekmelden({ userId }) {  
     const [vandaag, setVandaag] = useState(""); 
     const [volgendeDag, setVolgendeDag] = useState("");
     const [verlofType, setVerlofType] = useState("Ziek");
     const [loading, setLoading] = useState(false);
-    const [userIdState, setUserIdState] = useState(userId || null);
-    const navigate = useNavigate();
 
+    useEffect(()=> {
+       // voor UI
+        const vandaagDatum = moment();
+        const volgendeDatum = moment(vandaagDatum ).add(1, "days")
+        
+
+        setVandaag(moment(vandaagDatum).format('D-MM-YYYY'));
+        setVolgendeDag(moment(volgendeDatum).format('D-MM-YYYY'));
+    }, []);
+
+    // Haal verloftype op uit DB
     useEffect(() => {
-      //voor UI: vandaag en volgende dag
-      const vandaagDatum = moment();
-      const volgendeDatum = moment(vandaagDatum).add(1, "days");
-
-      setVandaag(moment(vandaagDatum).format('D-MM-YYYY'));
-      setVolgendeDag(moment(volgendeDatum).format('D-MM-YYYY'));
-
-      //haal verloftype uit DB
       const haalVerlofTypeOp = async () => {
-          try {
-              const docRef = doc(db, "verloftype", "1");
-              const docSnap = await getDoc(docRef);
-              if (docSnap.exists()) {
-                  setVerlofType(docSnap.data().naam);
-              } else {
-                  console.log("Verloftype niet gevonden");
-              }
-          } catch (error) {
-              console.error("Fout bij ophalen verloftype:", error);
-          }
+        const docRef = doc(db, "verloftype", "1");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setVerlofType(docSnap.data().naam); 
+        } else {
+          console.log("Verloftype niet gevonden");
+        }
       };
 
       haalVerlofTypeOp();
+    }, []);
 
-      //haal userId uit localStorage (alleen als niet gezet)
-      if (!userIdState) {
-          const opgeslagenUserId = localStorage.getItem("userId");
-          if (opgeslagenUserId) {
-              setUserIdState(opgeslagenUserId);
-          } else {
-              console.warn("Geen userId gevonden in localStorage. Gebruiker niet ingelogd.");
-          }
+    const behandelZiekmelding = async () => {
+      setLoading(true);
+      try {
+        const verlofId = `verlof${userId}_${Date.now()}`;
+        //voor db
+        await setDoc(doc(db, "verlof", verlofId), {
+          userId: userId,
+          typeVerlof_id: "1",
+          startDatum: vandaagDatum.toDate(),
+          eindDatum: volgendeDatum.toDate(),
+          omschrijvingRedenVerlof: "Ziekmelding gemaakt",
+          createdAt: serverTimestamp(),
+        });
+
+        alert("Ziekmelding is verstuurd");
+      } catch (error) {
+        console.error("Fout bij ziekmelding: ", error);
+        alert("Er ging iets mis bij het ziekmelden.");
+      } finally {
+        setLoading(false);
       }
-  }, []);
-
-  const behandelZiekmelding = async () => {
-    setLoading(true);
-    try {
-      if (!userIdState) {
-      alert("Geen gebruiker gevonden. Log opnieuw in.");
-      return;
-      }
-
-      const vandaagDatum = moment(); // vandaag
-      const volgendeDatum = moment().add(1, "days"); // morgen
-
-      const verlofId = `verlof_${userIdState}_${Date.now()}`;
-      await setDoc(doc(db, "verlof", verlofId), {
-        user_id: doc(db, "user", userIdState),
-        typeVerlof_id: doc(db, "typeVerlof", "1"),
-        startDatum: vandaagDatum.toDate(),
-        eindDatum: volgendeDatum.toDate(),
-        omschrijvingRedenVerlof: "Ziekmelding gemaakt",
-        createdAt: serverTimestamp(),
-      });
-
-      alert("Ziekmelding is verstuurd!");
-
-       const rol = localStorage.getItem("rol");
-      if (rol) {
-        navigate(`/${rol}/voorpagina`);
-        } else {
-        navigate("/"); //geen rol gevonden
-        }
-
-    } catch (error) {
-      console.error("Fout bij ziekmelding: ", error);
-      alert("Er ging iets mis bij het ziekmelden.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    };
 
     return (
       <>
