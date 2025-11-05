@@ -27,7 +27,7 @@ function Header() {
             <div className='flex w-full h-[55%] text-xl items-end justify-end text-[#fff]'><p className=''>{gebruikersNaam}</p></div>
             <div className='flex w-full h-[45%] text-sm justify-end text-[#fff]'>{gebruikersRol}</div>
           </div>
-          <img src="null" alt="Profiel Foto" className='h-full aspect-square bg-[#fff] rounded-full'/>
+          <img src="" alt="Profiel Foto" className='h-full aspect-square bg-[#fff] rounded-full'/>
         </button>
       </div>
       <div className='w-[1%]'/>
@@ -41,7 +41,7 @@ function Header() {
           onClick={() => navigate(`/profiel/${userId}`)}>Profiel</button>
           {Admin ?
             <button className="h-[40px] w-full cursor-pointer border-2 border-solid border-[#D0D0D0] rounded-[15px] mb-[5px]"
-            onClick={() => navigate(`/Admin-paneel`)}>Admin paneel</button>
+            onClick={() => navigate(`/audit-overzicht`)}>Audit Overzicht</button>
             : <></>
           }
           <button className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-[#fff]">Uitloggen</button>
@@ -53,3 +53,5 @@ function Header() {
 }
 
 export default Header
+
+

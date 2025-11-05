@@ -10,6 +10,7 @@ import Ziekmelden from './pages/Ziekmelden';
 import GebruikerToevoegen from './pages/GebruikerToevoegen';
 import VerlofAanvraag from './pages/VerlofAanvraag';
 import Profiel from './pages/Profiel'
+import AuditOverzicht from './pages/AuditOverzicht'
 
 function App() {
   // Extra beveiliging: als iemand handmatig /medewerker intypt zonder login
@@ -33,6 +34,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
+        <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
+        <Route path="/audit-overzicht" element={<AuditOverzicht />} />
         <Route path="/gebruiker-registratie" element={<GebruikerToevoegen />} />
         <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
 
