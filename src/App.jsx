@@ -29,10 +29,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* deze straks uit comments halen */}
-        {/* <Route path="/" element={<Login />} /> */}
-        <Route path="/" element={<GebruikerToevoegen />} />
+        <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
+        <Route path="/gebruiker-registratie" element={<GebruikerToevoegen />} />
 
         {/* Voorpagina voor alle rollen, beschermd */}
         <Route path="/office-manager/voorpagina" element={
