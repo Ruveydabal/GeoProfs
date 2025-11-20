@@ -11,7 +11,7 @@ import GebruikerToevoegen from './pages/GebruikerToevoegen';
 import VerlofAanvraag from './pages/VerlofAanvraag';
 import Profiel from './pages/Profiel'
 import AuditOverzicht from './pages/AuditOverzicht'
-import VerlofoverzichtMedewerker from './pages/VerlofoverzichtMedewerker';
+import Verlofoverzicht from './pages/Verlofoverzicht';
 
 function App() {
   // Extra beveiliging: als iemand handmatig /medewerker intypt zonder login
@@ -39,7 +39,7 @@ function App() {
         <Route path="/audit-overzicht" element={<AuditOverzicht />} />
         <Route path="/gebruiker-registratie" element={<GebruikerToevoegen />} />
         <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
-        <Route path="/verlofoverzicht" element={<VerlofoverzichtMedewerker/>} />
+        <Route path="/verlofoverzicht" element={<Verlofoverzicht/>} />
 
         {/* Voorpagina voor alle rollen, beschermd */}
         <Route path="/office-manager/voorpagina" element={
