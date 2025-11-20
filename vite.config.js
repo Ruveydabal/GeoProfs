@@ -4,6 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  test: { environment: "jsdom", setupFiles: ["./src/setupTests.js"] },
-});
+  plugins: [react(), tailwindcss(),],
+  test: {
+    environment: 'jsdom', // zorgt dat document/window/localStorage bestaan
+    setupFiles: ['./src/setupTests.js'], // laad de jest-dom matchers
+  },
+})
