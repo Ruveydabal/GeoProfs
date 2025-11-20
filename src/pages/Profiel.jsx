@@ -1,54 +1,72 @@
 import {useNavigate, useParams} from "react-router-dom";
 import { useEffect, useState } from 'react';
 import moment from 'moment';
+import { doc, getDoc } from "firebase/firestore";
+
 
 import Header from '../components/Header.jsx'
 import ProfielLijstItem from '../components/ProfielLijstItem.jsx'
 import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx'
 
 function Profiel() {
-    let { id } = useParams();
-    let navigate = useNavigate();
-    const [aanHetWijzigen, SetAanHetWijzigen] = useState(false)
-    const [voornaam, SetVoornaam] = useState("")
-    const [achternaam, SetAchternaam] = useState("")
-    const [email, SetEmail] = useState("")
-    const [BSNNummer, SetBSNNummer] = useState(0)
+    const userId = localStorage.getItem("userId");
 
-    const [rol, SetRol] = useState("");
-    const [afdeling, SetAfdeling] = useState("");
-    const [datumInDienst, SetDatumInDienst] = useState(null);
+    // let { id } = useParams();
+    // let navigate = useNavigate();
+    const [aanHetWijzigen, setAanHetWijzigen] = useState(false)
+    const [voornaam, setVoornaam] = useState("")
+    const [achternaam, setAchternaam] = useState("")
+    const [email, setEmail] = useState("")
+    const [BSNNummer, setBSNNummer] = useState(0)
 
-    const [wachtwoordPopup, SetWachtwoordPopup] = useState(false)
+    const [rol, setRol] = useState("");
+    const [afdeling, setAfdeling] = useState("");
+    const [datumInDienst, setDatumInDienst] = useState(null);
 
-    //temp variable
-    var gebruikersRol = "manager";
-    const jouwId = 1;
+    const [wachtwoordPopup, setWachtwoordPopup] = useState(false)
 
     useEffect(() => {
-        const fetch = async () => {
-            //temp data
-            SetVoornaam("John");
-            SetAchternaam("Doe");
-            SetEmail("johndoe@geoprofs.com");
-            SetBSNNummer(123456789);
-            SetRol("Medewerker");
-            SetAfdeling("Geo-ICT");
-            SetDatumInDienst(moment("2015/10/10"));
+        const fetchGebruiker = async () => {
+            try {
+                const userId = localStorage.getItem("userId");
+                if (!userId) return;
+
+                // Firestore ophalen
+                const gebruikerRef = doc(db, "user", userId);
+                const gebruikerSnap = await getDoc(gebruikerRef);
+
+                if (!gebruikerSnap.exists()) {
+                    console.error("Gebruiker niet gevonden.");
+                    return;
+                }
+
+                const data = gebruikerSnap.data();
+
+                // State vullen
+                setVoornaam(data.voornaam);
+                setAchternaam(data.achternaam);
+                setEmail(data.email);
+                setBSNNummer(data.bsn);
+                setRol(data.rol); // afhankelijk van je veldnaam
+                setAfdeling(data.afdeling);
+                setDatumInDienst(moment(data.indienst));
+            } catch (err) {
+                console.error("Fout bij ophalen gebruiker:", err);
+            }
         };
 
-        fetch();
+        fetchGebruiker();
     }, []);
+
 
     const updateData = () => {
         if(aanHetWijzigen){
             //hier naar DB pushen
-            SetAanHetWijzigen(!aanHetWijzigen)
+            setAanHetWijzigen(!aanHetWijzigen)
         }
         else{
-            SetAanHetWijzigen(!aanHetWijzigen)
+            setAanHetWijzigen(!aanHetWijzigen)
         }
-
     }
 
     //naar voorpagina als je niet manager bent of je eigen profiel bekijkt.
@@ -77,10 +95,10 @@ function Profiel() {
                 <div className='flex h-full flex-1 ml-[50px] overflow-y-auto'>
                     <div className='h-full w-auto'>
                         <p className='text-[20px]'>Persoonlijke informatie</p>
-                        <ProfielLijstItem waardeNaam={"Voornaam"} SetWaarde={SetVoornaam} waarde={voornaam} aanHetWijzigen={aanHetWijzigen}/>
-                        <ProfielLijstItem waardeNaam={"Achternaam"} SetWaarde={SetAchternaam} waarde={achternaam} aanHetWijzigen={aanHetWijzigen}/>
-                        <ProfielLijstItem waardeNaam={"Email"} SetWaarde={SetEmail} waarde={email} aanHetWijzigen={aanHetWijzigen}/>
-                        <ProfielLijstItem waardeNaam={"BSN Nummer"} SetWaarde={SetBSNNummer} waarde={BSNNummer} aanHetWijzigen={aanHetWijzigen}/>
+                        <ProfielLijstItem waardeNaam={"Voornaam"} SetWaarde={setVoornaam} waarde={voornaam} aanHetWijzigen={aanHetWijzigen}/>
+                        <ProfielLijstItem waardeNaam={"Achternaam"} SetWaarde={setAchternaam} waarde={achternaam} aanHetWijzigen={aanHetWijzigen}/>
+                        <ProfielLijstItem waardeNaam={"Email"} SetWaarde={setEmail} waarde={email} aanHetWijzigen={aanHetWijzigen}/>
+                        <ProfielLijstItem waardeNaam={"BSN Nummer"} SetWaarde={setBSNNummer} waarde={BSNNummer} aanHetWijzigen={aanHetWijzigen}/>
                         <div className='w-full h-0 mb-[20px] border-b-1 border-solid border-[#D0D0D0]'/>
 
                         <p className='text-[20px]'>Werk informatie</p>
@@ -132,7 +150,7 @@ function Profiel() {
                                         className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
                                         type="date"
                                         value={moment(datumInDienst).format("yyyy-MM-DD")}
-                                        onChange={(e) => SetDatumInDienst(moment(e.target.value).format("yyyy-MM-DD"))}
+                                        onChange={(e) => setDatumInDienst(moment(e.target.value).format("yyyy-MM-DD"))}
                                     />
                                 </div>
                                 :
@@ -149,7 +167,7 @@ function Profiel() {
 
                         <div className="flex flex-col mb-[30px]">
                         {id == jouwId && !aanHetWijzigen ? 
-                            <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => SetWachtwoordPopup(true)}>Wachtwoord wijzigen</button> : <></>
+                            <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => setWachtwoordPopup(true)}>Wachtwoord wijzigen</button> : <></>
                         }
                         {gebruikersRol == "manager" ? 
                             <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => updateData()}>{aanHetWijzigen ? "Opslaan" : "Gegevens wijzigen"}</button> : <></>
@@ -159,7 +177,7 @@ function Profiel() {
                 </div>
             </div>
         </div>
-        {wachtwoordPopup ? <WachtwoordVeranderenPopup SetWachtwoordPopup={SetWachtwoordPopup}/> : <></>}
+        {wachtwoordPopup ? <WachtwoordVeranderenPopup SetWachtwoordPopup={setWachtwoordPopup}/> : <></>}
     </>
   );
 }

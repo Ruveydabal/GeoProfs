@@ -56,7 +56,7 @@ function App() {
           </ProtectedRoute>
         }/>
 
-        <Route path="/profiel/:id" element={<Profiel />}/>
+        <Route path="/profiel/:userId" element={<Profiel />}/>
 
         {/* Onbekende route → terug naar login */}
         <Route path="*" element={<Navigate to="/" replace />} />
