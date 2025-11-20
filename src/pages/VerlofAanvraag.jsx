@@ -73,8 +73,10 @@ function VerlofAanvraag() {
       await setDoc(doc(db, "verlof", verlofId), {
         user_id: doc(db, "user", userId),
         typeVerlof_id: doc(db, "typeVerlof", verlofType),
+       // opmerkingAfkeuring: doc(db, "opmerkingAfkeuring", ""),??
         startDatum: moment(verlofAanvraagDag, 'YYYY-MM-DD').toDate(),
         eindDatum: moment(verlofAanvraagTotDag, 'YYYY-MM-DD').toDate(),
+        statusVerlof_id: doc(db, "statusVerlof", "3"),
         omschrijvingRedenVerlof: reden || "Geen reden opgegeven",
         createdAt: serverTimestamp(),
       });

@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
+import { collection, query, where, getDocs, doc } from "firebase/firestore";
+import { db } from '../firebase'; 
 import moment from 'moment';
 import Header from '../components/Header'
 import MaandKalender from '../components/MaandKalender'
@@ -13,6 +15,7 @@ function Voorpagina() {
   const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
   const [maand, SetMaand] = useState(new Date().getMonth()) //pakt de huidige maand in integer (0-11)
   const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate()) //pakt de eerste dag van de huidige week (maandag)
+  const [goedgekeurdeAanvragen, setGoedgekeurdeAanvragen] = useState([]);
 
   //tijdelijke variabelen
   var verlofSaldo = 50;
@@ -74,6 +77,40 @@ function Voorpagina() {
     }
   }
 
+  useEffect(() => {
+    const haalGoedgekeurdeAanvragenOp = async () => {
+      try {
+        const aanvragenRef = collection(db, "verlof");
+
+        // maakt reference naar goedgekeurd-status 
+        const goedgekeurdRef = doc(db, "statusVerlof", "1");
+
+        const haalVerlofOp = query(
+          aanvragenRef,
+          where("statusVerlof_id", "==", goedgekeurdRef)
+        );
+
+        const snapshot = await getDocs(haalVerlofOp);
+
+        const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        start: doc.data().startDatum ? doc.data().startDatum.toDate() : null,
+        eind: doc.data().eindDatum ? doc.data().eindDatum.toDate() : null
+      }));
+
+        console.log("Goedgekeurde aanvragen:", data);
+
+        setGoedgekeurdeAanvragen(data);
+      } catch (error) {
+        console.error("Error ophalen goedgekeurde aanvragen:", error);
+      }
+    };
+
+    haalGoedgekeurdeAanvragenOp();
+  }, []);
+
+
   return (
     <>
       <Header/>
@@ -92,10 +129,10 @@ function Voorpagina() {
             }
             {/* maand of week kalender selecteren */}
             <div className='h-[40px] w-[150px] ml-[40px] divide-solid'>
-              <button className={`${MaandofWeekKalender ? 'bg-[#ffffff]' : 'bg-[#C9EDFF]'} w-[50%] h-full rounded-l-[15px] border-1 border-solid ${MaandofWeekKalender ? 'border-[#D0D0D0]' : 'border-[#2AAFF2]'}`}
+              <button className={`${MaandofWeekKalender ? 'bg-[#ffffff]' : 'bg-[#C9EDFF]'} w-[50%] h-full rounded-l-[15px] border border-solid ${MaandofWeekKalender ? 'border-[#D0D0D0]' : 'border-[#2AAFF2]'}`}
               onClick={() => SetMaandofWeekKalender(false)}
               >Maand</button>
-              <button className={`${MaandofWeekKalender ? 'bg-[#C9EDFF]' : 'bg-[#ffffff]'} w-[50%] h-full rounded-r-[15px] border-1 border-solid ${MaandofWeekKalender ? 'border-[#2AAFF2]' : 'border-[#D0D0D0]'}`}
+              <button className={`${MaandofWeekKalender ? 'bg-[#C9EDFF]' : 'bg-[#ffffff]'} w-[50%] h-full rounded-r-[15px] border border-solid ${MaandofWeekKalender ? 'border-[#2AAFF2]' : 'border-[#D0D0D0]'}`}
               onClick={() => SetMaandofWeekKalender(true)}
               >Week</button>
             </div>
@@ -117,7 +154,7 @@ function Voorpagina() {
             <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]' onClick={() => navigate('/ziekmelden')}>Ziek melden</button>
             {/* saldo vakje */
               typeof verlofSaldo !== 'undefined' ?
-              <div className='flex flex-col h-auto max-w-[90%] w-[250px] bg-[#fff] rounded-[15px] mt-[40px] py-[5px] border-1 border-solid border-[#D0D0D0]'>
+              <div className='flex flex-col h-auto max-w-[90%] w-[250px] bg-[#fff] rounded-[15px] mt-[40px] py-[5px] border border-solid border-[#D0D0D0]'>
                 <div className='flex w-full flex-1 text-[20px] justify-center text-center'>U heeft</div>
                 <div className='flex w-full flex-1 text-[25px] justify-center text-center'>{verlofSaldo}</div>
                 <div className='flex w-full flex-1 text-[20px] justify-center text-center'>dagen verlof over</div>
@@ -129,9 +166,9 @@ function Voorpagina() {
           {/* render de kalender */}
           <div className='h-[calc(100%-20px)] w-[calc(80%-50px)] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
-              <WeekKalender week={week} weekDagen={weekDagen} rol={rol}/>
+              <WeekKalender week={week} weekDagen={weekDagen} rol={rol} aanvragen={goedgekeurdeAanvragen} />
               :
-              <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar} rol={rol}/>}
+              <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar} rol={rol} aanvragen={goedgekeurdeAanvragen} />}
           </div>
         </div>
       </div>

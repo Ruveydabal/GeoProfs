@@ -66,6 +66,7 @@
         typeVerlof_id: doc(db, "typeVerlof", "1"),
         startDatum: vandaagDatum.toDate(),
         eindDatum: volgendeDatum.toDate(),
+        statusVerlof_id: doc(db, "statusVerlof", "3"),
         omschrijvingRedenVerlof: "Ziekmelding gemaakt",
         createdAt: serverTimestamp(),
       });
