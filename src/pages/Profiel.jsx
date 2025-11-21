@@ -1,18 +1,22 @@
 import {useNavigate, useParams} from "react-router-dom";
 import { useEffect, useState } from 'react';
 import moment from 'moment';
+import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-
+//kijk goed naar de database velden, van de nieuwe users kan het nog wel eens verschillen
+//Dus dat is het eerste waar je naartoe gaat kijken dinsdag
 
 import Header from '../components/Header.jsx'
 import ProfielLijstItem from '../components/ProfielLijstItem.jsx'
 import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx'
 
 function Profiel() {
-    const userId = localStorage.getItem("userId");
+    const { userId: id } = useParams();
+    const navigate = useNavigate();
 
-    // let { id } = useParams();
-    // let navigate = useNavigate();
+    const jouwId = localStorage.getItem("userId");
+    const gebruikersRol = localStorage.getItem("rol");
+
     const [aanHetWijzigen, setAanHetWijzigen] = useState(false)
     const [voornaam, setVoornaam] = useState("")
     const [achternaam, setAchternaam] = useState("")
@@ -21,7 +25,7 @@ function Profiel() {
 
     const [rol, setRol] = useState("");
     const [afdeling, setAfdeling] = useState("");
-    const [datumInDienst, setDatumInDienst] = useState(null);
+    const [inDienst, setInDienst] = useState(null);
 
     const [wachtwoordPopup, setWachtwoordPopup] = useState(false)
 
@@ -29,27 +33,44 @@ function Profiel() {
         const fetchGebruiker = async () => {
             try {
                 const userId = localStorage.getItem("userId");
-                if (!userId) return;
+                if (!userId) {
+                    console.error("Geen userId in localStorage gevonden.");
+                    return;
+                }
 
-                // Firestore ophalen
-                const gebruikerRef = doc(db, "user", userId);
+                // Ophalen Firestore document
+                const gebruikerRef = doc(db, "user", userId); 
                 const gebruikerSnap = await getDoc(gebruikerRef);
 
                 if (!gebruikerSnap.exists()) {
-                    console.error("Gebruiker niet gevonden.");
+                    console.error("Gebruiker niet gevonden in Firestore.");
                     return;
                 }
 
                 const data = gebruikerSnap.data();
 
-                // State vullen
-                setVoornaam(data.voornaam);
-                setAchternaam(data.achternaam);
-                setEmail(data.email);
-                setBSNNummer(data.bsn);
-                setRol(data.rol); // afhankelijk van je veldnaam
-                setAfdeling(data.afdeling);
-                setDatumInDienst(moment(data.indienst));
+                setVoornaam(data.voornaam || "");
+                setAchternaam(data.achternaam || "");
+                setEmail(data.email || "");
+                setBSNNummer(data.bsn || "");
+
+                if (data.rol_id) {
+                    const rolSnap = await getDoc(data.rol_id);
+                    if (rolSnap.exists()) {
+                        setRol(rolSnap.data().rolNaam || "Onbekende rol");
+                    }
+                } else {
+                    setRol("Onbekende rol");
+                }
+
+                setAfdeling(data.afdeling || "");
+                
+                if (data.inDienst) {
+                    setInDienst(moment(data.inDienst.toDate()));
+                } else {
+                    setInDienst(null);
+                }
+
             } catch (err) {
                 console.error("Fout bij ophalen gebruiker:", err);
             }
@@ -69,17 +90,17 @@ function Profiel() {
         }
     }
 
-    //naar voorpagina als je niet manager bent of je eigen profiel bekijkt.
-    useEffect(() => {
-        if(id != jouwId && gebruikersRol != "manager"){
-            navigate("/voorpagina");
-            return
-        }
-    }, []);
-    if(id != jouwId && gebruikersRol != "manager"){
-        navigate("/voorpagina");
-        return
-    }
+    // //naar voorpagina als je niet manager bent of je eigen profiel bekijkt.
+    // useEffect(() => {
+    //     if(id != jouwId && gebruikersRol != "manager"){
+    //         navigate("/voorpagina");
+    //         return
+    //     }
+    // }, []);
+    // if(id != jouwId && gebruikersRol != "manager"){
+    //     navigate("/voorpagina");
+    //     return
+    // }
 
   return (
     <>
@@ -112,7 +133,6 @@ function Profiel() {
                                     <option value="medewerker">Medewerker</option>
                                     <option value="manager">Manager</option>
                                     <option value="officeManager">Office manager</option>
-                                    <option value="ceo">CEO</option>
                                 </select>
                                 </div>
                                 :
@@ -147,21 +167,16 @@ function Profiel() {
                                 {aanHetWijzigen ? 
                                 <div className='w-[200px] h-[40px] items-center flex'>
                                     <input
-                                        className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
                                         type="date"
-                                        value={moment(datumInDienst).format("yyyy-MM-DD")}
-                                        onChange={(e) => setDatumInDienst(moment(e.target.value).format("yyyy-MM-DD"))}
-                                    />
+                                        value={inDienst ? inDienst.format("YYYY-MM-DD") : ""}
+                                        onChange={(e) => setInDienst(moment(e.target.value))} />
                                 </div>
                                 :
                                 <div className='w-auto h-[40px] items-center flex'>
-                                    <p>{moment(datumInDienst).format("DD-MM-YYYY")}</p>
+                                    <p>{inDienst ? inDienst.format("DD-MM-YYYY") : "Laden..."}</p>
                                 </div>
                             }
                             </div>
-
-
-
 
                         <div className='w-full h-0 mb-[20px] border-b-1 border-solid border-[#D0D0D0]'/>
 
