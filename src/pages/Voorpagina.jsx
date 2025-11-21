@@ -82,25 +82,30 @@ function Voorpagina() {
       try {
         const aanvragenRef = collection(db, "verlof");
 
-        // maakt reference naar goedgekeurd-status 
-        const goedgekeurdRef = doc(db, "statusVerlof", "1");
+        const statusRef = doc(db, "statusVerlof", "1"); // goedgekeurd
+        const typeRefPersoonlijk = doc(db, "typeVerlof", "2");
+        const typeRefVakantie = doc(db, "typeVerlof", "3");
 
-        const haalVerlofOp = query(
+        const q = query(
           aanvragenRef,
-          where("statusVerlof_id", "==", goedgekeurdRef)
+          where("statusVerlof_id", "==", statusRef),
+          where("typeVerlof_id", "in", [typeRefPersoonlijk, typeRefVakantie])
         );
 
-        const snapshot = await getDocs(haalVerlofOp);
+        const snapshot = await getDocs(q);
 
-        const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        start: doc.data().startDatum ? doc.data().startDatum.toDate() : null,
-        eind: doc.data().eindDatum ? doc.data().eindDatum.toDate() : null
-      }));
+        const data = snapshot.docs.map(d => {
+          const raw = d.data();
+          return {
+            id: d.id,
+            omschrijving: raw.omschrijving ?? "",
+            startDatum: raw.startDatum ? raw.startDatum.toDate() : null,
+            eindDatum: raw.eindDatum ? raw.eindDatum.toDate() : null,
+            type: raw.typeVerlof_id
+          };
+        });
 
         console.log("Goedgekeurde aanvragen:", data);
-
         setGoedgekeurdeAanvragen(data);
       } catch (error) {
         console.error("Error ophalen goedgekeurde aanvragen:", error);
@@ -109,6 +114,7 @@ function Voorpagina() {
 
     haalGoedgekeurdeAanvragenOp();
   }, []);
+
 
 
   return (
@@ -169,6 +175,10 @@ function Voorpagina() {
               <WeekKalender week={week} weekDagen={weekDagen} rol={rol} aanvragen={goedgekeurdeAanvragen} />
               :
               <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar} rol={rol} aanvragen={goedgekeurdeAanvragen} />}
+              <div>
+                <pre>{JSON.stringify(goedgekeurdeAanvragen, null, 2)}</pre>
+              </div>
+              
           </div>
         </div>
       </div>

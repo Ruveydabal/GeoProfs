@@ -3,7 +3,9 @@ import moment from 'moment';
 function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend}) {
     //tijdelijke variabelen
     // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    var mensenAfwezig = [];
+    var mensenAfwezig = aanvragen
+        ? aanvragen.filter(a => moment(a.startDatum).isSame(dag, 'day'))
+    : [];
 
     //fetch hier verlof data van deze datum
 
