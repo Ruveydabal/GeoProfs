@@ -76,12 +76,7 @@ function Header() {
                 <p>{gebruiker?.rol || "Onbekende rol"}</p>
               </div>
             </div>
-
-            <img 
-              src={gebruiker?.profielfoto || "https://via.placeholder.com/40"}
-              alt="Profiel Foto"
-              className="h-full aspect-square bg-white rounded-full"
-            />
+            <img src="" alt="Profiel Foto" className='h-full aspect-square bg-[#fff] rounded-full'/>
           </button>
         </div>
 
