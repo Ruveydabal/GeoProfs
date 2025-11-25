@@ -1,13 +1,10 @@
-function UserName({ userId, fetchUser }) {
-    const [userName, setUserName] = useState('');
+import { db } from '../firebase'; 
+import { doc, getDoc } from 'firebase/firestore';
+import React, { useState, useEffect, useMemo } from 'react';
 
-    useEffect(() => {
-        let mounted = true;
-        fetchUser(userId).then(user => {
-            if (mounted && user) setUserName(user.voornaam);
-        });
-        return () => mounted = false;
-    }, [userId, fetchUser]);
-
-    return <>{userName || 'Onbekend'}</>;
+function UsernameOphalen({ user }) {
+    if (!user) return <>Onbekend</>;
+    return <>{user.voornaam}</>;
 }
+
+export default UsernameOphalen;

@@ -1,30 +1,45 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
+import { db } from '../firebase'; 
+import UsernameOphalen from './UsernameOphalen'
 
 function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend, aanvragen}) {
-    //tijdelijke variabelen
-    // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    const mensenAfwezig = aanvragen
-        ? aanvragen.filter(a => {
+    const [usersData, setUsersData] = useState({});
+    
+    const mensenAfwezig = useMemo(() => {
+        if (!aanvragen) return [];
+        return aanvragen.filter(a => {
             if (!a.startDatum || !a.eindDatum) return false;
-            // moment(dag) is tussen start en eind, inclusief beide dagen
             return moment(dag).isBetween(moment(a.startDatum), moment(a.eindDatum), 'day', '[]');
-            })
-        : [];
+        });
+    }, [aanvragen, dag]);
 
-    // functie om gebruikers op te halen
-    const fetchUser = async (userId) => {
-        if (usersCache[userId]) return usersCache[userId]; // al in cache
-        const userRef = doc(db, 'users', userId);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-            const userData = userSnap.data();
-            setUsersCache(prev => ({ ...prev, [userId]: userData }));
-            return userData;
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const newUsersData = { ...usersData };
+
+            await Promise.all(mensenAfwezig.map(async (aanvraag) => {
+                const userPath = aanvraag.user_id;
+                if (!userPath || newUsersData[userPath]) return;
+
+                const userRef = doc(db, userPath);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    newUsersData[userPath] = userSnap.data();
+                }
+            }));
+
+            setUsersData(newUsersData);
+        };
+
+        if (mensenAfwezig.length > 0) {
+            fetchUsers();
         }
-        return null;
-    };
+    }, [mensenAfwezig]);
 
-    //fetch hier verlof data van deze datum
+
+
 
   return (
     <div key={index} className={`overflow-auto flex h-full w-[calc(100%/7)] border-x-1 border-b-1 border-solid border-[#D0D0D0] ${DagNietInMaand(index, dag) ? 'bg-[#E5E5E5]' : 'bg-[#fff]'} ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''} `}>
@@ -37,9 +52,9 @@ function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend, aanvra
                 <div className='w-full flex-1 overflow-auto'>
                    {!DagNietInMaand(index, dag) && mensenAfwezig.length > 0 &&
                             mensenAfwezig.map((aanvraag, idx) => (
-                            <div key={aanvraag.id ?? idx} className={`capitalize flex items-center justify-center w-full h-[25px] border-t-1 border-solid border-[#D0D0D0] ${idx % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>
-                                    <UserName userId={aanvraag.user_id} fetchUser={fetchUser} />
-                                </div>
+                             <div key={aanvraag.id ?? idx}>
+                                <UsernameOphalen  verlofDocId={aanvraag.id} />
+                            </div>
                         ))
                     }
                 </div> : <></>
