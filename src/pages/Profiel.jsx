@@ -78,14 +78,10 @@ function Profiel() {
     }, []);
 
 
-    const updateData = async () => {
+    const updateData = () => {
         if(aanHetWijzigen){
             //hier naar DB pushen
             setAanHetWijzigen(!aanHetWijzigen)
-
-            if (refreshUser) {
-                await refreshUser();
-            }
         }
         else{
             setAanHetWijzigen(!aanHetWijzigen)
