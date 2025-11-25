@@ -13,52 +13,50 @@ import Profiel from './pages/Profiel'
 import AuditOverzicht from './pages/AuditOverzicht'
 
 function App() {
-  // Extra beveiliging: als iemand handmatig /medewerker intypt zonder login
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const rol = localStorage.getItem("rol");
 
-  // Als niet ingelogd en niet op loginpagina → terug naar login
   if (!isLoggedIn && window.location.pathname !== "/") {
     window.location.href = "/";
   }
 
-  // Als er geen rol bekend is, verwijder foutieve status
   if (isLoggedIn && !rol) {
     localStorage.removeItem("isLoggedIn");
     window.location.href = "/";
   }
 
-  moment.locale('nl'); //zet de taal van momentJS op nederlands
+  moment.locale('nl');
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/ziekmelden" element={<Ziekmelden />} />
-        <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
+        <Route path="/verlofaanvraag" element={<VerlofAanvraag />} />
         <Route path="/audit-overzicht" element={<AuditOverzicht />} />
         <Route path="/gebruiker-registratie" element={<GebruikerToevoegen />} />
-        <Route path="/VerlofAanvraag" element={<VerlofAanvraag />} />
 
-        {/* Voorpagina voor alle rollen, beschermd */}
-        <Route path="/office-manager/voorpagina" element={
-          <ProtectedRoute allowedRoles={["office-manager"]}>
+        {/* Voorpagina's beschermd per rol */}
+        <Route path="/officemanager/voorpagina" element={
+          <ProtectedRoute allowedRoles={["officemanager"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
+
         <Route path="/manager/voorpagina" element={
           <ProtectedRoute allowedRoles={["manager"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
+
         <Route path="/medewerker/voorpagina" element={
           <ProtectedRoute allowedRoles={["medewerker"]}>
             <Voorpagina />
           </ProtectedRoute>
         }/>
 
-        <Route path="/profiel/:userId" element={<Profiel />}/>
+        <Route path="/profiel/:userId" element={<Profiel />} />
 
-        {/* Onbekende route → terug naar login */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

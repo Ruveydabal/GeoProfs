@@ -55,7 +55,7 @@ function Header() {
       <header className="h-[10%] w-full bg-[#E8641C] flex items-center">
         <div className="w-[1%]" />
         <div className="w-[50%] h-[80%]">
-          <a href={`/${gebruiker?.rol?.toLowerCase()}/voorpagina`} className="inline-block w-[40%] h-[90%]">
+          <a href={`/${gebruiker?.rol?.toLowerCase().replaceAll(" ", "")}/voorpagina`} className="inline-block w-[40%] h-[90%]">
             <img src={GeoprofsLogoWit} alt="Geoprofs Logo" className="h-full w-auto" />
           </a>
         </div>
