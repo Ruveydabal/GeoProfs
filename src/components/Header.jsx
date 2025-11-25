@@ -56,7 +56,7 @@ function Header() {
       <header className="h-[10%] w-full bg-[#E8641C] flex items-center">
         <div className="w-[1%]" />
         <div className="w-[50%] h-[80%]">
-          <a href="/voorpagina">
+          <a href={`/${gebruiker?.rol?.toLowerCase()}/voorpagina`} className="inline-block w-[40%] h-[90%]">
             <img src={GeoprofsLogoWit} alt="Geoprofs Logo" className="h-full w-auto" />
           </a>
         </div>
@@ -94,19 +94,17 @@ function Header() {
               Profiel
             </button>
 
-            {gebruiker?.rol === "office manager" && (
+            {gebruiker?.rol === "Office Manager" && (
               <button 
                 className="h-[40px] w-full cursor-pointer border-2 border-[#D0D0D0] rounded-[15px] mb-[5px]"
-                onClick={() => navigate(`/audit-overzicht`)}
-              >
+                onClick={() => navigate(`/audit-overzicht`)} >
                 Audit Overzicht
               </button>
             )}
 
             <button 
               className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-white"
-              onClick={handleUitloggen}
-            >
+              onClick={handleUitloggen} >
               Uitloggen
             </button>
           </div>

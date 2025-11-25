@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-//kijk goed naar de database velden, van de nieuwe users kan het nog wel eens verschillen
-//Dus dat is het eerste waar je naartoe gaat kijken dinsdag
 
 import Header from '../components/Header.jsx'
 import ProfielLijstItem from '../components/ProfielLijstItem.jsx'
@@ -90,24 +88,12 @@ function Profiel() {
         }
     }
 
-    // //naar voorpagina als je niet manager bent of je eigen profiel bekijkt.
-    // useEffect(() => {
-    //     if(id != jouwId && gebruikersRol != "manager"){
-    //         navigate("/voorpagina");
-    //         return
-    //     }
-    // }, []);
-    // if(id != jouwId && gebruikersRol != "manager"){
-    //     navigate("/voorpagina");
-    //     return
-    // }
-
   return (
     <>
         <Header/>
         <div className='h-[90%] w-full'>
             <div className='h-[120px] w-full flex items-center'>
-                <button className='h-[40px] max-w-[90%] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] ml-[50px] cursor-pointer' onClick={() => {navigate("/voorpagina")}}>Home</button>
+                <button className='h-[40px] max-w-[90%] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] ml-[50px] cursor-pointer' onClick={() => navigate(`/${rol?.toLowerCase()}/voorpagina`)}>Home</button>
             </div>
             <div className='flex h-[calc(100%-120px)] flex-1 ml-[50px]'>
                 <div className='h-full w-[300px]'>
@@ -184,7 +170,7 @@ function Profiel() {
                         {id == jouwId && !aanHetWijzigen ? 
                             <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => setWachtwoordPopup(true)}>Wachtwoord wijzigen</button> : <></>
                         }
-                        {gebruikersRol == "manager" ? 
+                        {gebruikersRol == "Manager" ? 
                             <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer' onClick={() => updateData()}>{aanHetWijzigen ? "Opslaan" : "Gegevens wijzigen"}</button> : <></>
                         }
                         </div>
