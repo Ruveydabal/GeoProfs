@@ -2,18 +2,11 @@ import moment from 'moment';
 import Checkbox from './basis-components/CheckBox';
 import { useState } from 'react';
 
-function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData}) {
+function VerlofAanvraag({verlofData, typeKaart, userData}) {
     const [multiselectGechecked, SetMultiselectGechecked] = useState(false)
 
-    if (!verlofData || !typeKaart || !verlofStatusData){
+    if (!verlofData || !typeKaart){
         "kaart kon niet laden."
-        return
-    }
-
-    var userData = userData.filter(x => x.id == verlofData.user_id.id)[0]
-    var status = verlofStatusData.filter(x => x.id == verlofData.statusVerlof_id.id)[0]
-
-    if (status.id != 1 && status.id != 2){
         return
     }
 
@@ -27,7 +20,7 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData}) {
             <div className="w-full h-auto pt-[20px]">
                 {
                     typeKaart == "geschiedenis" ?
-                        <p>{status.omschrijving}</p> :
+                        <p>{status}</p> :
                     typeKaart == "openAanvragen" ?
                         <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => {}}>Aanvraag annuleren</button> :
                     typeKaart == "manager" ? 
