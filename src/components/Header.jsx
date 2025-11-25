@@ -15,13 +15,12 @@ function Header() {
       if (!gebruikerId) return;
 
       try {
-        // Haal gebruiker op
+        //Haalt de gebruiker op
         const gebruikerDoc = await getDoc(doc(db, "user", gebruikerId));
         if (!gebruikerDoc.exists()) return;
 
         const gebruikerData = gebruikerDoc.data();
 
-        // Rol ophalen via DocumentReference
         let rolNaam = "Onbekende rol";
 
         if (gebruikerData.rol_id) {
@@ -66,6 +65,7 @@ function Header() {
             <div className="h-full w-auto mr-5">
               <div className="flex w-full h-[55%] text-xl items-end justify-end text-white">
                 <p>
+                  {/* hier heb ik aan gewerkt in de profiel-database feature, was niet zo slim */}
                   {gebruiker 
                     ? `${gebruiker.voornaam} ${gebruiker.achternaam}` 
                     : "Bezig met ophalen..."
@@ -73,6 +73,7 @@ function Header() {
                 </p>
               </div>
               <div className="flex w-full h-[45%] text-sm justify-end text-white">
+                {/* hier heb ik aan gewerkt in de profiel-database feature, was niet zo slim */}
                 <p>{gebruiker?.rol || "Onbekende rol"}</p>
               </div>
             </div>
