@@ -1,47 +1,10 @@
 import GeoprofsLogoWit from '../media/GeoprofsLogoWit.png';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { useState } from 'react';
 
-function Header() {
+function Header({ gebruiker }) {
   const navigate = useNavigate();
   const [profielMenu, setProfielMenu] = useState(false);
-  const [gebruiker, setGebruiker] = useState(null);
-
-  useEffect(() => {
-    const haalGebruikerOp = async () => {
-      const gebruikerId = localStorage.getItem("userId");
-      if (!gebruikerId) return;
-
-      try {
-        //Haalt de gebruiker op
-        const gebruikerDoc = await getDoc(doc(db, "user", gebruikerId));
-        if (!gebruikerDoc.exists()) return;
-
-        const gebruikerData = gebruikerDoc.data();
-
-        let rolNaam = "Onbekende rol";
-
-        if (gebruikerData.rol_id) {
-          const rolDoc = await getDoc(gebruikerData.rol_id);
-          if (rolDoc.exists()) {
-            rolNaam = rolDoc.data().rolNaam || "Onbekende rol";
-          }
-        }
-
-        setGebruiker({
-          ...gebruikerData,
-          rol: rolNaam
-        });
-
-      } catch (error) {
-        console.error("Fout bij ophalen gebruiker:", error);
-      }
-    };
-
-    haalGebruikerOp();
-  }, []);
 
   const handleUitloggen = () => {
     localStorage.removeItem("userId");
@@ -65,7 +28,6 @@ function Header() {
             <div className="h-full w-auto mr-5">
               <div className="flex w-full h-[55%] text-xl items-end justify-end text-white">
                 <p>
-                  {/* hier heb ik aan gewerkt in de profiel-database feature, was niet zo slim */}
                   {gebruiker 
                     ? `${gebruiker.voornaam} ${gebruiker.achternaam}` 
                     : "Bezig met ophalen..."
@@ -73,7 +35,6 @@ function Header() {
                 </p>
               </div>
               <div className="flex w-full h-[45%] text-sm justify-end text-white">
-                {/* hier heb ik aan gewerkt in de profiel-database feature, was niet zo slim */}
                 <p>{gebruiker?.rol || "Onbekende rol"}</p>
               </div>
             </div>

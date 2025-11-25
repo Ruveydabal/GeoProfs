@@ -22,7 +22,7 @@ function GebruikerToevoegen() {
     e.preventDefault(); // voorkomt dat de pagina herlaadt
 
     try {
-      // 🔹 Bepaal rol-documentreferentie
+      // Bepaal rol-documentreferentie
       let rolRef;
       switch (rol) {
         case "Office Manager":
@@ -66,8 +66,6 @@ function GebruikerToevoegen() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header />
-
       <div className="flex-1 bg-white flex justify-center p-4 overflow-y-auto">
         <div className="h-[850px] w-[50%] bg-[#DDE7F1] flex flex-col justify-start items-center rounded-[15px] p-6">
           <div className="w-full flex flex-col items-center justify-start text-3xl font-bold mb-6">

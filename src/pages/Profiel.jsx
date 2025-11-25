@@ -90,8 +90,7 @@ function Profiel() {
 
   return (
     <>
-        <Header/>
-        <div className='h-[90%] w-full'>
+        <div className='h-full w-full'>
             <div className='h-[120px] w-full flex items-center'>
                 <button className='h-[40px] max-w-[90%] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] ml-[50px] cursor-pointer' onClick={() => navigate(`/${rol?.toLowerCase()}/voorpagina`)}>Home</button>
             </div>
