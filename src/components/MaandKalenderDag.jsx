@@ -1,11 +1,28 @@
 import moment from 'moment';
 
-function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend}) {
+function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend, aanvragen}) {
     //tijdelijke variabelen
     // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    var mensenAfwezig = aanvragen
-        ? aanvragen.filter(a => moment(a.startDatum).isSame(dag, 'day'))
-    : [];
+    const mensenAfwezig = aanvragen
+        ? aanvragen.filter(a => {
+            if (!a.startDatum || !a.eindDatum) return false;
+            // moment(dag) is tussen start en eind, inclusief beide dagen
+            return moment(dag).isBetween(moment(a.startDatum), moment(a.eindDatum), 'day', '[]');
+            })
+        : [];
+
+    // functie om gebruikers op te halen
+    const fetchUser = async (userId) => {
+        if (usersCache[userId]) return usersCache[userId]; // al in cache
+        const userRef = doc(db, 'users', userId);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+            const userData = userSnap.data();
+            setUsersCache(prev => ({ ...prev, [userId]: userData }));
+            return userData;
+        }
+        return null;
+    };
 
     //fetch hier verlof data van deze datum
 
@@ -18,9 +35,11 @@ function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend}) {
             </div>
             {rol == "manager" || rol == "ceo" || rol == "office manager" ? 
                 <div className='w-full flex-1 overflow-auto'>
-                    {DagNietInMaand(index, dag) ? <></> : mensenAfwezig.length == 0 ? <></> :
-                        mensenAfwezig.map((naam, index) => (
-                            <div key={naam} className={`capitalize flex items-center justify-center w-full h-[25px] border-t-1 border-solid border-[#D0D0D0] ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
+                   {!DagNietInMaand(index, dag) && mensenAfwezig.length > 0 &&
+                            mensenAfwezig.map((aanvraag, idx) => (
+                            <div key={aanvraag.id ?? idx} className={`capitalize flex items-center justify-center w-full h-[25px] border-t-1 border-solid border-[#D0D0D0] ${idx % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>
+                                    <UserName userId={aanvraag.user_id} fetchUser={fetchUser} />
+                                </div>
                         ))
                     }
                 </div> : <></>
