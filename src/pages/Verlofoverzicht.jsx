@@ -13,7 +13,8 @@ function Verlofoverzicht() {
   const [verlofStatusData, setVerlofStatusData] = useState([]);
   const [ladenOfFaalText, setLadenOfFaalText] = useState("Aan het laden...");
 
-  const momenteleUserId = localStorage.getItem("userId");
+  // const momenteleUserId = localStorage.getItem("userId");
+  const momenteleUserId = "medewerker1";
 
   useEffect(() => {
     const FetchVerlofAanvragen = async () => {
@@ -84,6 +85,9 @@ function Verlofoverzicht() {
     FetchVerlofStatus();
   }, []);
 
+  // console.log(verlofData.filter(x => (x.statusVerlof_id.id === "1" || x.statusVerlof_id.id === "2")))
+  console.log(verlofData[0])
+
   return (
     <>
       <Header />
@@ -100,18 +104,28 @@ function Verlofoverzicht() {
             <div className='flex h-[calc(100%-120px)] w-full divide-x divide-[#D0D0D0] px-[40px]'>
 
               <div className="h-full flex-1 px-[10px] overflow-y-scroll">
-                {verlofData.filter(x => x.user_id.id === momenteleUserId & (x.statusVerlof_id.id === 1 || x.statusVerlof_id.id === 2))
+                {verlofData.filter(x => x.user_id.id === momenteleUserId && (x.statusVerlof_id.id === "1" || x.statusVerlof_id.id === "2"))
                 .map((verlof) => (
-                  <VerlofKaart key={verlof.id} verlofData={verlof} typeKaart="geschiedenis" userData={userData}/>
+                  <VerlofKaart key={verlof.id} verlofData={verlof} typeKaart="geschiedenis" userData={userData.filter(x => x.user_id.id === momenteleUserId)[0]}/>
                 ))}
               </div>
 
-              <div className="h-full flex-1 px-[10px] overflow-y-scroll" />
-              <div className="h-full flex-1 px-[10px] overflow-y-scroll" />
+              <div className="h-full flex-1 px-[10px] overflow-y-scroll">
+                {verlofData.filter(x => x.user_id.id === momenteleUserId & x.statusVerlof_id.id === 3)
+                .map((verlof) => (
+                  <VerlofKaart key={verlof.id} verlofData={verlof} typeKaart="openAanvragen" userData={userData.filter(x => x.user_id.id === momenteleUserId)[0]}/>
+                ))}
+              </div>
+
+              <div className="h-full flex-1 px-[10px] overflow-y-scroll">
+                {verlofData
+                .map((verlof) => (
+                  <VerlofKaart key={verlof.id} verlofData={verlof} typeKaart="manager" userData={userData.filter(x => x.id == verlof.user_id.id)[0]}/>
+                ))}
+              </div>
 
             </div>
         }
-
       </div>
     </>
   );

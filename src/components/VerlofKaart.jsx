@@ -20,7 +20,7 @@ function VerlofAanvraag({verlofData, typeKaart, userData}) {
             <div className="w-full h-auto pt-[20px]">
                 {
                     typeKaart == "geschiedenis" ?
-                        <p>{status}</p> :
+                        <p>status</p> :
                     typeKaart == "openAanvragen" ?
                         <button className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => {}}>Aanvraag annuleren</button> :
                     typeKaart == "manager" ? 
@@ -30,7 +30,7 @@ function VerlofAanvraag({verlofData, typeKaart, userData}) {
                                 <button className='h-[40px] max-w-[90%] w-[120px] bg-[#DF121B] text-white rounded-[15px] cursor-pointer' onClick={() => {}}>Afkeuren</button>
                             </div>
 
-                            <Checkbox id={id} onChange={(e) => SetMultiselectGechecked(e.target.checked)}/>
+                            <Checkbox id={verlofData.id} onChange={(e) => SetMultiselectGechecked(e.target.checked)}/>
                         </div> : 
                     "kaart kon niet laden"
                     
