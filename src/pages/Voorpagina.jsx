@@ -9,6 +9,7 @@ import WeekKalender from '../components/WeekKalender'
 import MaandNavigatie from '../components/MaandNavigatie'
 import WeekNavigatie from '../components/WeekNavigatie'
 
+
 function Voorpagina() {
   let navigate = useNavigate();
   const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
@@ -82,12 +83,10 @@ function Voorpagina() {
     try {
       const aanvragenRef = collection(db, "verlof");
 
-      // DocumentReferences die je wilt matchen
       const statusRef = doc(db, "statusVerlof", "1"); // goedgekeurd
       const typeRefPersoonlijk = doc(db, "typeVerlof", "2");
       const typeRefVakantie = doc(db, "typeVerlof", "3");
 
-      // Query: status = 1 AND type in (2,3)
       const q = query(
         aanvragenRef,
         where("statusVerlof_id", "==", statusRef),
@@ -96,28 +95,21 @@ function Voorpagina() {
 
       const snapshot = await getDocs(q);
 
-      // Map naar een consistent object
       const data = snapshot.docs.map(d => {
         const raw = d.data();
 
-        // normalize: sommige oude docs gebruikten mogelijk de typo 'tatusVerlof_id'
-        const statusField = raw.statusVerlof_id ?? raw.tatusVerlof_id ?? null;
-        const typeField = raw.typeVerlof_id ?? null;
-
         return {
-          id: d.id,
+          id: d.id, 
+          userNaam: raw.user_id?.voornaam || "Onbekend", // <-- gebruik het veld 'voornaam' van user
           omschrijving: raw.omschrijving ?? raw.omschrijvingRedenVerlof ?? "",
           startDatum: raw.startDatum ? raw.startDatum.toDate() : null,
           eindDatum: raw.eindDatum ? raw.eindDatum.toDate() : null,
-          // bewaar de references (handig voor later resolven van namen)
-          statusRef: statusField,
-          typeRef: typeField,
-          userRef: raw.user_id ?? null,
-          raw // voor debug indien nodig
+          statusRef: raw.statusVerlof_id ?? null,
+          typeRef: raw.typeVerlof_id ?? null,
+          raw
         };
       });
 
-      console.log("Goedgekeurde aanvragen (gehaald):", data);
       setGoedgekeurdeAanvragen(data);
     } catch (error) {
       console.error("Error ophalen goedgekeurde aanvragen:", error);
