@@ -10,7 +10,6 @@ function VerlofOverzichtContainer() {
     const [ladenOfFaalText, setLadenOfFaalText] = useState("Aan het laden...");
 
     const momenteleUserId = localStorage.getItem("userId");
-    console.log(momenteleUserId)
 
     useEffect(() => {
         const FetchVerlofAanvragen = async () => {
@@ -84,6 +83,7 @@ function VerlofOverzichtContainer() {
     if(!verlofData || verlofData.length == 0 || !userData || userData.length == 0 || !verlofStatusData || verlofStatusData.length == 0){
         return(ladenOfFaalText)
     }
+
     return (
         <div className="flex w-full h-full divide-x divide-[#D0D0D0]">
             <VerlofOverzichtBalk 
