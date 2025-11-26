@@ -1,3 +1,6 @@
+import { db } from "../firebase";
+import { useState, useEffect } from 'react';
+import { collection, query, getDocs } from "firebase/firestore";
 import VerlofOverzichtBalk from "./VerlofOverzichtBalk.jsx";
 
 function VerlofOverzichtContainer() {
@@ -6,8 +9,8 @@ function VerlofOverzichtContainer() {
     const [verlofStatusData, setVerlofStatusData] = useState([]);
     const [ladenOfFaalText, setLadenOfFaalText] = useState("Aan het laden...");
 
-    // const momenteleUserId = localStorage.getItem("userId");
-    const momenteleUserId = "medewerker1";
+    const momenteleUserId = localStorage.getItem("userId");
+    // const momenteleUserId = "medewerker1";
     useEffect(() => {
         const FetchVerlofAanvragen = async () => {
         try {
@@ -77,16 +80,35 @@ function VerlofOverzichtContainer() {
         FetchVerlofStatus()
     }, []);
 
-    if(){
-        return()
+    if(!verlofData || verlofData.length == 0 || !userData || userData.length == 0 || !verlofStatusData || verlofStatusData.length == 0){
+        return(ladenOfFaalText)
     }
     return (
-        <div className="">
-            <VerlofOverzichtBalk verlofData={verlofData.filter(x => x.user_id.id === momenteleUserId && (x.statusVerlof_id.id === "1" || x.statusVerlof_id.id === "2"))}/>
-            <VerlofOverzichtBalk verlofData={verlofData}/>
-            <VerlofOverzichtBalk verlofData={verlofData}/>
-        </div>
+        <div className="flex w-full h-full divide-x divide-[#D0D0D0]">
+            <VerlofOverzichtBalk 
+                verlofData={verlofData.filter(x => x.user_id.id === momenteleUserId && (x.statusVerlof_id?.id == 1 || x.statusVerlof_id?.id == 2))}
+                typeKaart="geschiedenis"
+                userData={userData}
+                verlofStatusData={verlofStatusData}
+            />
+             <VerlofOverzichtBalk 
+                verlofData={verlofData.filter(x => x.user_id.id === momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4))}
+                typeKaart="openAanvragen"
+                userData={userData}
+                verlofStatusData={verlofStatusData}
+            />
+            {
+                localStorage.getItem("rol") != "medewerker" ?
+                <VerlofOverzichtBalk 
+                    verlofData={verlofData.filter(x => x.user_id.id != momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4))}
+                    typeKaart="manager"
+                    userData={userData}
+                    verlofStatusData={verlofStatusData}
+                />
+                : <></>
+            }
 
+        </div>
     );
 }
 

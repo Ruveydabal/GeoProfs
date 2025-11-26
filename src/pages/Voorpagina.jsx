@@ -108,7 +108,7 @@ function Voorpagina() {
 
 
             <div className='flex-1'></div>
-            <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]' onClick={() => navigate('/verlof-overzicht')}>Aanvraag overzicht →</button>
+            <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]' onClick={() => navigate('/verlofoverzicht')}>Aanvraag overzicht →</button>
           </div>
         </div>
         {/* zijbalk */}
