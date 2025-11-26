@@ -8,8 +8,7 @@ function AuditOverzicht() {
 
     return (
         <>
-        <Header/>
-        <div className="w-full h-[90%] pl-[50px]">
+        <div className="w-full h-full pl-[50px]">
             <div className='h-[120px] w-full flex items-center'>
                 <button className='h-[40px] max-w-[90%] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => {navigate("/voorpagina")}}>Home</button>
             </div>

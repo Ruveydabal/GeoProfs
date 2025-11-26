@@ -76,8 +76,7 @@ function Voorpagina() {
 
   return (
     <>
-      <Header/>
-      <div className='flex w-full h-[90%] flex-col text-[1.7vh]'>
+      <div className='flex w-full h-full flex-col text-[1.7vh]'>
         {/* topbalk */}
         <div className='h-[120px] w-full flex'>
           <div className='flex h-[120px] w-[20%] justify-center items-center'>
