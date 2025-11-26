@@ -50,11 +50,10 @@ function Login() {
       if (juistWachtwoord !== wachtwoord)
         throw new Error("Onjuist wachtwoord.");
 
-      // Haal rol-id uit DocumentReference
       const rolId = gebruikerData.rol_id.id;
 
       let rol = "";
-      if (rolId === "1") rol = "office-manager";
+      if (rolId === "1") rol = "officemanager";
       else if (rolId === "2") rol = "manager";
       else if (rolId === "3") rol = "medewerker";
       else throw new Error("Onbekende rol.");
@@ -62,7 +61,6 @@ function Login() {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("rol", rol);
 
-      // Navigeer naar rol-voorpagina
       navigate(`/${rol}/voorpagina`);
 
     } catch (fout) {

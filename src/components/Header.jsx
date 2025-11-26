@@ -1,48 +1,10 @@
 import GeoprofsLogoWit from '../media/GeoprofsLogoWit.png';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { useState } from 'react';
 
-function Header() {
+function Header({ gebruiker }) {
   const navigate = useNavigate();
   const [profielMenu, setProfielMenu] = useState(false);
-  const [gebruiker, setGebruiker] = useState(null);
-
-  useEffect(() => {
-    const haalGebruikerOp = async () => {
-      const gebruikerId = localStorage.getItem("userId");
-      if (!gebruikerId) return;
-
-      try {
-        // Haal gebruiker op
-        const gebruikerDoc = await getDoc(doc(db, "user", gebruikerId));
-        if (!gebruikerDoc.exists()) return;
-
-        const gebruikerData = gebruikerDoc.data();
-
-        // Rol ophalen via DocumentReference
-        let rolNaam = "Onbekende rol";
-
-        if (gebruikerData.rol_id) {
-          const rolDoc = await getDoc(gebruikerData.rol_id);
-          if (rolDoc.exists()) {
-            rolNaam = rolDoc.data().rolNaam || "Onbekende rol";
-          }
-        }
-
-        setGebruiker({
-          ...gebruikerData,
-          rol: rolNaam
-        });
-
-      } catch (error) {
-        console.error("Fout bij ophalen gebruiker:", error);
-      }
-    };
-
-    haalGebruikerOp();
-  }, []);
 
   const handleUitloggen = () => {
     localStorage.removeItem("userId");
@@ -56,9 +18,10 @@ function Header() {
       <header className="h-[10%] w-full bg-[#E8641C] flex items-center">
         <div className="w-[1%]" />
         <div className="w-[50%] h-[80%]">
-          <a href="/voorpagina">
+          {/* navigate komen? */}
+          <button onClick={() => navigate(`/${gebruiker?.rol?.toLowerCase().replaceAll(" ", "")}/voorpagina`)} className="inline-block w-[40%] h-[90%]">
             <img src={GeoprofsLogoWit} alt="Geoprofs Logo" className="h-full w-auto" />
-          </a>
+          </button>
         </div>
 
         <div className="flex justify-end w-[50%] h-[80%]">
@@ -94,19 +57,17 @@ function Header() {
               Profiel
             </button>
 
-            {gebruiker?.rol === "office manager" && (
+            {gebruiker?.rol === "Office Manager" && (
               <button 
                 className="h-[40px] w-full cursor-pointer border-2 border-[#D0D0D0] rounded-[15px] mb-[5px]"
-                onClick={() => navigate(`/audit-overzicht`)}
-              >
+                onClick={() => navigate(`/audit-overzicht`)} >
                 Audit Overzicht
               </button>
             )}
 
             <button 
               className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-white"
-              onClick={handleUitloggen}
-            >
+              onClick={handleUitloggen} >
               Uitloggen
             </button>
           </div>
