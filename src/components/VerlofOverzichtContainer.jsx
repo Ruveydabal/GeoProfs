@@ -10,7 +10,8 @@ function VerlofOverzichtContainer() {
     const [ladenOfFaalText, setLadenOfFaalText] = useState("Aan het laden...");
 
     const momenteleUserId = localStorage.getItem("userId");
-    // const momenteleUserId = "medewerker1";
+    console.log(momenteleUserId)
+
     useEffect(() => {
         const FetchVerlofAanvragen = async () => {
         try {
