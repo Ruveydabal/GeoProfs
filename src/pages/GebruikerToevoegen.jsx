@@ -37,7 +37,7 @@ function GebruikerToevoegen() {
           break;
       }
       
-      // Bepaal het hoogste bestaande nummer voor de document-ID
+      // Bepaalt het volgende hoogste bestaande nummer voor de document-ID
       const userSnapshot = await getDocs(collection(db, "user"));
       let maxNummer = 0;
       userSnapshot.forEach((doc) => {
@@ -46,7 +46,6 @@ function GebruikerToevoegen() {
         if (!isNaN(num) && num > maxNummer) maxNummer = num;
       });
       const nieuweGebruikersNummer = maxNummer + 1;
-
 
       // Gebruiker opslaan in de database tabel "user"
       const userRef = doc(db, "user", nieuweGebruikersNummer.toString());
@@ -57,7 +56,7 @@ function GebruikerToevoegen() {
         bsnNummer,
         rol_id: rolRef,
         afdeling,
-        inDienst: moment(inDienst).format("YYYY-MM-DD"),
+        inDienst: Timestamp.fromDate(moment(inDienst).toDate()),
         verlofSaldo: Number(verlofSaldo),
         laatstGeupdate: new Date().toISOString(),
       });

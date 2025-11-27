@@ -4,9 +4,8 @@ import moment from 'moment';
 import { db } from "../firebase";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 
-import Header from '../components/Header.jsx'
-import ProfielLijstItem from '../components/ProfielLijstItem.jsx'
-import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx'
+import ProfielLijstItem from '../components/ProfielLijstItem.jsx';
+import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx';
 
 function Profiel() {
     const { userId: id } = useParams();
@@ -64,7 +63,7 @@ function Profiel() {
 
                 setAfdeling(data.afdeling || "");
                 
-                if (data.inDienst) {
+                if (data.inDienst instanceof Timestamp) {
                     setInDienst(moment(data.inDienst.toDate()));
                 } else {
                     setInDienst(null);
@@ -94,7 +93,6 @@ function Profiel() {
                     inDienst: inDienst ? Timestamp.fromDate(inDienst.toDate()) : null
                 });
 
-                console.log("Gegevens succesvol opgeslagen");
             } catch (err) {
                 console.error("Fout bij opslaan:", err);
             }
