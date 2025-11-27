@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { collection, query, where, getDocs, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc  } from "firebase/firestore";
 import { db } from '../firebase'; 
 import moment from 'moment';
 import Header from '../components/Header'
@@ -78,46 +78,59 @@ function Voorpagina() {
     }
   }
 
- useEffect(() => {
-  const haalGoedgekeurdeAanvragenOp = async () => {
-    try {
-      const aanvragenRef = collection(db, "verlof");
+  useEffect(() => {
+    const haalGoedgekeurdeAanvragenOp = async () => {
+      try {
+         // Verlof-collectie ophalen
+        const aanvragenRef = collection(db, "verlof");
+        // Ref status "goedgekeurd" + toegestane verloftypes
+        const statusRef = doc(db, "statusVerlof", "1"); 
+        const typeRefPersoonlijk = doc(db, "typeVerlof", "2");
+        const typeRefVakantie = doc(db, "typeVerlof", "3");
+        //Alleen goedgekeurde persoonlijke/vakantie-aanvragen
+        const q = query(
+          aanvragenRef,
+          where("statusVerlof_id", "==", statusRef),
+          where("typeVerlof_id", "in", [typeRefPersoonlijk, typeRefVakantie])
+        );
 
-      const statusRef = doc(db, "statusVerlof", "1"); // goedgekeurd
-      const typeRefPersoonlijk = doc(db, "typeVerlof", "2");
-      const typeRefVakantie = doc(db, "typeVerlof", "3");
+        const snapshot = await getDocs(q);
+        // Elk document verwerken + user-voornaam ophalen
+        const data = await Promise.all(
+          snapshot.docs.map(async (d) => {
+            const raw = d.data();
 
-      const q = query(
-        aanvragenRef,
-        where("statusVerlof_id", "==", statusRef),
-        where("typeVerlof_id", "in", [typeRefPersoonlijk, typeRefVakantie])
-      );
+            // user-info ophalen via de verwijzing
+            let userVoornaam = "Onbekend";
+            if (raw.user_id) {
+              const userSnap = await getDoc(raw.user_id);
+              if (userSnap.exists()) {
+                userVoornaam = userSnap.data().voornaam || "Onbekend";
+              }
+            }
+            //Object teruggeven voor de kalender
+            return {
+              id: d.id,
+              userNaam: userVoornaam,
+              omschrijving: raw.omschrijving ?? raw.omschrijvingRedenVerlof ?? "",
+              startDatum: raw.startDatum?.toDate() ?? null,
+              eindDatum: raw.eindDatum?.toDate() ?? null,
+              statusRef: raw.statusVerlof_id ?? null,
+              typeRef: raw.typeVerlof_id ?? null,
+              raw
+            };
+          })
+        );
 
-      const snapshot = await getDocs(q);
+        setGoedgekeurdeAanvragen(data);
 
-      const data = snapshot.docs.map(d => {
-        const raw = d.data();
+      } catch (error) {
+        console.error("Error ophalen goedgekeurde aanvragen:", error);
+      }
+    };
 
-        return {
-          id: d.id, 
-          userNaam: raw.user_id?.voornaam || "Onbekend", // <-- gebruik het veld 'voornaam' van user
-          omschrijving: raw.omschrijving ?? raw.omschrijvingRedenVerlof ?? "",
-          startDatum: raw.startDatum ? raw.startDatum.toDate() : null,
-          eindDatum: raw.eindDatum ? raw.eindDatum.toDate() : null,
-          statusRef: raw.statusVerlof_id ?? null,
-          typeRef: raw.typeVerlof_id ?? null,
-          raw
-        };
-      });
-
-      setGoedgekeurdeAanvragen(data);
-    } catch (error) {
-      console.error("Error ophalen goedgekeurde aanvragen:", error);
-    }
-  };
-
-  haalGoedgekeurdeAanvragenOp();
-}, []);
+    haalGoedgekeurdeAanvragenOp();
+  }, []);
 
   return (
     <>

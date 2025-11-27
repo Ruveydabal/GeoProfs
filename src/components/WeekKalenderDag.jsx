@@ -1,11 +1,18 @@
 import moment from 'moment';
 
-function WeekKalenderDag({dag, index, rol, DagIsWeekend}) {
-    //tijdelijke variabelen
-    // var mensenAfwezig = ["naam 1", "naam 2", "naam 3", "naam 4", "naam 5", "naam 6", "naam 7", "naam 8"]
-    var mensenAfwezig = [];
+//Fiter aanvragen op juiste dag
+function WeekKalenderDag({dag, index, rol, DagIsWeekend, aanvragen }) {
+    const mensenAfwezig = (aanvragen ?? [])
+    .filter((a) => {
+        if (!a.startDatum || !a.eindDatum) return false;
 
-    //fetch hier verlof data van deze datum
+        const d = moment(dag).startOf("day");
+        const start = moment(a.startDatum).startOf("day");
+        const eind = moment(a.eindDatum).startOf("day");
+        //Check zit dag tussen start en eid datum
+        return d.isSameOrAfter(start) && d.isSameOrBefore(eind);
+    })
+    .map(a => a.userNaam);
 
   return (
     <div key={index} className='flex flex-col w-full h-full border-1 border-solid border-[#D0D0D0]'>
@@ -13,22 +20,30 @@ function WeekKalenderDag({dag, index, rol, DagIsWeekend}) {
             <div className='flex h-auto w-full justify-center align-baseline text-center text-[2.5vh]'>{moment(dag).format('D MMMM')}</div>
             <div className={`flex h-auto w-full justify-center align-top text-center text-[2vh] ${DagIsWeekend(dag) ? 'text-[#DF121B]' : ''}`}>{moment(dag).format('dddd')}</div>
         </div>
-        {DagIsWeekend(dag) || mensenAfwezig.length == 0 ? <></> : 
-            <div className='flex w-full h-[50px] justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0]'>{mensenAfwezig.length} Afwezig</div>
-        }
+        {!DagIsWeekend(dag) && mensenAfwezig.length > 0 && (
+            <div className='flex w-full h-[50px] justify-center items-center bg-[#fff] border-b-1 border-solid border-[#D0D0D0]'>
+            {mensenAfwezig.length} Afwezig
+            </div>
+        )}
         <div className={`flex flex-col w-full h-full w-[calc(100%/7)] overflow-auto ${DagIsWeekend(dag) ? 'bg-[#E5E5E5]' : 'bg-[#fff]'}`}>
-        {
-            (rol == "manager" || rol == "ceo" || rol == "office manager") && !DagIsWeekend(dag) ?
-            mensenAfwezig.map((naam, index) => (
-                <div key={naam} className={`flex justify-center items-center w-full min-h-[40px] border-b-1 border-solid border-[#D0D0D0] capitalize ${index % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'}`}>{naam}</div>
-            ))
-            : <></>
+         {(!DagIsWeekend(dag) && (rol === "manager" || rol === "ceo" || rol === "office manager")) &&
+          mensenAfwezig.map((naam, i) => (
+            <div 
+              key={i} 
+              className={`flex justify-center items-center w-full min-h-[40px] border-b-1 border-solid border-[#D0D0D0] capitalize ${
+                i % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'
+              }`}
+            >
+              {naam}
+            </div>
+          ))
         }
-        </div>
+      </div>
+
     </div>
   );
 }
 
-export default WeekKalenderDag
+export default WeekKalenderDag;
 
 
