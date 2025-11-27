@@ -5,7 +5,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import AchtergrondLogin from "../media/AchtergrondLogin.jpg";
 import GeoprofsLogo from "../media/GeoprofsLogo.png";
 
-function Login() {
+function Login({ setTrigger }) {
   const [email, setEmail] = useState("");
   const [wachtwoord, setWachtwoord] = useState("");
   const [laden, setLaden] = useState(false);
@@ -23,43 +23,39 @@ function Login() {
 
     try {
       // Zoek gebruiker op e-mail
-      const gebruikers = await getDocs(
+      const gebruikersSnap = await getDocs(
         query(collection(db, "user"), where("email", "==", email))
       );
 
-      if (gebruikers.empty) throw new Error("Gebruiker niet gevonden.");
+      if (gebruikersSnap.empty) throw new Error("Gebruiker niet gevonden.");
 
-      const gebruiker = gebruikers.docs[0];
-      const gebruikerData = gebruiker.data();
+      const gebruikerDoc = gebruikersSnap.docs[0];
+      const gebruikerData = gebruikerDoc.data();
+      const gebruikerId = gebruikerDoc.id;
 
-      // Sla userId op in localStorage
-      localStorage.setItem("userId", gebruiker.id);
-
-      // Wachtwoord zoeken
-      const wachtwoorden = await getDocs(
-        query(
-          collection(db, "userPassword"),
-          where("user_id", "==", gebruiker.ref)
-        )
+      const wachtwoordenSnap = await getDocs(
+        query(collection(db, "userPassword"), where("user_id", "==", gebruikerDoc.ref))
       );
 
-      if (wachtwoorden.empty) throw new Error("Geen wachtwoord gevonden.");
+      if (wachtwoordenSnap.empty) throw new Error("Geen wachtwoord gevonden.");
 
-      const juistWachtwoord = wachtwoorden.docs[0].data().wachtwoord;
+      const juistWachtwoord = wachtwoordenSnap.docs[0].data().wachtwoord;
 
       if (juistWachtwoord !== wachtwoord)
         throw new Error("Onjuist wachtwoord.");
 
       const rolId = gebruikerData.rol_id.id;
-
       let rol = "";
       if (rolId === "1") rol = "officemanager";
       else if (rolId === "2") rol = "manager";
       else if (rolId === "3") rol = "medewerker";
       else throw new Error("Onbekende rol.");
 
+      localStorage.setItem("userId", gebruikerId);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("rol", rol);
+
+      setTrigger(prev => prev + 1);
 
       navigate(`/${rol}/voorpagina`);
 
@@ -71,7 +67,7 @@ function Login() {
   };
 
   return (
-    <div className="w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${AchtergrondLogin})` }} >
+    <div className="w-screen h-screen bg-cover bg-center" style={{ backgroundImage: `url(${AchtergrondLogin})` }}>
       <div className="flex items-center justify-center h-full">
         <div className="bg-white w-[90%] max-w-[400px] rounded-[15px] shadow-lg p-6 flex flex-col items-center">
           <img src={GeoprofsLogo} alt="Logo" className="w-40 h-auto mb-6" />
@@ -87,16 +83,14 @@ function Login() {
             placeholder="E-mail..."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-[40px] bg-[#F4F4F4] rounded-[15px] px-4 mb-4 focus:outline-none"
-          />
+            className="w-full h-[40px] bg-[#F4F4F4] rounded-[15px] px-4 mb-4 focus:outline-none" />
 
           <input
             type="password"
             placeholder="Wachtwoord..."
             value={wachtwoord}
             onChange={(e) => setWachtwoord(e.target.value)}
-            className="w-full h-[40px] bg-[#F4F4F4] rounded-[15px] px-4 mb-6 focus:outline-none"
-          />
+            className="w-full h-[40px] bg-[#F4F4F4] rounded-[15px] px-4 mb-6 focus:outline-none" />
 
           <button
             onClick={inloggen}
