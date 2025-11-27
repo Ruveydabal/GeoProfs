@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs, doc, getDoc  } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from '../firebase'; 
 import moment from 'moment';
 import Header from '../components/Header'
@@ -81,46 +82,62 @@ function Voorpagina() {
   useEffect(() => {
     const haalGoedgekeurdeAanvragenOp = async () => {
       try {
-         // Verlof-collectie ophalen
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) return;
+
+        //Haal afdeling van huidige gebruiker op
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+        if (!userSnap.exists()) return;
+        const userData = userSnap.data();
+        const afdeling = userData.afdeling;
+        const rol = userData.rol;
+
+        //Haal goedgekeurde aanvragen op, gefilterd op afdeling
         const aanvragenRef = collection(db, "verlof");
-        // Ref status "goedgekeurd" + toegestane verloftypes
         const statusRef = doc(db, "statusVerlof", "1"); 
         const typeRefPersoonlijk = doc(db, "typeVerlof", "2");
         const typeRefVakantie = doc(db, "typeVerlof", "3");
-        //Alleen goedgekeurde persoonlijke/vakantie-aanvragen
+
         const q = query(
           aanvragenRef,
           where("statusVerlof_id", "==", statusRef),
-          where("typeVerlof_id", "in", [typeRefPersoonlijk, typeRefVakantie])
+          where("typeVerlof_id", "in", [typeRefPersoonlijk, typeRefVakantie]),
         );
 
         const snapshot = await getDocs(q);
-        // Elk document verwerken + user-voornaam ophalen
-        const data = await Promise.all(
-          snapshot.docs.map(async (d) => {
-            const raw = d.data();
 
-            // user-info ophalen via de verwijzing
-            let userVoornaam = "Onbekend";
-            if (raw.user_id) {
-              const userSnap = await getDoc(raw.user_id);
-              if (userSnap.exists()) {
-                userVoornaam = userSnap.data().voornaam || "Onbekend";
+        const data = await Promise.all(
+          snapshot.docs
+            .map(async (d) => {
+              const raw = d.data();
+
+              // user-info ophalen
+              let userVoornaam = "Onbekend";
+              let userDoc = null;
+              if (raw.user_id) {
+                userDoc = await getDoc(raw.user_id);
+                if (userDoc.exists()) {
+                  userVoornaam = userDoc.data().voornaam || "Onbekend";
+                }
               }
-            }
-            //Object teruggeven voor de kalender
-            return {
-              id: d.id,
-              userNaam: userVoornaam,
-              omschrijving: raw.omschrijving ?? raw.omschrijvingRedenVerlof ?? "",
-              startDatum: raw.startDatum?.toDate() ?? null,
-              eindDatum: raw.eindDatum?.toDate() ?? null,
-              statusRef: raw.statusVerlof_id ?? null,
-              typeRef: raw.typeVerlof_id ?? null,
-              raw
-            };
-          })
-        );
+
+              return {
+                id: d.id,
+                userNaam: userVoornaam,
+                omschrijving: raw.omschrijving ?? raw.omschrijvingRedenVerlof ?? "",
+                startDatum: raw.startDatum?.toDate() ?? null,
+                eindDatum: raw.eindDatum?.toDate() ?? null,
+                statusRef: raw.statusVerlof_id ?? null,
+                typeRef: raw.typeVerlof_id ?? null,
+                afdeling: userDoc?.data().afdeling ?? "",
+                userId: userDoc?.id ?? null, 
+                raw
+              };
+            })
+          // Filter hier op rol: manager ziet afdeling, gewone gebruiker ziet alleen zichzelf
+         .filter((item) => rol === "manager" ? item.afdeling === afdeling : item.userId === user.uid)
+      );
 
         setGoedgekeurdeAanvragen(data);
 
@@ -131,6 +148,7 @@ function Voorpagina() {
 
     haalGoedgekeurdeAanvragenOp();
   }, []);
+
 
   return (
     <>
