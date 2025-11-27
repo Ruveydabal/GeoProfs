@@ -83,7 +83,6 @@ function VerlofOverzichtContainer() {
     if(!verlofData || verlofData.length == 0 || !userData || userData.length == 0 || !verlofStatusData || verlofStatusData.length == 0){
         return(ladenOfFaalText)
     }
-
     return (
         <div className="flex w-full h-full divide-x divide-[#D0D0D0]">
             <VerlofOverzichtBalk 
@@ -101,7 +100,7 @@ function VerlofOverzichtContainer() {
             {
                 localStorage.getItem("rol") != "medewerker" ?
                 <VerlofOverzichtBalk 
-                    verlofData={verlofData.filter(x => x.user_id.id != momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4))}
+                    verlofData={verlofData.filter(x => x.user_id.id != momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4) && new Set(userData.filter(x => x.afdeling == userData.filter(x => x.id === momenteleUserId)[0].afdeling).map(x => x.id)).has(x.user_id.id))}
                     typeKaart="manager"
                     userData={userData}
                     verlofStatusData={verlofStatusData}
