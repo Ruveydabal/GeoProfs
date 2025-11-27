@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import 'moment/dist/locale/nl';
-import './App.css'
+import './App.css';
 
 import { db } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -10,34 +10,47 @@ import { doc, getDoc } from "firebase/firestore";
 import HeaderZonderRefresh from './components/HeaderZonderRefresh';
 import Login from './pages/Login';
 import ProtectedRoute from './pages/ProtectedRoute';
-import Voorpagina from './pages/Voorpagina'
+import Voorpagina from './pages/Voorpagina';
 import Ziekmelden from './pages/Ziekmelden';
 import GebruikerToevoegen from './pages/GebruikerToevoegen';
 import VerlofAanvraag from './pages/VerlofAanvraag';
-import Profiel from './pages/Profiel'
-import AuditOverzicht from './pages/AuditOverzicht'
+import Profiel from './pages/Profiel';
+import AuditOverzicht from './pages/AuditOverzicht';
 
 function App() {
   const [gebruiker, setGebruiker] = useState(null);
 
-  useEffect(() => {
-    const haalGebruikerOp = async () => {
-      const gebruikerId = localStorage.getItem("userId");
-      if (!gebruikerId) return;
+  //Wordt gebruikt om de useEffect opnieuw te laten draaien als je inlogd
+  const [trigger, setTrigger] = useState(0);
 
+  useEffect(() => {
+    const gebruikerId = localStorage.getItem("userId");
+    if (!gebruikerId) return;
+
+    const haalGebruikerOp = async () => {
       try {
         const gebruikerDoc = await getDoc(doc(db, "user", gebruikerId));
         if (!gebruikerDoc.exists()) return;
 
         const gebruikerData = gebruikerDoc.data();
-
         let rolNaam = "Onbekende rol";
+
         if (gebruikerData.rol_id) {
-          const rolDoc = await getDoc(gebruikerData.rol_id);
+          let rolDoc;
+          if (typeof gebruikerData.rol_id === "string") {
+            rolDoc = await getDoc(doc(db, "rol", gebruikerData.rol_id));
+          } else {
+            rolDoc = await getDoc(gebruikerData.rol_id);
+          }
+
           if (rolDoc.exists()) {
             rolNaam = rolDoc.data().rolNaam || "Onbekende rol";
           }
         }
+
+        localStorage.setItem("rol", rolNaam.toLowerCase().replaceAll(" ", ""));
+        localStorage.setItem("userId", gebruikerId);
+        localStorage.setItem("isLoggedIn", "true");
 
         setGebruiker({ ...gebruikerData, rol: rolNaam });
       } catch (error) {
@@ -46,7 +59,7 @@ function App() {
     };
 
     haalGebruikerOp();
-  }, []);
+  }, [trigger]);
 
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   const rol = localStorage.getItem("rol");
@@ -65,9 +78,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Loginpagina krijgt geen header */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login setTrigger={setTrigger} />} />
 
         {/* Pagina's met header */}
         <Route path="/ziekmelden" element={
