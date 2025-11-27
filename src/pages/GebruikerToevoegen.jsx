@@ -99,8 +99,7 @@ function GebruikerToevoegen() {
                   onChange={(e) => setVoornaam(e.target.value)}
                   required
                   placeholder="Voornaam"
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" />
               </div>
 
               <div className="flex items-center">
@@ -111,8 +110,7 @@ function GebruikerToevoegen() {
                   onChange={(e) => setAchternaam(e.target.value)}
                   required
                   placeholder="Achternaam"
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" />
               </div>
 
               <div className="flex items-center">
@@ -123,8 +121,7 @@ function GebruikerToevoegen() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="E-mail"
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"/>
               </div>
 
               <div className="flex items-center">
@@ -135,8 +132,7 @@ function GebruikerToevoegen() {
                   onChange={(e) => setBsnNummer(e.target.value)}
                   required
                   placeholder="BSN nummer"
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"/>
               </div>
 
               <div className="flex items-center">
@@ -147,8 +143,7 @@ function GebruikerToevoegen() {
                   onChange={(e) => setWachtwoord(e.target.value)}
                   required
                   placeholder="Wachtwoord"
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"/>
               </div>
 
               {/* Werkgegevens */}
@@ -162,8 +157,7 @@ function GebruikerToevoegen() {
                   value={rol}
                   onChange={(e) => setRol(e.target.value)}
                   required
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                >
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" >
                   <option value="">Selecteer rol</option>
                   <option>Medewerker</option>
                   <option>Manager</option>
@@ -177,11 +171,17 @@ function GebruikerToevoegen() {
                   value={afdeling}
                   onChange={(e) => setAfdeling(e.target.value)}
                   required
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                >
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400">
+
                   <option value="">Selecteer afdeling</option>
-                  <option>Test</option>
-                  <option>Test2</option>
+                  <option>Office management</option>
+                  <option>Relation management</option>
+                  <option>Geo-ICT</option>
+                  <option>Geodesy</option>
+                  <option>Finance</option>
+                  <option>HRM</option>
+                  <option>ICT</option>
+
                 </select>
               </div>
 
@@ -192,8 +192,7 @@ function GebruikerToevoegen() {
                   value={inDienst}
                   onChange={(e) => setInDienst(e.target.value)}
                   required
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" />
               </div>
 
               <div className="flex items-center">
@@ -206,10 +205,9 @@ function GebruikerToevoegen() {
                     if (value >= 0) setVerlofSaldo(value);
                   }}
                   required
-                  placeholder="Bijv. 25"
+                  placeholder="Saldo"
                   min={0}
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"
-                />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" />
               </div>
 
               {/* Buttons */}
@@ -217,15 +215,13 @@ function GebruikerToevoegen() {
                 <button
                   type="button"
                   onClick={() => navigate("/office-manager/voorpagina")} 
-                  className="px-4 py-2 bg-[#FFFFFF] text-black rounded-[15px]"
-                >
+                  className="px-4 py-2 bg-[#FFFFFF] text-black rounded-[15px]" >
                   Annuleren
                 </button>
 
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#2AAFF2] text-white rounded-[15px]"
-                >
+                  className="px-4 py-2 bg-[#2AAFF2] text-white rounded-[15px]" >
                   Gebruiker Aanmaken
                 </button>
               </div>

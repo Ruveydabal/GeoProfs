@@ -23,6 +23,7 @@ function Profiel() {
     const [rol, setRol] = useState("");
     const [afdeling, setAfdeling] = useState("");
     const [inDienst, setInDienst] = useState(null);
+    const [verlofSaldo, setVerlofSaldo] = useState(0);
 
     const [wachtwoordPopup, setWachtwoordPopup] = useState(false);
 
@@ -51,6 +52,7 @@ function Profiel() {
                 setEmail(data.email || "");
                 setBSNNummer(data.bsnNummer || "");
                 setAfdeling(data.afdeling || "");
+                setVerlofSaldo(data.verlofSaldo || 0);
 
                 if (data.rol_id) {
                     const rolSnap = await getDoc(data.rol_id);
@@ -90,7 +92,8 @@ function Profiel() {
                     bsnNummer: BSNNummer,
                     rol,
                     afdeling,
-                    inDienst: inDienst ? Timestamp.fromDate(inDienst.toDate()) : null
+                    inDienst: inDienst ? Timestamp.fromDate(inDienst.toDate()) : null,
+                    verlofSaldo: Number(verlofSaldo)
                 });
 
             } catch (err) {
@@ -105,7 +108,7 @@ function Profiel() {
             <div className='h-[90%] w-full'>
                 <div className='h-[120px] w-full flex items-center'>
                     <button className='h-[40px] max-w-[90%] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] ml-[50px] cursor-pointer'
-                        onClick={() => navigate(`/${gebruiker?.rol?.toLowerCase().replaceAll(" ", "")}/voorpagina`)}>Home</button>
+                        onClick={() => navigate(`/${rol?.toLowerCase().replaceAll(" ", "")}/voorpagina`)}>Home</button>
                 </div>
                 <div className='flex h-[calc(100%-120px)] flex-1 ml-[50px]'>
                     <div className='h-full w-[300px]'>
@@ -131,9 +134,9 @@ function Profiel() {
                                             className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
                                             value={rol}
                                             onChange={(e) => setRol(e.target.value)} >
-                                            <option value="medewerker">Medewerker</option>
-                                            <option value="manager">Manager</option>
-                                            <option value="officeManager">Office manager</option>
+                                            <option value="Medewerker">Medewerker</option>
+                                            <option value="Manager">Manager</option>
+                                            <option value="Office Manager">Office manager</option>
                                         </select>
                                     ) : (
                                         <p>{rol}</p>
@@ -150,9 +153,14 @@ function Profiel() {
                                             className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
                                             value={afdeling}
                                             onChange={(e) => setAfdeling(e.target.value)} >
-                                            
-                                            {/* deze opties moeten nog worden veranderd */}
-                                            <option value="filler">filler</option>
+
+                                            <option>Office management</option>
+                                            <option>Relation management</option>
+                                            <option>Geo-ICT</option>
+                                            <option>Geodesy</option>
+                                            <option>Finance</option>
+                                            <option>HRM</option>
+                                            <option>ICT</option>
 
                                         </select>
                                     ) : (
@@ -172,6 +180,24 @@ function Profiel() {
                                             onChange={(e) => setInDienst(moment(e.target.value))} />
                                     ) : (
                                         <p>{inDienst ? inDienst.format("DD-MM-YYYY") : "Laden..."}</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Verlof saldo */}
+                            <div className='flex flex-wrap w-full h-[auto] mb-[20px]'>
+                                <div className='w-[200px] h-[40px] items-center flex'>Verlof saldo:</div>
+                                <div className='w-[200px] h-[40px] items-center flex'>
+                                    {aanHetWijzigen ? (
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            value={verlofSaldo}
+                                            onChange={(e) => setVerlofSaldo(e.target.value)}
+                                            className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
+                                        />
+                                    ) : (
+                                        <p>{verlofSaldo}</p>
                                     )}
                                 </div>
                             </div>
