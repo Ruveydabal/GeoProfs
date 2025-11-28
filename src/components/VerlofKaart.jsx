@@ -2,7 +2,7 @@ import moment from 'moment';
 import Checkbox from './basis-components/CheckBox';
 import { useState } from 'react';
 
-function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData}) {
+function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, AfkeurenPopupWeergeven}) {
     const [multiselectGechecked, SetMultiselectGechecked] = useState(false)
 
     if (!verlofData || !typeKaart){
@@ -20,6 +20,7 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData}) {
                 {
                     <p>{verlofStatusData.filter(x => x.id == verlofData.statusVerlof_id?.id)[0].omschrijving}</p>
                 }
+                <button className='h-[40px] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => AfkeurenPopupWeergeven(verlofData.id)}></button>
             </div>
         </div>
     );

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { collection, query, getDocs } from "firebase/firestore";
 import VerlofOverzichtBalk from "./VerlofOverzichtBalk.jsx";
 
-function VerlofOverzichtContainer() {
+function VerlofOverzichtContainer({AfkeurenPopupWeergeven}) {
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -104,6 +104,7 @@ function VerlofOverzichtContainer() {
                     typeKaart="manager"
                     userData={userData}
                     verlofStatusData={verlofStatusData}
+                    AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
                 />
                 : <></>
             }
