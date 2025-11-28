@@ -16,6 +16,7 @@ import GebruikerToevoegen from './pages/GebruikerToevoegen';
 import VerlofAanvraag from './pages/VerlofAanvraag';
 import Profiel from './pages/Profiel';
 import AuditOverzicht from './pages/AuditOverzicht';
+import Verlofoverzicht from './pages/Verlofoverzicht';
 
 function App() {
   const [gebruiker, setGebruiker] = useState(null);
@@ -109,6 +110,12 @@ function App() {
         <Route path="/profiel/:userId" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
             <Profiel />
+          </HeaderZonderRefresh>
+        }/>
+
+        <Route path="/verlofoverzicht" element={
+          <HeaderZonderRefresh gebruiker={gebruiker}>
+            <Verlofoverzicht gebruiker={gebruiker}/>
           </HeaderZonderRefresh>
         }/>
 
