@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs, doc, getDoc  } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import { db } from '../firebase'; 
 import moment from 'moment';
 import Header from '../components/Header'
@@ -18,6 +17,8 @@ function Voorpagina() {
   const [maand, SetMaand] = useState(new Date().getMonth()) //pakt de huidige maand in integer (0-11)
   const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate()) //pakt de eerste dag van de huidige week (maandag)
   const [goedgekeurdeAanvragen, setGoedgekeurdeAanvragen] = useState([]);
+  const [rolNaam, setRolNaam] = useState(null);
+  const [afdelingUser, setAfdelingUser] = useState(null);
 
   //tijdelijke variabelen
   var verlofSaldo = 50;
@@ -82,73 +83,74 @@ function Voorpagina() {
   useEffect(() => {
     const haalGoedgekeurdeAanvragenOp = async () => {
       try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (!user) return;
+        const userId = localStorage.getItem("userId");
+        const rol = localStorage.getItem("rol");
 
-        //Haal afdeling van huidige gebruiker op
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        if (!userId) {
+          console.log("Geen userId in localStorage → terug naar login");
+          return;
+        }
+
+        // Haal user-data op
+        const userSnap = await getDoc(doc(db, "user", userId));
         if (!userSnap.exists()) return;
+
         const userData = userSnap.data();
         const afdeling = userData.afdeling;
-        const rol = userData.rol;
+        setAfdelingUser(afdeling);
 
-        //Haal goedgekeurde aanvragen op, gefilterd op afdeling
+        // Haal rol-naam op
+        if (userData.rol_id) {
+          const rolDoc = await getDoc(userData.rol_id);
+          if (rolDoc.exists()) {
+            setRolNaam(rolDoc.data().naam);
+          }
+        }
+
+        // Firestore refs
         const aanvragenRef = collection(db, "verlof");
-        const statusRef = doc(db, "statusVerlof", "1"); 
-        const typeRefPersoonlijk = doc(db, "typeVerlof", "2");
-        const typeRefVakantie = doc(db, "typeVerlof", "3");
+        const statusRef = doc(db, "statusVerlof", "1");
+        const typePersoonlijk = doc(db, "typeVerlof", "2");
+        const typeVakantie = doc(db, "typeVerlof", "3");
 
         const q = query(
           aanvragenRef,
           where("statusVerlof_id", "==", statusRef),
-          where("typeVerlof_id", "in", [typeRefPersoonlijk, typeRefVakantie]),
+          where("typeVerlof_id", "in", [typePersoonlijk, typeVakantie])
         );
 
         const snapshot = await getDocs(q);
 
-        const data = await Promise.all(
-          snapshot.docs
-            .map(async (d) => {
-              const raw = d.data();
+        // Bouw array
+        let aanvragen = await Promise.all(
+          snapshot.docs.map(async (d) => {
+            const raw = d.data();
 
-              // user-info ophalen
-              let userVoornaam = "Onbekend";
-              let userDoc = null;
-              if (raw.user_id) {
-                userDoc = await getDoc(raw.user_id);
-                if (userDoc.exists()) {
-                  userVoornaam = userDoc.data().voornaam || "Onbekend";
-                }
-              }
+            let userDoc = raw.user_id ? await getDoc(raw.user_id) : null;
+            let gebruikerData = userDoc?.data() ?? {};
 
-              return {
-                id: d.id,
-                userNaam: userVoornaam,
-                omschrijving: raw.omschrijving ?? raw.omschrijvingRedenVerlof ?? "",
-                startDatum: raw.startDatum?.toDate() ?? null,
-                eindDatum: raw.eindDatum?.toDate() ?? null,
-                statusRef: raw.statusVerlof_id ?? null,
-                typeRef: raw.typeVerlof_id ?? null,
-                afdeling: userDoc?.data().afdeling ?? "",
-                userId: userDoc?.id ?? null, 
-                raw
-              };
-            })
-          // Filter hier op rol: manager ziet afdeling, gewone gebruiker ziet alleen zichzelf
-         .filter((item) => rol === "manager" ? item.afdeling === afdeling : item.userId === user.uid)
-      );
+            return {
+              id: d.id,
+              gebruikerAfdeling: gebruikerData.afdeling,
+              gebruikerVoornaam: gebruikerData.voornaam ?? "Onbekend",
+              userId: userDoc?.id ?? null,
+              startDatum: raw.startDatum?.toDate() ?? null,
+              eindDatum: raw.eindDatum?.toDate() ?? null,
+            };
+          })
+        );
 
-        setGoedgekeurdeAanvragen(data);
+        // Filter op rol
+        aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
 
+        setGoedgekeurdeAanvragen(aanvragen);
       } catch (error) {
-        console.error("Error ophalen goedgekeurde aanvragen:", error);
+        console.error("Error ophalen:", error);
       }
     };
 
     haalGoedgekeurdeAanvragenOp();
   }, []);
-
 
   return (
     <>

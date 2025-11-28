@@ -12,7 +12,7 @@ function WeekKalenderDag({dag, index, rol, DagIsWeekend, aanvragen }) {
         //Check zit dag tussen start en eid datum
         return d.isSameOrAfter(start) && d.isSameOrBefore(eind);
     })
-    .map(a => a.userNaam);
+    .map(a => a.gebruikerVoornaam);
 
   return (
     <div key={index} className='flex flex-col w-full h-full border-1 border-solid border-[#D0D0D0]'>

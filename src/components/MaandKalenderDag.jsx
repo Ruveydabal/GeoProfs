@@ -30,7 +30,7 @@ function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend, aanvra
                    {!DagNietInMaand(index, dag) &&
                         mensenAfwezig.map((aanvraag) => (
                             <div key={aanvraag.id}>
-                                {aanvraag.userNaam} 
+                                {aanvraag.gebruikerVoornaam}  
                             </div>
                         ))
                     }
