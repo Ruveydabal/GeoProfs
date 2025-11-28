@@ -2,12 +2,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { db } from "../firebase";
-import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { doc, getDoc, updateDoc, Timestamp, collection, query, where, getDocs} from "firebase/firestore";
 
 import ProfielLijstItem from '../components/ProfielLijstItem.jsx';
 import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx';
 
-function Profiel() {
+function Profiel({ setTrigger }) {
     const { userId: id } = useParams();
     const navigate = useNavigate();
 
@@ -54,21 +54,16 @@ function Profiel() {
                 setAfdeling(data.afdeling || "");
                 setVerlofSaldo(data.verlofSaldo || 0);
 
+                // Rol ophalen
                 if (data.rol_id) {
                     const rolSnap = await getDoc(data.rol_id);
                     if (rolSnap.exists()) {
-                        setRol(rolSnap.data().rolNaam || "Onbekende rol");
+                        setRol(rolSnap.data().rolNaam);
                     }
-                } else {
-                    setRol("Onbekende rol");
                 }
-
-                setAfdeling(data.afdeling || "");
                 
                 if (data.inDienst instanceof Timestamp) {
                     setInDienst(moment(data.inDienst.toDate()));
-                } else {
-                    setInDienst(null);
                 }
 
             } catch (err) {
@@ -85,16 +80,31 @@ function Profiel() {
                 const userId = localStorage.getItem("userId");
                 const gebruikerRef = doc(db, "user", userId);
 
+                // RolID ophalen vanuit rol collectie
+                const rolQuery = query(
+                    collection(db, "rol"),
+                    where("rolNaam", "==", rol)
+                );
+                const rolSnapshot = await getDocs(rolQuery);
+
+                let rolRef = null;
+                if (!rolSnapshot.empty) {
+                    rolRef = rolSnapshot.docs[0].ref;
+                }
+
                 await updateDoc(gebruikerRef, {
                     voornaam,
                     achternaam,
                     email,
                     bsnNummer: BSNNummer,
-                    rol,
+                    rol_id: rolRef,
                     afdeling,
                     inDienst: inDienst ? Timestamp.fromDate(inDienst.toDate()) : null,
                     verlofSaldo: Number(verlofSaldo)
                 });
+
+                // Header direct updaten
+                setTrigger(prev => prev + 1);
 
             } catch (err) {
                 console.error("Fout bij opslaan:", err);
@@ -134,9 +144,9 @@ function Profiel() {
                                             className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"
                                             value={rol}
                                             onChange={(e) => setRol(e.target.value)} >
-                                            <option value="Medewerker">Medewerker</option>
+                                            <option value="Office Manager">Office Manager</option>
                                             <option value="Manager">Manager</option>
-                                            <option value="Office Manager">Office manager</option>
+                                            <option value="Medewerker">Medewerker</option>
                                         </select>
                                     ) : (
                                         <p>{rol}</p>
