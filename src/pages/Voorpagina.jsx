@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
-import Header from '../components/Header'
 import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
 import MaandNavigatie from '../components/MaandNavigatie'
@@ -13,6 +12,17 @@ function Voorpagina() {
   const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
   const [maand, SetMaand] = useState(new Date().getMonth()) //pakt de huidige maand in integer (0-11)
   const [week, SetWeek] = useState(moment().startOf('isoWeek').toDate()) //pakt de eerste dag van de huidige week (maandag)
+
+  const [toasts, setToasts] = useState([]);
+
+  function addToast(message, duration = 3000) {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message, duration }]);
+  }
+
+  function removeToast(id) {
+    setToasts((prev) => prev.filter(t => t.id !== id));
+  }
 
   //tijdelijke variabelen
   var verlofSaldo = 50;
@@ -134,7 +144,7 @@ function Voorpagina() {
           </div>
         </div>
       </div>
-
+    <ToastContainer toasts={toasts} removeToast={removeToast} />
     </>
   )
 }
