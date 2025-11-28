@@ -109,7 +109,7 @@ function App() {
 
         <Route path="/profiel/:userId" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <Profiel />
+            <Profiel setTrigger={setTrigger} />
           </HeaderZonderRefresh>
         }/>
 
