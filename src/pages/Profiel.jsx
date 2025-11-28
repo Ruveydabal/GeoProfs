@@ -187,7 +187,8 @@ function Profiel({ setTrigger }) {
                                         <input
                                             type="date"
                                             value={inDienst ? inDienst.format("YYYY-MM-DD") : ""}
-                                            onChange={(e) => setInDienst(moment(e.target.value))} />
+                                            onChange={(e) => setInDienst(moment(e.target.value))}
+                                            className="h-full w-full border-1 border-solid border-[#D0D0D0] p-[5px] rounded-[15px] bg-[#F4F4F4]"/>
                                     ) : (
                                         <p>{inDienst ? inDienst.format("DD-MM-YYYY") : "Laden..."}</p>
                                     )}
