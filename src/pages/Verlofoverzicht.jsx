@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import VerlofAfkeurenPopup from "../components/VerlofAfkeurenPopup.jsx";
 import VerlofOverzichtContainer from "../components/VerlofOverzichtContainer.jsx"
 
@@ -7,11 +7,10 @@ function Verlofoverzicht({gebruiker}) {
   const navigate = useNavigate();
   
   const [popupWeergeven, setPopupWeergeven] = useState(false); 
-  const [verlofAanvraagId, setVerlofAanvraagId] = useState(null); 
+  const [verlofData, setVerlofData] = useState(null); 
 
-  const AfkeurenPopupWeergeven = (id) => {
-    setVerlofAanvraagId(id)
-    console.log(id)
+  const AfkeurenPopupWeergeven = (verlofData) => {
+    setVerlofData(verlofData)
     setPopupWeergeven(true)
   };
 
@@ -28,7 +27,7 @@ function Verlofoverzicht({gebruiker}) {
           </div>
       </div>
       {popupWeergeven ?
-      <VerlofAfkeurenPopup SetPopupWeergeven={setPopupWeergeven} verlofAanvraagId={verlofAanvraagId}/> :
+      <VerlofAfkeurenPopup SetPopupWeergeven={setPopupWeergeven} verlofData={verlofData}/> :
       <></>
       }
       
