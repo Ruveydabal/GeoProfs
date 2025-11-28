@@ -126,14 +126,14 @@ function Profiel({ setTrigger }) {
                     </div>
                     <div className='flex h-full flex-1 ml-[50px] overflow-y-auto'>
                         <div className='h-full w-auto'>
-                            <p className='text-[20px]'>Persoonlijke informatie</p>
+                            <p className='text-[20px] font-bold'>Persoonlijke informatie</p>
                             <ProfielLijstItem waardeNaam="Voornaam" SetWaarde={setVoornaam} waarde={voornaam} aanHetWijzigen={aanHetWijzigen} />
                             <ProfielLijstItem waardeNaam="Achternaam" SetWaarde={setAchternaam} waarde={achternaam} aanHetWijzigen={aanHetWijzigen} />
                             <ProfielLijstItem waardeNaam="Email" SetWaarde={setEmail} waarde={email} aanHetWijzigen={aanHetWijzigen} />
                             <ProfielLijstItem waardeNaam="BSN Nummer" SetWaarde={setBSNNummer} waarde={BSNNummer} aanHetWijzigen={aanHetWijzigen} />
                             <div className='w-full h-0 mb-[20px] border-b-1 border-solid border-[#D0D0D0]' />
 
-                            <p className='text-[20px]'>Werk informatie</p>
+                            <p className='text-[20px] font-bold'>Werk informatie</p>
 
                             {/* Rol */}
                             <div className='flex flex-wrap w-full h-[auto] mb-[20px]'>
