@@ -4,7 +4,7 @@ import moment from 'moment';
 
 function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend, aanvragen}) {
     
-    const extractUserId = (verlofId) => {
+    const pakUserId = (verlofId) => {
         if (!verlofId) return "Onbekend";
         const parts = verlofId.split("_");
         return parts.length >= 3 ? parts[1] : "Onbekend";
