@@ -22,7 +22,6 @@ function Voorpagina() {
 
   //tijdelijke variabelen
   var verlofSaldo = 50;
-  var rol = "manager";
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -85,6 +84,7 @@ function Voorpagina() {
       try {
         const userId = localStorage.getItem("userId");
         const rol = localStorage.getItem("rol");
+        setRolNaam(rol);
 
         if (!userId) {
           console.log("Geen userId in localStorage → terug naar login");
@@ -141,7 +141,9 @@ function Voorpagina() {
         );
 
         // Filter op rol
-        aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
+        if (rolNaam !== "manager") {
+          aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
+        }
 
         setGoedgekeurdeAanvragen(aanvragen);
       } catch (error) {
@@ -179,7 +181,7 @@ function Voorpagina() {
             </div>
 
             {
-              rol == "manager" ?
+              rolNaam === "manager" ?
               <button className='h-[40px] max-w-[90%] w-[200px] ml-[40px] bg-[#2AAFF2] text-white rounded-[15px]'>Gegevens exporteren</button>
               : <></>
               }
@@ -207,9 +209,9 @@ function Voorpagina() {
           {/* render de kalender */}
           <div className='h-[calc(100%-20px)] w-[calc(80%-50px)] bg-[#f0f0f0]'>
             {MaandofWeekKalender ?
-              <WeekKalender week={week} weekDagen={weekDagen} rol={rol} aanvragen={goedgekeurdeAanvragen} />
+              <WeekKalender week={week} weekDagen={weekDagen} rol={rolNaam} aanvragen={goedgekeurdeAanvragen} />
               :
-              <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar} rol={rol} aanvragen={goedgekeurdeAanvragen} />}
+              <MaandKalender weekDagen={weekDagen} maand={maand} jaar={jaar} rol={rolNaam} aanvragen={goedgekeurdeAanvragen} />}
               
           </div>
         </div>
