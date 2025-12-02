@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { collection, query, getDocs } from "firebase/firestore";
 import VerlofOverzichtBalk from "./VerlofOverzichtBalk.jsx";
 
-function VerlofOverzichtContainer({AfkeurenPopupWeergeven}) {
+function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -78,7 +78,7 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven}) {
         FetchVerlofAanvragen(),
         FetchUsers(),
         FetchVerlofStatus()
-    }, []);
+    }, [herladen]);
 
     if(!verlofData || verlofData.length == 0 || !userData || userData.length == 0 || !verlofStatusData || verlofStatusData.length == 0){
         return(ladenOfFaalText)

@@ -8,6 +8,7 @@ function Verlofoverzicht({gebruiker}) {
   
   const [popupWeergeven, setPopupWeergeven] = useState(false); 
   const [verlofData, setVerlofData] = useState(null); 
+  const [herladen, setHerladen] = useState(false);
 
   const AfkeurenPopupWeergeven = (verlofData) => {
     setVerlofData(verlofData)
@@ -23,11 +24,11 @@ function Verlofoverzicht({gebruiker}) {
           <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
         </div>
           <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
-            <VerlofOverzichtContainer AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}/>
+            <VerlofOverzichtContainer AfkeurenPopupWeergeven={AfkeurenPopupWeergeven} herladen={herladen}/>
           </div>
       </div>
       {popupWeergeven ?
-      <VerlofAfkeurenPopup SetPopupWeergeven={setPopupWeergeven} verlofData={verlofData}/> :
+      <VerlofAfkeurenPopup setPopupWeergeven={setPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen}/> :
       <></>
       }
       

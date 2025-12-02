@@ -2,11 +2,17 @@ import { useState } from 'react';
 import { db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 
-function VerlofAfkeurenPopup({SetPopupWeergeven, verlofData}) {
+function VerlofAfkeurenPopup({setPopupWeergeven, verlofData, setHerladen}) {
 
   const [afkeurReden, setAfkeurReden] = useState("");
+  const [foutMelding, setFoutMelding] = useState("");
 
   const verlofAfkeurenBevestigen = async () => {
+    if(afkeurReden == "" || !afkeurReden){
+      setFoutMelding("Reden mag niet leeg zijn.")
+      return
+    }
+
     const verlofRef = doc(db, "verlof", verlofData.id);
     var statusVerlofRef = doc(db, "statusVerlof", "2");
 
@@ -17,13 +23,14 @@ function VerlofAfkeurenPopup({SetPopupWeergeven, verlofData}) {
 
     //audit aanmaken
 
+    setHerladen(prev => !prev);
     setAfkeurReden("");
-    SetPopupWeergeven(false);
+    setPopupWeergeven(false);
   }
 
   function verlofAfkeurenAnnuleren(){
     setAfkeurReden("");
-    SetPopupWeergeven(false);
+    setPopupWeergeven(false);
   }
 
   return (
@@ -32,11 +39,12 @@ function VerlofAfkeurenPopup({SetPopupWeergeven, verlofData}) {
             <div className="flex w-full h-full items-center flex-col">
                 <p className='w-full text-center text-[25px] mb-[20px]'>Verlof Afkeuren</p>
                 <p className='w-full text-center'>Wat is de reden van afkeuring?</p>
+                <p className='w-full text-center text-[#DF121B]'>{foutMelding}</p>
                 <textarea name="" id=""
                   className='w-full h-[200px] resize-none mb-[20px] border-1 border-solid border-[#D0D0D0] rounded-[15px] bg-[#F4F4F4] p-[10px]'
                   value={afkeurReden}
                   placeholder="test"
-                  onChange={e => {setAfkeurReden(e.target.value)}}
+                  onChange={e => {setAfkeurReden(e.target.value), setFoutMelding("")}}
 
                 />
                 <div className='w-full flex justify-between'>

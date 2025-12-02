@@ -18,9 +18,17 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, Afke
             </div>
             <div className="w-full h-auto pt-[20px]">
                 {
-                    <p>{verlofStatusData.filter(x => x.id == verlofData.statusVerlof_id?.id)[0].omschrijving}</p>
+                    typeKaart == "openAanvragen" && verlofData.statusVerlof_id.id == 3 ? 
+                    <p>annuleren mogelijk</p> :
+
+                    typeKaart == "manager" && (verlofData.statusVerlof_id.id == 3 || verlofData.statusVerlof_id.id == 4) ? 
+                    <button className='h-[40px] w-[100px] bg-[#DF121B] text-white rounded-[15px] cursor-pointer' onClick={() => AfkeurenPopupWeergeven(verlofData)}>Afkeuren</button> :
+
+                    <p className='mb-[5px] text-[18px]'>{verlofStatusData.filter(x => x.id == verlofData.statusVerlof_id?.id)[0].omschrijving}</p>
                 }
-                <button className='h-[40px] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => AfkeurenPopupWeergeven(verlofData)}></button>
+                {
+                     verlofData.statusVerlof_id.id == 2 ? <p>Reden van afkeur: {verlofData.afkeurReden}</p> : <></>
+                }
             </div>
         </div>
     );
