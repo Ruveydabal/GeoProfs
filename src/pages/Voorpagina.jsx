@@ -98,17 +98,7 @@ function Voorpagina() {
 
         const userData = userSnap.data();
         const afdeling = userData.afdeling;
-        const naamGebruiker = userData.naamGebruiker;
         setAfdelingUser(afdeling);
-        setGebruikerNaam(naamGebruiker);
-
-        // Haal rol-naam op
-        if (userData.rol_id) {
-          const rolDoc = await getDoc(userData.rol_id);
-          if (rolDoc.exists()) {
-            setRolNaam(rolDoc.data().naam);
-          }
-        }
 
         // Firestore refs
         const aanvragenRef = collection(db, "verlof");
@@ -142,15 +132,12 @@ function Voorpagina() {
             };
           })
         );
-
         // Filter op rol
         if (rolNaam !== "manager") {
-          aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
-        }
-        else if (rolNaam === "manager") {
-          aanvragen = aanvragen.filter(
-            (item) => item.gebruikerAfdeling && item.naamGebruiker
-          );
+            aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
+            console.log('hij is hier in de if');
+        } else if (rolNaam === "manager") {
+            console.log("Hij komt hier!");
         }
 
         setGoedgekeurdeAanvragen(aanvragen);
