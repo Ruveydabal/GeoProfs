@@ -1,12 +1,28 @@
 import { useState } from 'react';
+import { db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 function VerlofAfkeurenPopup({SetPopupWeergeven, verlofData}) {
 
-  const [afkeurReden, setAfkeurReden] = useState(null); 
+  const [afkeurReden, setAfkeurReden] = useState("");
 
-  function verlofAfkeurOpsturen(){
-    console.log(afkeurReden)
-    //do stuff
+  const verlofAfkeurenBevestigen = async () => {
+    const verlofRef = doc(db, "verlof", verlofData.id);
+    var statusVerlofRef = doc(db, "statusVerlof", "2");
+
+    await setDoc(verlofRef, {
+      statusVerlof_id: statusVerlofRef,
+      afkeurReden: afkeurReden
+    }, { merge: true });
+
+    //audit aanmaken
+
+    setAfkeurReden("");
+    SetPopupWeergeven(false);
+  }
+
+  function verlofAfkeurenAnnuleren(){
+    setAfkeurReden("");
     SetPopupWeergeven(false);
   }
 
@@ -20,12 +36,12 @@ function VerlofAfkeurenPopup({SetPopupWeergeven, verlofData}) {
                   className='w-full h-[200px] resize-none mb-[20px] border-1 border-solid border-[#D0D0D0] rounded-[15px] bg-[#F4F4F4] p-[10px]'
                   value={afkeurReden}
                   placeholder="test"
-                  onChange={e => {setAfkeurReden(e.target.value), console.log(afkeurReden)}}
+                  onChange={e => {setAfkeurReden(e.target.value)}}
 
                 />
                 <div className='w-full flex justify-between'>
-                  <button className='h-[40px] w-[150px] bg-[#fff] rounded-[15px] border-1 border-solid border-[#D0D0D0] cursor-pointer' onClick={console.log("test 1")}>Annuleren</button>
-                  <button className='h-[40px] w-[150px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={console.log("test 2")}>Bevestigen</button>
+                  <button className='h-[40px] w-[150px] bg-[#fff] rounded-[15px] border-1 border-solid border-[#D0D0D0] cursor-pointer' onClick={() => (verlofAfkeurenAnnuleren())}>Annuleren</button>
+                  <button className='h-[40px] w-[150px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => (verlofAfkeurenBevestigen())}>Bevestigen</button>
                   
                 </div>
             </div>
