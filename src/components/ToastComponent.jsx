@@ -7,7 +7,7 @@ function ToastComponent({ id, message, duration = 3000, onClose }) {
   }, [id, duration, onClose]);
 
   return (
-    <div className="bg-blue-100 border border-blue-400 text-blue-800 px-4 py-3 rounded-xl shadow-md mb-3 animate-fadeIn">
+    <div className="bg-blue-100 border border-blue-400 text-blue-800 px-4 py-3 rounded-[15px] shadow-md mb-3 animate-fadeIn">
       {message}
     </div>
   );
