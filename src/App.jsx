@@ -76,6 +76,18 @@ function App() {
 
   moment.locale('nl');
 
+  // Toasts centraal regelen
+  const [toasts, setToasts] = useState([]);
+
+  function voegToastToe(bericht, duur = 3000) {
+    const id = Date.now();
+    setToasts((vorige) => [...vorige, { id, bericht, duur }]);
+  }
+
+  function verwijderToast(id) {
+    setToasts((vorige) => vorige.filter(t => t.id !== id));
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -131,7 +143,7 @@ function App() {
         <Route path="/manager/voorpagina" element={
           <ProtectedRoute allowedRoles={["manager"]}>
             <HeaderZonderRefresh gebruiker={gebruiker}>
-              <Voorpagina />
+              <Voorpagina voegToastToe={voegToastToe} verwijderToast={verwijderToast} />
             </HeaderZonderRefresh>
           </ProtectedRoute>
         }/>
@@ -147,6 +159,9 @@ function App() {
         {/* Alle overige routes gaan naar login */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      <ToastContainer toasts={toasts} verwijderToast={verwijderToast} />
+
     </BrowserRouter>
   );
 }
