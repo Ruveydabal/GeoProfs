@@ -4,4 +4,3 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 
 // Vitest koppelen met jest-dom matchers
 expect.extend(matchers);
- 

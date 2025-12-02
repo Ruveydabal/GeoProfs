@@ -118,8 +118,7 @@ function VerlofAanvraag() {
 
 return (
     <>
-      <Header />
-      <div className="h-[90%] w-full bg-white-500 flex items-center justify-center">
+      <div className="h-full w-full bg-white-500 flex items-center justify-center">
         <div className='h-[90%] w-[70%] flex items-center justify-center'>
           <div className='h-[80%] w-[50%] bg-[#DDE7F1] flex flex-col justify-between items-center rounded-[15px] p-4'>
             <div className='h-[10%] w-[80%] flex flex-col items-center justify-start rounded-[15px] p-4 text-3xl font-bold'>
