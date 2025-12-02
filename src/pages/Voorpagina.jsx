@@ -17,9 +17,7 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
   const [goedgekeurdeAanvragen, setGoedgekeurdeAanvragen] = useState([]);
   const [rolNaam, setRolNaam] = useState(null);
   const [afdelingUser, setAfdelingUser] = useState(null);
-
-  //tijdelijke variabelen
-  var verlofSaldo = 50;
+  const [verlofSaldo, setVerlofSaldo] = useState(null);
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -96,6 +94,10 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
         const userData = userSnap.data();
         const afdeling = userData.afdeling;
         setAfdelingUser(afdeling);
+
+        if (userData.verlofSaldo !== undefined) {
+          setVerlofSaldo(userData.verlofSaldo);
+        }
 
         // Haal rol-naam op
         if (userData.rol_id) {

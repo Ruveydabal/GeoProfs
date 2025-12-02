@@ -17,6 +17,7 @@ import VerlofAanvraag from './pages/VerlofAanvraag';
 import Profiel from './pages/Profiel';
 import AuditOverzicht from './pages/AuditOverzicht';
 import Verlofoverzicht from './pages/Verlofoverzicht';
+import ToastContainer from './components/ToastContainer';
 
 function App() {
   const [gebruiker, setGebruiker] = useState(null);
