@@ -19,6 +19,7 @@ function Voorpagina() {
   const [goedgekeurdeAanvragen, setGoedgekeurdeAanvragen] = useState([]);
   const [rolNaam, setRolNaam] = useState(null);
   const [afdelingUser, setAfdelingUser] = useState(null);
+  const [gebruikerNaam, setGebruikerNaam] = useState(null);
 
   //tijdelijke variabelen
   var verlofSaldo = 50;
@@ -97,7 +98,9 @@ function Voorpagina() {
 
         const userData = userSnap.data();
         const afdeling = userData.afdeling;
+        const naamGebruiker = userData.naamGebruiker;
         setAfdelingUser(afdeling);
+        setGebruikerNaam(naamGebruiker);
 
         // Haal rol-naam op
         if (userData.rol_id) {
@@ -143,6 +146,11 @@ function Voorpagina() {
         // Filter op rol
         if (rolNaam !== "manager") {
           aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
+        }
+        else if (rolNaam === "manager") {
+          aanvragen = aanvragen.filter(
+            (item) => item.gebruikerAfdeling && item.naamGebruiker
+          );
         }
 
         setGoedgekeurdeAanvragen(aanvragen);
