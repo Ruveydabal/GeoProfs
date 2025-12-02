@@ -16,6 +16,7 @@ function VerlofAanvraag() {
     const [reden, setReden] = useState(""); 
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [userNaam, setUserNaam] = useState("");
     const navigate = useNavigate();
 
 
@@ -32,6 +33,24 @@ function VerlofAanvraag() {
       } else {
           console.warn("Geen userId gevonden in localStorage. Gebruiker is mogelijk niet ingelogd.");
       }
+
+      if (opgeslagenUserId) {
+        setUserId(opgeslagenUserId);
+
+        const haalUserOp = async () => {
+            try {
+                const userDoc = await getDoc(doc(db, "user", opgeslagenUserId));
+                if (userDoc.exists()) {
+                    setUserNaam(userDoc.data().voornaam); // veld in Firestore is 'voornaam'
+                } else {
+                    console.warn("Geen user document gevonden in Firestore.");
+                }
+            } catch (error) {
+                console.error("Fout bij ophalen user:", error);
+            }
+        };
+        haalUserOp();
+    }
 
       //haal verloftypes uit Firestore
       const haalVerlofTypesOp = async () => {
@@ -67,14 +86,16 @@ function VerlofAanvraag() {
         return;
     }
 
+    
+
     setLoading(true);
     try {
-      const verlofId = `verlof_${userId}_${Date.now()}`;
-      await setDoc(doc(db, "verlof", verlofId), {
+      await addDoc(collection(db, "verlof"), {
         user_id: doc(db, "user", userId),
         typeVerlof_id: doc(db, "typeVerlof", verlofType),
         startDatum: moment(verlofAanvraagDag, 'YYYY-MM-DD').toDate(),
         eindDatum: moment(verlofAanvraagTotDag, 'YYYY-MM-DD').toDate(),
+        statusVerlof_id: doc(db, "statusVerlof", "3"),
         omschrijvingRedenVerlof: reden || "Geen reden opgegeven",
         createdAt: serverTimestamp(),
       });
