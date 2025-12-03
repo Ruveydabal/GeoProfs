@@ -1,32 +1,59 @@
 import { useState } from 'react';
 import { db } from "../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, serverTimestamp  } from "firebase/firestore";
 
-function VerlofAfkeurenPopup({setPopupWeergeven, verlofData, setHerladen}) {
+function VerlofAfkeurenPopup({setPopupWeergeven, verlofData, setHerladen, gebruiker}) {
 
   const [afkeurReden, setAfkeurReden] = useState("");
   const [foutMelding, setFoutMelding] = useState("");
 
   const verlofAfkeurenBevestigen = async () => {
-    if(afkeurReden == "" || !afkeurReden){
-      setFoutMelding("Reden mag niet leeg zijn.")
-      return
+    if (!afkeurReden) {
+      setFoutMelding("Reden mag niet leeg zijn.");
+      return;
     }
 
-    const verlofRef = doc(db, "verlof", verlofData.id);
-    var statusVerlofRef = doc(db, "statusVerlof", "2");
+    try {
+      const verlofRef = doc(db, "verlof", verlofData.id);
+      const statusVerlofRef = doc(db, "statusVerlof", "2");
 
-    await setDoc(verlofRef, {
-      statusVerlof_id: statusVerlofRef,
-      afkeurReden: afkeurReden
-    }, { merge: true });
+      // Verlof updaten
+      await setDoc(
+        verlofRef,
+        {
+          statusVerlof_id: statusVerlofRef,
+          laatstGeupdate: serverTimestamp(),
+          afkeurReden: afkeurReden,
+        },
+        { merge: true }
+      );
 
-    //audit aanmaken
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 2, titel: "aanpassen" },
+        tabel: { id: 2, tabelNaam: "verlof" },
+        uitgevoerdDoorUser: {
+          id: localStorage.getItem("userId"),
+          naam: gebruiker.voornaam,
+          achternaam: gebruiker.achternaam,
+        },
+        typeUitvoering: { id: 3, titel: "Afgekeurd" },
+        uitgevoerdOp: {
+          id: verlofData.id,
+          tabel: { id: 2, tabelNaam: "verlof" },
+        },
+        laatstGeupdate: serverTimestamp(),
+      });
 
-    setHerladen(prev => !prev);
-    setAfkeurReden("");
-    setPopupWeergeven(false);
-  }
+      setPopupWeergeven(false);
+      setAfkeurReden("");
+      setHerladen(prev => !prev);
+
+    } catch (error) {
+      setFoutMelding("Er is een fout opgetreden bij het opslaan.");
+      console.error(error)
+    }
+  };
 
   function verlofAfkeurenAnnuleren(){
     setAfkeurReden("");

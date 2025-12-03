@@ -28,7 +28,7 @@ function Verlofoverzicht({gebruiker}) {
           </div>
       </div>
       {popupWeergeven ?
-      <VerlofAfkeurenPopup setPopupWeergeven={setPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen}/> :
+      <VerlofAfkeurenPopup setPopupWeergeven={setPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
       <></>
       }
       
