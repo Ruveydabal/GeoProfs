@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { collection, query, where, getDocs, doc, getDoc  } from "firebase/firestore";
 import { db } from '../firebase'; 
 import moment from 'moment';
-import Header from '../components/Header'
 import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
 import MaandNavigatie from '../components/MaandNavigatie'
 import WeekNavigatie from '../components/WeekNavigatie'
 
-
-function Voorpagina() {
+function Voorpagina({ voegToastToe, verwijderToast }) {
   let navigate = useNavigate();
   const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
   const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
@@ -19,10 +17,7 @@ function Voorpagina() {
   const [goedgekeurdeAanvragen, setGoedgekeurdeAanvragen] = useState([]);
   const [rolNaam, setRolNaam] = useState(null);
   const [afdelingUser, setAfdelingUser] = useState(null);
-  const [gebruikerNaam, setGebruikerNaam] = useState(null);
-
-  //tijdelijke variabelen
-  var verlofSaldo = 50;
+  const [verlofSaldo, setVerlofSaldo] = useState(null);
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -99,6 +94,18 @@ function Voorpagina() {
         const userData = userSnap.data();
         const afdeling = userData.afdeling;
         setAfdelingUser(afdeling);
+
+        if (userData.verlofSaldo !== undefined) {
+          setVerlofSaldo(userData.verlofSaldo);
+        }
+
+        // Haal rol-naam op
+        if (userData.rol_id) {
+          const rolDoc = await getDoc(userData.rol_id);
+          if (rolDoc.exists()) {
+            setRolNaam(rolDoc.data().naam);
+          }
+        }
 
         // Firestore refs
         const aanvragenRef = collection(db, "verlof");
@@ -209,7 +216,6 @@ function Voorpagina() {
           </div>
         </div>
       </div>
-
     </>
   )
 }
