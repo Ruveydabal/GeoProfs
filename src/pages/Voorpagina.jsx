@@ -135,11 +135,7 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
         if (rolNaam !== "manager") {
             aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
 
-
-            console.log('hij is hier in de if');
-
         } else if (rolNaam === "manager") {
-          console.log("komt hier");
         }
 
         setGoedgekeurdeAanvragen(aanvragen);
