@@ -139,10 +139,11 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
             };
           })
         );
-
         // Filter op rol
         if (rolNaam !== "manager") {
-          aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
+            aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
+        } else if (rolNaam === "manager") {
+          
         }
 
         setGoedgekeurdeAanvragen(aanvragen);

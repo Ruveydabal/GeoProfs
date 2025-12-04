@@ -5,7 +5,7 @@ import MaandKalenderDag from './MaandKalenderDag';
 function MaandKalender({weekDagen, maand, jaar, rol, aanvragen }) {
     // checkt of een datum in het weekend valt. weekend = true
     const DagIsWeekend = (datum) => {
-        if(moment(datum).day() == 6){
+        if(moment(datum).day() == 6){   
             return true;
         }
         if(moment(datum).day() == 0){
