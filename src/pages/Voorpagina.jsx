@@ -135,9 +135,8 @@ function Voorpagina() {
         // Filter op rol
         if (rolNaam !== "manager") {
             aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
-            console.log('hij is hier in de if');
         } else if (rolNaam === "manager") {
-            console.log("Hij komt hier!");
+          
         }
 
         setGoedgekeurdeAanvragen(aanvragen);
