@@ -99,14 +99,6 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
           setVerlofSaldo(userData.verlofSaldo);
         }
 
-        // Haal rol-naam op
-        if (userData.rol_id) {
-          const rolDoc = await getDoc(userData.rol_id);
-          if (rolDoc.exists()) {
-            setRolNaam(rolDoc.data().naam);
-          }
-        }
-
         // Firestore refs
         const aanvragenRef = collection(db, "verlof");
         const statusRef = doc(db, "statusVerlof", "1");
@@ -142,8 +134,12 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
         // Filter op rol
         if (rolNaam !== "manager") {
             aanvragen = aanvragen.filter((item) => item.gebruikerAfdeling === afdeling);
+
+
+            console.log('hij is hier in de if');
+
         } else if (rolNaam === "manager") {
-          
+          console.log("komt hier");
         }
 
         setGoedgekeurdeAanvragen(aanvragen);
