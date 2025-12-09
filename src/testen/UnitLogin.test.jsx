@@ -27,7 +27,7 @@ vi.mock('firebase/firestore', async (importOriginal) => {
   };
 });
 
-// Mock Firebase db import
+// Mock Firebase database import
 vi.mock('../firebase', () => ({
   db: {},
 }));
@@ -43,6 +43,7 @@ beforeAll(() => {
   };
 });
 
+// Import Login page
 import Login from '../pages/Login.jsx';
 
 describe('Login Component', () => {
