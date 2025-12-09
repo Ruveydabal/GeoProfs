@@ -9,25 +9,36 @@ vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-
-// Component import
+// Te testen component
 import Ziekmelden from '../pages/Ziekmelden';
 
-// --- Cleanup na elke test ---
+// Ruimt de DOM op na elke test
 afterEach(() => cleanup());
 
-// --- Mock localStorage ---
+// Mock van localStorage (als spies zodat we calls kunnen controleren) 
 beforeAll(() => {
   global.localStorage = {
     store: {},
-    getItem(key) { return this.store[key] || null; },
-    setItem(key, value) { this.store[key] = String(value); },
-    removeItem(key) { delete this.store[key]; },
-    clear() { this.store = {}; },
+
+    getItem: vi.fn(function (key) {
+      return this.store[key] || null;
+    }),
+
+    setItem: vi.fn(function (key, value) {
+      this.store[key] = String(value);
+    }),
+
+    removeItem: vi.fn(function (key) {
+      delete this.store[key];
+    }),
+
+    clear: vi.fn(function () {
+      this.store = {};
+    }),
   };
 });
 
-// --- Mock Firebase Firestore ---
+// Mock Firebase functies zodat er geen echte database wordt aangeroepen
 vi.mock('firebase/firestore', async (importOriginal) => {
   const actual = await importOriginal();
   return {
@@ -35,27 +46,30 @@ vi.mock('firebase/firestore', async (importOriginal) => {
     doc: vi.fn(),
     getDoc: vi.fn(),
     setDoc: vi.fn(),
-    serverTimestamp: vi.fn(() => new Date())
+    serverTimestamp: vi.fn(() => new Date()),
   };
 });
 
 import { getDoc, setDoc } from 'firebase/firestore';
 
-// --- Tests ---
+//  Tests 
 describe('Ziekmelden Component', () => {
 
+  // Reset mocks en localStorage voor elke test
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
   });
 
   it('zet vandaag en volgendeDag correct bij render', () => {
+    // Render component
     render(<Ziekmelden userId="123" />);
-
+    // Haal beide datumvelden op
     const inputs = screen.getAllByRole('textbox');
+
     const vandaagValue = inputs[0].value;
     const volgendeDagValue = inputs[1].value;
-
+    // Vergelijk waarden met moment()
     const vandaagExpected = moment().format('D-MM-YYYY');
     const volgendeDagExpected = moment().add(1, 'days').format('D-MM-YYYY');
 
@@ -65,27 +79,35 @@ describe('Ziekmelden Component', () => {
 
   it('gebruikt userId uit props als aanwezig', () => {
     render(<Ziekmelden userId="123" />);
+    // Als prop bestaat mag localStorage niet gebruikt zijn
     expect(localStorage.getItem).not.toHaveBeenCalled();
   });
 
   it('haalt userId op uit localStorage als prop ontbreekt', () => {
     localStorage.setItem('userId', '456');
+
     render(<Ziekmelden />);
+
+    // Check of getItem is aangeroepen
+    expect(localStorage.getItem).toHaveBeenCalledWith('userId');
     expect(localStorage.getItem('userId')).toBe('456');
   });
 
   it('haalt verloftype op bij render', async () => {
+    // Mock response van getDoc
     getDoc.mockResolvedValueOnce({
       exists: () => true,
       data: () => ({ naam: 'Ziek' }),
     });
 
     render(<Ziekmelden userId="123" />);
-
+    
+    // Controleer dat Firestore één keer is bevraagd
     expect(getDoc).toHaveBeenCalledTimes(1);
   });
 
   it('behandelZiekmelding roept setDoc aan met juiste parameters', async () => {
+     // Firestore mock data
     getDoc.mockResolvedValueOnce({
       exists: () => true,
       data: () => ({ naam: 'Ziek' }),
@@ -94,11 +116,15 @@ describe('Ziekmelden Component', () => {
     setDoc.mockResolvedValueOnce();
 
     render(<Ziekmelden userId="123" />);
-    const button = screen.getByText('Ziekmelden');
+
+    // Klik op de "Ziekmelden" button
+    const button = screen.getByRole('button', { name: 'Ziekmelden' });
+
     fireEvent.click(button);
 
-    await Promise.resolve(); // wacht op async
+    await Promise.resolve(); // wacht async af
 
+    // Controleer dat setDoc is aangeroepen (dus ziekmelding is opgeslagen)
     expect(setDoc).toHaveBeenCalledTimes(1);
   });
 
