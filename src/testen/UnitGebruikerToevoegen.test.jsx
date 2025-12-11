@@ -54,17 +54,8 @@ describe("Gebruiker Toevoegen Component", () => {
     await user.type(screen.getByPlaceholderText("E-mail"), "tim@gmail.com");
     await user.type(screen.getByPlaceholderText("BSN nummer"), "123456789");
     await user.type(screen.getByPlaceholderText("Wachtwoord"), "tim");
-
-    await user.selectOptions(
-      screen.getByRole("combobox", { name: /Rol/i }),
-      "Medewerker"
-    );
-
-    await user.selectOptions(
-      screen.getByRole("combobox", { name: /Afdeling/i }),
-      "ICT"
-    );
-
+    await user.selectOptions( screen.getByRole("combobox", { name: /Rol/i }), "Medewerker" );
+    await user.selectOptions( screen.getByRole("combobox", { name: /Afdeling/i }), "ICT" );
     await user.type(screen.getByLabelText("In dienst"), "2025-12-09");
     await user.type(screen.getByPlaceholderText("Saldo"), "50");
 
@@ -106,34 +97,42 @@ describe("Gebruiker Toevoegen Component", () => {
             const inputs = screen.getAllByPlaceholderText("Voornaam");
             await user.type(inputs[0], "Tim");
         }
+
         if (veld.placeholder && veld.placeholder !== "Achternaam") {
             const inputs = screen.getAllByPlaceholderText("Achternaam");
             await user.type(inputs[0], "Tom");
         }
+
         if (veld.placeholder && veld.placeholder !== "E-mail") {
             const inputs = screen.getAllByPlaceholderText("E-mail");
             await user.type(inputs[0], "tim@gmail.com");
         }
+
         if (veld.placeholder && veld.placeholder !== "BSN nummer") {
             const inputs = screen.getAllByPlaceholderText("BSN nummer");
             await user.type(inputs[0], "123456789");
         }
+
         if (veld.placeholder && veld.placeholder !== "Wachtwoord") {
             const inputs = screen.getAllByPlaceholderText("Wachtwoord");
             await user.type(inputs[0], "tim");
         }
+
         if (veld.role && veld.role.source !== /Rol/i.source) {
             const rolSelects = screen.getAllByRole("combobox", { name: /Rol/i });
             await user.selectOptions(rolSelects[0], "Medewerker");
         }
+
         if (veld.role && veld.role.source !== /Afdeling/i.source) {
             const afdelingSelects = screen.getAllByRole("combobox", { name: /Afdeling/i });
             await user.selectOptions(afdelingSelects[0], "ICT");
         }
+
         if (veld.labelText && veld.labelText !== "In dienst") {
             const inDienstInputs = screen.getAllByLabelText("In dienst");
             await user.type(inDienstInputs[0], "2025-12-09");
         }
+        
         if (veld.placeholder && veld.placeholder !== "Saldo") {
             const saldoInputs = screen.getAllByPlaceholderText("Saldo");
             await user.type(saldoInputs[0], "50");
