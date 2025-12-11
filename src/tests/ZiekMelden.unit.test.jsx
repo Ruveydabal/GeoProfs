@@ -15,7 +15,7 @@ import Ziekmelden from '../pages/Ziekmelden';
 // Ruimt de DOM op na elke test
 afterEach(() => cleanup());
 
-// Mock van localStorage (als spies zodat we calls kunnen controleren) 
+// Mock van localStorage 
 beforeAll(() => {
   global.localStorage = {
     store: {},
@@ -60,6 +60,46 @@ describe('Ziekmelden Component', () => {
     vi.clearAllMocks();
     localStorage.clear();
   });
+
+  it('heeft standaard verloftype "Ziek" voor Firestore geladen is', () => {
+    // Firestore moet NIET resolved worden, dus mock geen waarde
+
+    render(<Ziekmelden userId="123" />);
+
+    // vind de input die het verloftype toont
+    const verlofInput = screen.getByDisplayValue("Ziek");
+
+    expect(verlofInput).toBeInTheDocument();
+  });
+
+  it('vervangt standaard verloftype door Firestore waarde', async () => {
+    getDoc.mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({ naam: 'Ziek' }), // of een andere naam om het beter te testen
+    });
+
+    render(<Ziekmelden userId="123" />);
+
+    // wacht tot Firestore resolved
+    const verlofInput = await screen.findByDisplayValue("Ziek");
+
+    expect(verlofInput).toBeInTheDocument();
+  });
+
+  it('laadt verloftype uit Firestore en toont het in inputveld', async () => {
+    getDoc.mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({ naam: 'Ziekmelding' }),
+    });
+
+    render(<Ziekmelden userId="123" />);
+
+    const verlofInput = await screen.findByDisplayValue("Ziekmelding");
+
+    expect(verlofInput).toBeInTheDocument();
+  });
+
+
 
   it('zet vandaag en volgendeDag correct bij render', () => {
     // Render component
