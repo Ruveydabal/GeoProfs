@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Header from '../components/Header';
 import { db, Timestamp } from "../firebase";
 import { collection, addDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
@@ -83,39 +82,42 @@ function GebruikerToevoegen() {
           <div className="w-full flex flex-col items-center justify-start text-3xl font-bold mb-6">
             Registreer Nieuwe Gebruiker
           </div>
-
-          {/* Persoonlijke gegevens */}
+          
           <div className="w-full max-w-[400px] p-6 rounded-lg mb-6">
-            <h2 className="text-center text-lg mb-4 font-semibold">
-              Persoonlijke Gegevens
-            </h2>
+            <h2 className="text-center text-lg mb-4 font-semibold">Persoonlijke Gegevens</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
+              {/* Voornaam */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">Voornaam</label>
+                <label htmlFor="voornaam" className="w-36 text-sm font-medium">Voornaam</label>
                 <input
+                  id="voornaam"
                   type="text"
                   value={voornaam}
                   onChange={(e) => setVoornaam(e.target.value)}
                   required
                   placeholder="Voornaam"
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"/>
               </div>
 
+              {/* Achternaam */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">Achternaam</label>
+                <label htmlFor="achternaam" className="w-36 text-sm font-medium">Achternaam</label>
                 <input
+                  id="achternaam"
                   type="text"
                   value={achternaam}
                   onChange={(e) => setAchternaam(e.target.value)}
                   required
                   placeholder="Achternaam"
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" />
+                  className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"/>
               </div>
 
+              {/* Email */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">E-mail</label>
+                <label htmlFor="email" className="w-36 text-sm font-medium">E-mail</label>
                 <input
+                  id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -124,9 +126,11 @@ function GebruikerToevoegen() {
                   className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"/>
               </div>
 
+              {/* BSN */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">BSN nummer</label>
+                <label htmlFor="bsn" className="w-36 text-sm font-medium">BSN nummer</label>
                 <input
+                  id="bsn"
                   type="text"
                   value={bsnNummer}
                   onChange={(e) => setBsnNummer(e.target.value)}
@@ -135,9 +139,11 @@ function GebruikerToevoegen() {
                   className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400"/>
               </div>
 
+              {/* Wachtwoord */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">Wachtwoord</label>
+                <label htmlFor="wachtwoord" className="w-36 text-sm font-medium">Wachtwoord</label>
                 <input
+                  id="wachtwoord"
                   type="password"
                   value={wachtwoord}
                   onChange={(e) => setWachtwoord(e.target.value)}
@@ -147,13 +153,13 @@ function GebruikerToevoegen() {
               </div>
 
               {/* Werkgegevens */}
-              <h2 className="text-center text-lg mt-8 mb-4 font-semibold">
-                Werk Gegevens
-              </h2>
+              <h2 className="text-center text-lg mt-8 mb-4 font-semibold">Werk Gegevens</h2>
 
+              {/* Rol */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">Rol</label>
+                <label htmlFor="rol" className="w-36 text-sm font-medium">Rol</label>
                 <select
+                  id="rol"
                   value={rol}
                   onChange={(e) => setRol(e.target.value)}
                   required
@@ -165,14 +171,16 @@ function GebruikerToevoegen() {
                 </select>
               </div>
 
+              {/* Afdeling */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">Afdeling</label>
+                <label htmlFor="afdeling" className="w-36 text-sm font-medium">Afdeling</label>
                 <select
+                  id="afdeling"
                   value={afdeling}
                   onChange={(e) => setAfdeling(e.target.value)}
                   required
                   className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400">
-
+                  
                   <option value="">Selecteer afdeling</option>
                   <option>Office management</option>
                   <option>Relation management</option>
@@ -185,9 +193,11 @@ function GebruikerToevoegen() {
                 </select>
               </div>
 
+              {/* In dienst */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">In dienst</label>
+                <label htmlFor="inDienst" className="w-36 text-sm font-medium">In dienst</label>
                 <input
+                  id="inDienst"
                   type="date"
                   value={inDienst}
                   onChange={(e) => setInDienst(e.target.value)}
@@ -195,9 +205,11 @@ function GebruikerToevoegen() {
                   className="flex-1 bg-gray-50 border border-gray-300 rounded-[15px] px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400" />
               </div>
 
+              {/* Verlof */}
               <div className="flex items-center">
-                <label className="w-36 text-sm font-medium">Verlof saldo</label>
+                <label htmlFor="verlofSaldo" className="w-36 text-sm font-medium">Verlof saldo</label>
                 <input
+                  id="verlofSaldo"
                   type="number"
                   value={verlofSaldo}
                   onChange={(e) => {
