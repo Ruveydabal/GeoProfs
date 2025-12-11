@@ -8,13 +8,13 @@ afterEach(() => cleanup());
 vi.mock('../media/AchtergrondLogin.jpg', () => ({ default: '' }));
 vi.mock('../media/GeoprofsLogo.png', () => ({ default: '' }));
 
-// Mock react-router-dom
+// Mock react-router-dom for navigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock Firebase Firestore
+// Mock Firebase Firestore 
 vi.mock('firebase/firestore', async (importOriginal) => {
   const actual = await importOriginal();
   return {
