@@ -75,7 +75,7 @@ describe('Ziekmelden Component', () => {
   it('vervangt standaard verloftype door Firestore waarde', async () => {
     getDoc.mockResolvedValueOnce({
       exists: () => true,
-      data: () => ({ naam: 'Ziek' }), // of een andere naam om het beter te testen
+      data: () => ({ naam: 'Ziek' }), 
     });
 
     render(<Ziekmelden userId="123" />);
