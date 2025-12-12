@@ -157,7 +157,7 @@ describe('Ziekmelden Component', () => {
 
     render(<Ziekmelden userId="123" />);
 
-    // Klik op de "Ziekmelden" button
+    // Klik op "Ziekmelden" button
     const button = screen.getByRole('button', { name: 'Ziekmelden' });
 
     fireEvent.click(button);
