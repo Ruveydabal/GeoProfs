@@ -44,7 +44,7 @@ beforeAll(() => {
 });
 
 // Import Login page
-import Login from '../pages/Login.jsx';
+import Login from '../../pages/Login.jsx';
 
 describe('Login Component', () => {
   beforeEach(() => {
