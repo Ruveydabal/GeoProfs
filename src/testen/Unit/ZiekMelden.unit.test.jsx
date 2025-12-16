@@ -10,7 +10,7 @@ vi.mock('react-router-dom', () => ({
 }));
 
 // Te testen component
-import Ziekmelden from '../pages/Ziekmelden';
+import Ziekmelden from '../../pages/Ziekmelden';
 
 // Ruimt de DOM op na elke test
 afterEach(() => cleanup());
