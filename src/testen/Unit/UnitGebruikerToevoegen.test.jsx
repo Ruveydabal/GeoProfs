@@ -29,6 +29,7 @@ vi.mock("../firebase", () => ({
 
 // Mock Firebase Firestore 
 vi.mock("firebase/firestore", () => ({
+  getFirestore: vi.fn(() => ({})),
   getDocs: (...args) => mockGetDocs(...args),
   setDoc: (...args) => mockSetDoc(...args),
   addDoc: (...args) => mockAddDoc(...args),
