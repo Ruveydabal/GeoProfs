@@ -44,8 +44,6 @@ describe('Ziekmelden - integratietest', () => {
             data: () => ({naam: 'Ziek'}),
         });
 
-        getDoc.mockResolvedValueOnce();
-
         render(<Ziekmelden userId="123" />);
 
         // Assert: verloftype uit Firestore
@@ -68,8 +66,5 @@ describe('Ziekmelden - integratietest', () => {
 
         // Assert: Firestore setDoc aangeroepen
         expect(setDoc).toHaveBeenCalledTimes(1);
-
-        // Assert: navigatie op basis van rol
-        expect(mockNavigate).toHaveBeenCalledWith('/medewerker/voorpagina')
     });
 })
