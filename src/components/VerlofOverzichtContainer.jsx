@@ -1,80 +1,88 @@
 import { db } from "../firebase";
 import { useState, useEffect } from 'react';
-import { collection, query, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, where, documentId } from "firebase/firestore";
 import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
 
 function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
-    const [verlofData, setVerlofData] = useState([]);
-    const [userData, setUserData] = useState([]);
-    const [verlofStatusData, setVerlofStatusData] = useState([]);
-    const [ladenOfFaalText, setLadenOfFaalText] = useState("Aan het laden...");
 
-    const FetchVerlofAanvraagData = async (filter) => {
+    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, filter) => {
         try {
-            const verlofSnap = await getDocs(query(collection(db, "verlof"), where(filter)));
+            let q = collection(db, "verlof");
+            if (filter)
+                q = query(q, where(...filter));
+            const verlofSnap = await getDocs(q);
 
             if (verlofSnap.empty) {
-            setLadenOfFaalText("Er is geen verlof gevonden.");
-            setVerlofData([]);
-            return;
+                setInfoText("U heeft geen verleden verlof aanvragen.");
+                return;
             }
 
-            setVerlofData(verlofSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-            })));
+            const data = verlofSnap.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            setVerlofData(data);
+            setInfoText("");
 
         } catch (err) {
             console.error("Fout bij het ophalen van verlof aanvragen:", err);
-            setLadenOfFaalText("Er is iets misgegaan bij het ophalen van de verlof aanvragen.");
+            setInfoText("Er is iets misgegaan bij het ophalen van de verlof aanvragen.");
         }
     };
 
-    const FetchUserData = async (filter) => {
+    const FetchUserData = async (setUserData, setInfoText, filter) => {
         try {
-            const userSnap = await getDocs(query(collection(db, "user"), where(filter)));
+            let q = collection(db, "user");
+            if (true)
+                q = query(q, where(...filter));
+            const userSnap = await getDocs(q);
 
             if (userSnap.empty) {
-            setLadenOfFaalText("Er zijn geen users gevonden.");
-            setUserData([]);
-            return;
+                setInfoText("Er zijn geen users gevonden.");
+                setUserData([]);
+                return;
             }
 
-            setUserData(userSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-            })));
+            const data = userSnap.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
 
+            setUserData(data);
+            setInfoText("");
         } catch (err) {
             console.error("Fout bij het ophalen van users:", err);
-            setLadenOfFaalText("Er is iets misgegaan bij het ophalen van de users.");
+            setInfoText("Er is iets misgegaan bij het ophalen van de users.");
         }
     };
 
-    const FetchVerlofStatusData = async (filter) => {
+    const FetchVerlofStatusData = async (setVerlofStatusData, setInfoText, filter) => {
         try {
-            const statusSnap = await getDocs(query(collection(db, "statusVerlof"), where(filter)));
+            let q = collection(db, "statusVerlof");
+            if (filter)
+                q = query(q, where(...filter));
+            const statusSnap = await getDocs(q);
 
             if (statusSnap.empty) {
-            setLadenOfFaalText("Er zijn geen verlof statusen gevonden.");
-            setVerlofStatusData([]);
-            return;
+                setInfoText("Er zijn geen users gevonden.");
+                setVerlofStatusData([]);
+                return;
             }
 
-            setVerlofStatusData(statusSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-            })));
+            const data = statusSnap.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
 
+            setVerlofStatusData(data);
+            setInfoText("");
         } catch (err) {
             console.error("Fout bij ophalen verlof status:", err);
-            setLadenOfFaalText("Er is iets misgegaan bij ophalen van de verlof statusen.");
+            setInfoText("Er is iets misgegaan bij ophalen van de verlof statusen.");
         }
     };
 
-    if(!verlofData || verlofData.length == 0 || !userData || userData.length == 0 || !verlofStatusData || verlofStatusData.length == 0){
-        return(ladenOfFaalText)
-    }
     return (
         <div className="flex w-full h-full divide-x divide-[#D0D0D0]">
             <VerlofGeschiedenisOverzicht 
