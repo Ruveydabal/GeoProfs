@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Header from '../components/Header';
-import { db } from "../firebase";
+import { db, Timestamp } from "../firebase";
 import { collection, addDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';

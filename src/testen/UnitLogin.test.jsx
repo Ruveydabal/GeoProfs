@@ -4,13 +4,17 @@ import userEvent from '@testing-library/user-event';
 
 afterEach(() => cleanup());
 
-// Mock react-router-dom
+// Mock assets correct voor Vitest
+vi.mock('../media/AchtergrondLogin.jpg', () => ({ default: '' }));
+vi.mock('../media/GeoprofsLogo.png', () => ({ default: '' }));
+
+// Mock react-router-dom for navigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-// Mock Firebase Firestore
+// Mock Firebase Firestore 
 vi.mock('firebase/firestore', async (importOriginal) => {
   const actual = await importOriginal();
   return {
@@ -23,7 +27,12 @@ vi.mock('firebase/firestore', async (importOriginal) => {
   };
 });
 
-// Mock localStorage
+// Mock Firebase database import
+vi.mock('../firebase', () => ({
+  db: {},
+}));
+
+// Mock localstorage
 beforeAll(() => {
   global.localStorage = {
     store: {},
@@ -34,8 +43,8 @@ beforeAll(() => {
   };
 });
 
-// Import Login component
-import Login from './Login.jsx';
+// Import Login page
+import Login from '../pages/Login.jsx';
 
 describe('Login Component', () => {
   beforeEach(() => {
@@ -44,14 +53,14 @@ describe('Login Component', () => {
   });
 
   it('toont invoervelden en de inlogknop', () => {
-    render(<Login />);
+    render(<Login setTrigger={() => {}} />);
     expect(screen.getByPlaceholderText('E-mail...')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Wachtwoord...')).toBeInTheDocument();
     expect(screen.getByText('Log in')).toBeInTheDocument();
   });
 
   it('toont foutmelding als e-mail en wachtwoord velden leeg zijn', async () => {
-    render(<Login />);
+    render(<Login setTrigger={() => {}} />);
     const user = userEvent.setup();
     await user.click(screen.getByText('Log in'));
     expect(await screen.findByText('Vul zowel e-mailadres als wachtwoord in.')).toBeInTheDocument();
@@ -61,7 +70,7 @@ describe('Login Component', () => {
     const { getDocs } = await import('firebase/firestore');
     getDocs.mockResolvedValueOnce({ empty: true });
 
-    render(<Login />);
+    render(<Login setTrigger={() => {}} />);
     const user = userEvent.setup();
     await user.type(screen.getByPlaceholderText('E-mail...'), 'test@test.com');
     await user.type(screen.getByPlaceholderText('Wachtwoord...'), 'medewerker');
@@ -70,20 +79,20 @@ describe('Login Component', () => {
     expect(await screen.findByText('Gebruiker niet gevonden.')).toBeInTheDocument();
   });
 
-  it('toont foutmelding bij verkeerde wachtwoord', async () => {
+  it('toont foutmelding bij verkeerd wachtwoord', async () => {
     const { getDocs } = await import('firebase/firestore');
 
     getDocs
       .mockResolvedValueOnce({
         empty: false,
-        docs: [{ data: () => ({ rol_id: { path: '1' } }) }],
+        docs: [{ id: '1', data: () => ({ rol_id: { id: '3' } }), ref: 'ref' }],
       })
       .mockResolvedValueOnce({
         empty: false,
         docs: [{ data: () => ({ wachtwoord: 'anders' }) }],
       });
 
-    render(<Login />);
+    render(<Login setTrigger={() => {}} />);
     const user = userEvent.setup();
     await user.type(screen.getByPlaceholderText('E-mail...'), 'medewerker@gmail.com');
     await user.type(screen.getByPlaceholderText('Wachtwoord...'), '1234');
@@ -92,9 +101,9 @@ describe('Login Component', () => {
     expect(await screen.findByText('Onjuist wachtwoord.')).toBeInTheDocument();
   });
 
-  // Gebruikersdata met nieuwe navigatie paden
+  // Succesvolle login met navigatie
   const gebruikers = [
-    { email: 'officemanager@gmail.com', wachtwoord: 'officemanager', rolId: '1', rol: 'office-manager', pad: '/office-manager/voorpagina' },
+    { email: 'officemanager@gmail.com', wachtwoord: 'officemanager', rolId: '1', rol: 'officemanager', pad: '/officemanager/voorpagina' },
     { email: 'manager@gmail.com', wachtwoord: 'manager', rolId: '2', rol: 'manager', pad: '/manager/voorpagina' },
     { email: 'medewerker@gmail.com', wachtwoord: 'medewerker', rolId: '3', rol: 'medewerker', pad: '/medewerker/voorpagina' },
   ];
@@ -106,14 +115,14 @@ describe('Login Component', () => {
       getDocs
         .mockResolvedValueOnce({
           empty: false,
-          docs: [{ data: () => ({ rol_id: { path: rolId } }) }],
+          docs: [{ id: '1', data: () => ({ rol_id: { id: rolId } }), ref: 'ref' }],
         })
         .mockResolvedValueOnce({
           empty: false,
           docs: [{ data: () => ({ wachtwoord }) }],
         });
 
-      render(<Login />);
+      render(<Login setTrigger={() => {}} />);
       const user = userEvent.setup();
       await user.type(screen.getByPlaceholderText('E-mail...'), email);
       await user.type(screen.getByPlaceholderText('Wachtwoord...'), wachtwoord);
@@ -123,7 +132,7 @@ describe('Login Component', () => {
 
       expect(localStorage.getItem('isLoggedIn')).toBe('true');
       expect(localStorage.getItem('rol')).toBe(rol);
-      expect(mockNavigate).toHaveBeenCalledWith(pad); // nu met /voorpagina
+      expect(mockNavigate).toHaveBeenCalledWith(pad);
     });
   });
 });
