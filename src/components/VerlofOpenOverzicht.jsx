@@ -1,34 +1,47 @@
-import { useState, useEffect } from 'react';
 import VerlofKaart from "./VerlofKaart.jsx";
+import { useState, useEffect } from 'react';
+import { db } from "../firebase";
+import { collection, query, where, documentId, doc } from "firebase/firestore";
 
-function VerlofOverzichtBalk({verlofData, userData, typeKaart, verlofStatusData, AfkeurenPopupWeergeven}) { 
-    const [leegText, setLeegText] = useState("");
+function VerlofOpenOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen}) { 
+    const [verlofData, setVerlofData] = useState([]);
+    const [userData, setUserData] = useState([]);
+    const [verlofStatusData, setVerlofStatusData] = useState([]);
+    const [infoText, setInfoText] = useState("Aan het laden...");
+
+    const momenteleUserId = localStorage.getItem("userId");
 
     useEffect(() => {
-    const messages = {
-        geschiedenis: "U heeft geen verleden verlof aanvragen.",
-        openAanvragen: "U heeft geen open verlof aanvragen.",
-        manager: "U heeft geen verlof aanvragen voor u op dit moment.",
-    };
+        let userQ = collection(db, "user");
+        userQ = query(userQ, where(documentId(), "==", momenteleUserId));
+        FetchUserData(setUserData, setInfoText, userQ).then();
 
-    setLeegText(messages[typeKaart] || "");
-    }, [typeKaart]);
+        let verlofStatusQ = collection(db, "statusVerlof");
+        verlofStatusQ = query(verlofStatusQ);
+        FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ).then();
+
+        let verlofQ = collection(db, "verlof");
+        verlofQ = query(verlofQ,
+            where("user_id", "==", doc(db, "user", momenteleUserId)),
+            where("statusVerlof_id", "in", [doc(db, "statusVerlof", "3"), doc(db, "statusVerlof", "4")])
+        );
+        FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen open verlof aanvragen.").then();
+    }, [herladen]);
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">
-                { verlofData.length == 0 ? <p className="w-full text-center">{leegText}</p> :
+                { verlofData.length == 0 ? <p className="w-full text-center">{infoText}</p> :
                 verlofData.map((verlof) => (
                     <VerlofKaart
                         key={verlof.id}
                         verlofData={verlof}
-                        typeKaart={typeKaart}
-                        userData={userData.filter(x => x.id == verlof.user_id?.id)[0]}
+                        userData={userData[0]}
                         verlofStatusData={verlofStatusData}
-                        AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
+                        typeKaart={"openAanvragen"}
                     />
                 ))}
             </div>
     );
 }
 
-export default VerlofOverzichtBalk;
+export default VerlofOpenOverzicht;

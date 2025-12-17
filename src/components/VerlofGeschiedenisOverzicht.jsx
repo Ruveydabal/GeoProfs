@@ -3,30 +3,30 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, documentId, doc } from "firebase/firestore";
 
-function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven}) { 
-        const [verlofData, setVerlofData] = useState([]);
-        const [userData, setUserData] = useState([]);
-        const [verlofStatusData, setVerlofStatusData] = useState([]);
-        const [infoText, setInfoText] = useState("Aan het laden...");
+function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen}) { 
+    const [verlofData, setVerlofData] = useState([]);
+    const [userData, setUserData] = useState([]);
+    const [verlofStatusData, setVerlofStatusData] = useState([]);
+    const [infoText, setInfoText] = useState("Aan het laden...");
 
-        const momenteleUserId = localStorage.getItem("userId");
+    const momenteleUserId = localStorage.getItem("userId");
 
-        useEffect(() => {
-            let userQ = collection(db, "user");
-            userQ = query(userQ, where(documentId(), "==", momenteleUserId));
-            FetchUserData(setUserData, setInfoText, userQ).then();
+    useEffect(() => {
+        let userQ = collection(db, "user");
+        userQ = query(userQ, where(documentId(), "==", momenteleUserId));
+        FetchUserData(setUserData, setInfoText, userQ).then();
 
-            let verlofStatusQ = collection(db, "statusVerlof");
-            verlofStatusQ = query(verlofStatusQ);
-            FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ).then();
+        let verlofStatusQ = collection(db, "statusVerlof");
+        verlofStatusQ = query(verlofStatusQ);
+        FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ).then();
 
-            let verlofQ = collection(db, "verlof");
-            verlofQ = query(verlofQ,
-                where("user_id", "==", doc(db, "user", momenteleUserId)),
-                where("statusVerlof_id", "in", [doc(db, "statusVerlof", "1"), doc(db, "statusVerlof", "2")])
-            );
-            FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ).then();
-        }, [herladen]);
+        let verlofQ = collection(db, "verlof");
+        verlofQ = query(verlofQ,
+            where("user_id", "==", doc(db, "user", momenteleUserId)),
+            where("statusVerlof_id", "in", [doc(db, "statusVerlof", "1"), doc(db, "statusVerlof", "2")])
+        );
+        FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen verleden verlof aanvragen.").then();
+    }, [herladen]);
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">
@@ -38,7 +38,6 @@ function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, Fe
                         userData={userData[0]}
                         verlofStatusData={verlofStatusData}
                         typeKaart={"geschiedenis"}
-                        AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
                     />
                 ))}
             </div>

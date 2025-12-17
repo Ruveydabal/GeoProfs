@@ -1,9 +1,11 @@
 import { getDocs } from "firebase/firestore";
 import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
+import VerlofOpenOverzicht from "./VerlofOpenOverzicht.jsx";
+import VerlofManagerOverzicht from "./VerlofManagerOverzicht.jsx";
 
 function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
 
-    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, q) => {
+    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, q, leegText) => {
         try {
             const verlofSnap = await getDocs(q);
 
@@ -13,7 +15,7 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
             }));
 
             if (data.length === 0) {
-                setInfoText("U heeft geen verleden verlof aanvragen.");
+                setInfoText(leegText);
                 return;
             }
 
@@ -42,7 +44,6 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
             }));
 
             setUserData(data);
-            setInfoText("");
         } catch (err) {
             console.error("Fout bij het ophalen van users:", err);
             setInfoText("Er is iets misgegaan bij het ophalen van de users.");
@@ -65,7 +66,6 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
             }));
 
             setVerlofStatusData(data);
-            setInfoText("");
         } catch (err) {
             console.error("Fout bij ophalen verlof status:", err);
             setInfoText("Er is iets misgegaan bij ophalen van de verlof statusen.");
@@ -79,25 +79,24 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
                 FetchUserData={FetchUserData}
                 FetchVerlofStatusData={FetchVerlofStatusData}
                 herladen={herladen}
-                AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
             />
-             {/* <VerlofOverzichtBalk 
-                verlofData={verlofData.filter(x => x.user_id.id === momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4))}
-                typeKaart="openAanvragen"
-                userData={userData}
-                verlofStatusData={verlofStatusData}
+             <VerlofOpenOverzicht 
+                FetchVerlofAanvraagData={FetchVerlofAanvraagData}
+                FetchUserData={FetchUserData}
+                FetchVerlofStatusData={FetchVerlofStatusData}
+                herladen={herladen}
             />
             {
                 localStorage.getItem("rol") != "medewerker" ?
-                <VerlofOverzichtBalk 
-                    verlofData={verlofData.filter(x => x.user_id.id != momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4) && new Set(userData.filter(x => x.afdeling == userData.filter(x => x.id === momenteleUserId)[0].afdeling).map(x => x.id)).has(x.user_id.id))}
-                    typeKaart="manager"
-                    userData={userData}
-                    verlofStatusData={verlofStatusData}
+                <VerlofManagerOverzicht 
+                    FetchVerlofAanvraagData={FetchVerlofAanvraagData}
+                    FetchUserData={FetchUserData}
+                    FetchVerlofStatusData={FetchVerlofStatusData}
+                    herladen={herladen}
                     AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
                 />
                 : <></>
-            } */}
+            }
 
         </div>
     );
