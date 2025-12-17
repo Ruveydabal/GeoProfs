@@ -1,26 +1,21 @@
-import { db } from "../firebase";
-import { useState, useEffect } from 'react';
-import { collection, query, getDocs, where, documentId } from "firebase/firestore";
+import { getDocs } from "firebase/firestore";
 import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
 
 function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
 
-    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, filter) => {
+    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, q) => {
         try {
-            let q = collection(db, "verlof");
-            if (filter)
-                q = query(q, where(...filter));
             const verlofSnap = await getDocs(q);
-
-            if (verlofSnap.empty) {
-                setInfoText("U heeft geen verleden verlof aanvragen.");
-                return;
-            }
 
             const data = verlofSnap.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+
+            if (data.length === 0) {
+                setInfoText("U heeft geen verleden verlof aanvragen.");
+                return;
+            }
 
             setVerlofData(data);
             setInfoText("");
@@ -31,11 +26,8 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
         }
     };
 
-    const FetchUserData = async (setUserData, setInfoText, filter) => {
+    const FetchUserData = async (setUserData, setInfoText, q) => {
         try {
-            let q = collection(db, "user");
-            if (true)
-                q = query(q, where(...filter));
             const userSnap = await getDocs(q);
 
             if (userSnap.empty) {
@@ -57,11 +49,8 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
         }
     };
 
-    const FetchVerlofStatusData = async (setVerlofStatusData, setInfoText, filter) => {
+    const FetchVerlofStatusData = async (setVerlofStatusData, setInfoText, q) => {
         try {
-            let q = collection(db, "statusVerlof");
-            if (filter)
-                q = query(q, where(...filter));
             const statusSnap = await getDocs(q);
 
             if (statusSnap.empty) {

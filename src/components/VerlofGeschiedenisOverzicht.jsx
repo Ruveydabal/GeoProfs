@@ -1,6 +1,7 @@
 import VerlofKaart from "./VerlofKaart.jsx";
 import { useState, useEffect } from 'react';
-import { documentId } from "firebase/firestore";
+import { db } from "../firebase";
+import { collection, query, where, documentId, doc } from "firebase/firestore";
 
 function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven}) { 
         const [verlofData, setVerlofData] = useState([]);
@@ -11,31 +12,34 @@ function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, Fe
         const momenteleUserId = localStorage.getItem("userId");
 
         useEffect(() => {
-            FetchVerlofAanvraagData(setVerlofData, setInfoText, []).then();
-            FetchUserData(setUserData, setInfoText, [documentId(), "==", "7"]).then();
-            FetchVerlofStatusData(setVerlofStatusData, setInfoText).then();
+            let userQ = collection(db, "user");
+            userQ = query(userQ, where(documentId(), "==", momenteleUserId));
+            FetchUserData(setUserData, setInfoText, userQ).then();
+
+            let verlofStatusQ = collection(db, "statusVerlof");
+            verlofStatusQ = query(verlofStatusQ);
+            FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ).then();
+
+            let verlofQ = collection(db, "verlof");
+            verlofQ = query(verlofQ,
+                where("user_id", "==", doc(db, "user", momenteleUserId)),
+                where("statusVerlof_id", "in", [doc(db, "statusVerlof", "1"), doc(db, "statusVerlof", "2")])
+            );
+            FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ).then();
         }, [herladen]);
-
-
-
-        useEffect(() => {
-            console.log(momenteleUserId)
-            console.log(userData)
-        }, [userData]);
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">
                 { verlofData.length == 0 ? <p className="w-full text-center">{infoText}</p> :
                 verlofData.map((verlof) => (
-                    <div>{verlof.id}</div>
-                    // <VerlofKaart
-                    //     key={verlof.id}
-                    //     verlofData={verlof}
-                    //     userData={userData}
-                    //     verlofStatusData={verlofStatusData}
-                    //     typeKaart={"geschiedenis"}
-                    //     AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
-                    // />
+                    <VerlofKaart
+                        key={verlof.id}
+                        verlofData={verlof}
+                        userData={userData[0]}
+                        verlofStatusData={verlofStatusData}
+                        typeKaart={"geschiedenis"}
+                        AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
+                    />
                 ))}
             </div>
     );
