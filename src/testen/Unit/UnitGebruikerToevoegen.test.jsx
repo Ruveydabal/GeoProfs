@@ -20,7 +20,7 @@ const mockDoc = vi.fn(() => ({}));
 const mockCollection = vi.fn();
 
 // Mock firebase
-vi.mock("../firebase", () => ({
+vi.mock("../../firebase", () => ({
   db: {},
   Timestamp: {
     fromDate: vi.fn(() => new Date()),

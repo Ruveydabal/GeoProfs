@@ -81,6 +81,7 @@ function Login({ setTrigger }) {
           <input
             type="email"
             placeholder="E-mail..."
+            aria-label="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full h-[40px] bg-[#F4F4F4] rounded-[15px] px-4 mb-4 focus:outline-none" />
@@ -88,6 +89,7 @@ function Login({ setTrigger }) {
           <input
             type="password"
             placeholder="Wachtwoord..."
+            aria-label="wachtwoord"
             value={wachtwoord}
             onChange={(e) => setWachtwoord(e.target.value)}
             className="w-full h-[40px] bg-[#F4F4F4] rounded-[15px] px-4 mb-6 focus:outline-none" />
