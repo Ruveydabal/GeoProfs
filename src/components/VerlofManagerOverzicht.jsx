@@ -12,22 +12,29 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
     const momenteleUserId = localStorage.getItem("userId");
 
     useEffect(() => {
-        let userQ = collection(db, "user");
-        userQ = query(userQ);
+        const userQ = query(collection(db, "user"));
         FetchUserData(setUserData, setInfoText, userQ);
 
-        let verlofStatusQ = collection(db, "statusVerlof");
-        verlofStatusQ = query(verlofStatusQ);
+        const verlofStatusQ = query(collection(db, "statusVerlof"));
         FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ);
-
-        let verlofQ = collection(db, "verlof");
-        verlofQ = query(verlofQ, 
-            where("user_id", "!=", doc(db, "user", momenteleUserId)),
-            where("statusVerlof_id", "in", [doc(db, "statusVerlof", "3"), doc(db, "statusVerlof", "4")]),
-            orderBy('createdAt', 'desc')
-        );
-        FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen verlof aanvragen voor u op dit moment.");
     }, [herladen]);
+
+    useEffect(() => {
+        if (!userData || userData.length === 0) return;
+
+        const usersInAfdeling = userData
+            .filter(u => u.afdeling === userData.filter(x => x.id === momenteleUserId)[0].afdeling)
+            .map(u => doc(db, "user", u.id));
+
+        const verlofQ = query(
+            collection(db, "verlof"),
+            where("user_id", "in", usersInAfdeling),
+            where("statusVerlof_id", "in", [doc(db, "statusVerlof", "3"), doc(db, "statusVerlof", "4")]),
+            orderBy("createdAt", "desc")
+        );
+
+        FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen verlof aanvragen voor u op dit moment.");
+    }, [userData, herladen]);
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">
