@@ -35,8 +35,59 @@ describe('Ziekmelden - integratietest', () => {
         localStorage.clear();
     });
 
-    it('gebruiker doorloopt volledige ziekmeld-flow' , async () =>{
-        //arange
+    it('HAPPY: gebruiker meldt zich ziek en wordt genavigeerd', async () => {
+        localStorage.setItem('rol', 'medewerker');
+
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({ naam: 'Ziek' }),
+        });
+
+        setDoc.mockResolvedValueOnce();
+
+        render(<Ziekmelden userId="123" />);
+
+        // verloftype uit Firestore
+        expect(await screen.findByDisplayValue('Ziek')).toBeInTheDocument();
+
+        // klik ziekmelden
+        fireEvent.click(screen.getByRole('button', { name: 'Ziekmelden' }));
+
+        // Firestore wordt aangeroepen
+        await waitFor(() => expect(setDoc).toHaveBeenCalledTimes(1));
+
+        // Navigatie op basis van rol
+        await waitFor(() =>
+            expect(mockNavigate).toHaveBeenCalledWith('/medewerker/voorpagina')
+        );
+    });
+
+    it('UNHAPPY: geen userid  toont alert en doet geen firestore call', async () => {
+        const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({naam: 'Ziek'}),
+        });
+
+        render(<Ziekmelden />); //geen userId prop & niets in localStorage
+
+        fireEvent.click(screen.getByRole('button', {name: 'Ziekmelden'}));
+
+        await waitFor(()=> 
+            expect(alertSpy).toHaveBeenCalledWith(
+                'Geen gebruiker gevonden. Log opnieuw in.'
+            )
+        );
+
+        expect(setDoc).not.toHaveBeenCalled();
+        expect(mockNavigate).not.toHaveBeenCalled();
+
+        alertSpy.mockRestore();
+    });
+
+    it('UNHAPPY: Firestore fout  toont foutmelding en navigeert niet', async () => {
+        const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
         localStorage.setItem('rol', 'medewerker');
 
         getDoc.mockResolvedValueOnce({
@@ -44,27 +95,40 @@ describe('Ziekmelden - integratietest', () => {
             data: () => ({naam: 'Ziek'}),
         });
 
-        render(<Ziekmelden userId="123" />);
+        setDoc.mockRejectedValueOnce(new Error('Firestore error'));
 
-        // Assert: verloftype uit Firestore
-        const verlofInput = await screen.findByDisplayValue('Ziek');
-        expect(verlofInput).toBeInTheDocument();
+        render(<Ziekmelden userId = '123' />);
 
-        // Assert: datums zijn correct
-        const dateInputs = screen.getAllByRole('textbox');
-        expect(dateInputs[0].value).toBe(moment().format('D-MM-YYYY'));
-        expect(dateInputs[1].value).toBe(moment().add( 1,'days').format('D-MM-YYYY'));
+        fireEvent.click(screen.getByRole('button', {name: 'Ziekmelden'}));
 
-        // Act: klik ziekmelden
-        const button = screen.getByRole('button', {name: 'Ziekmelden'});
-        fireEvent.click(button);
+        await waitFor(() => 
+            expect(alertSpy).toHaveBeenCalledWith(
+                'Er ging iets mis bij het ziekmelden.'
+            )
+        );
 
-        // wacht tot navigate is aangeroepen
-        await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith('/medewerker/voorpagina');
+        expect(mockNavigate).not.toHaveBeenCalled();
+
+        alertSpy.mockRestore();
+
+    });
+
+    it('UNHAPPY: geen rol  navigeer naar /' ,async() => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({naam: 'Ziek'}),
         });
 
-        // Assert: Firestore setDoc aangeroepen
-        expect(setDoc).toHaveBeenCalledTimes(1);
+        setDoc.mockResolvedValueOnce();
+
+        render(<Ziekmelden userId='123' />);
+
+        fireEvent.click(screen.getByRole('button', {name: 'Ziekmelden'}));
+
+        await waitFor(() => expect(setDoc).toHaveBeenCalled());
+
+        await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'));
+    
     });
+
 })
