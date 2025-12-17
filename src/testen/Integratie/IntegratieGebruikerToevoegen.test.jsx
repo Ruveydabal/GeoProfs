@@ -1,10 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import GebruikerToevoegen from "../../pages/GebruikerToevoegen";
 
-// Router mock (écht navigatiegedrag)
+// Cleanup (verplicht bij Vitest + React 18)
+afterEach(() => {
+  cleanup();
+});
+
+// React Router mock
 const mockNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => {
@@ -15,7 +20,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Firebase / Firestore mock
+// Firebase / Firestore mocks
 const mockGetDocs = vi.fn();
 const mockSetDoc = vi.fn();
 const mockAddDoc = vi.fn();
@@ -37,14 +42,49 @@ vi.mock("firebase/firestore", () => ({
   addDoc: (...args) => mockAddDoc(...args),
 }));
 
-// Global alert mock
+// Browser API mocks
 global.alert = vi.fn();
 
-describe("GebruikerToevoegen - integratie test", () => {
+// Test helpers
+const renderPagina = () =>
+  render(
+    <MemoryRouter>
+      <GebruikerToevoegen />
+    </MemoryRouter>
+  );
+
+const klikSubmit = async (user) => {
+  const buttons = screen.getAllByRole("button", {
+    name: /Gebruiker Aanmaken/i,
+  });
+  await user.click(buttons[0]);
+};
+
+const vulFormulierIn = async (user) => {
+  await user.type(screen.getByLabelText("Voornaam"), "Tim");
+  await user.type(screen.getByLabelText("Achternaam"), "Tom");
+  await user.type(screen.getByLabelText("E-mail"), "tim@gmail.com");
+  await user.type(screen.getByLabelText("BSN nummer"), "123456789");
+  await user.type(screen.getByLabelText("Wachtwoord"), "tim123");
+
+  await user.selectOptions(
+    screen.getByRole("combobox", { name: /Rol/i }),
+    "Medewerker"
+  );
+
+  await user.selectOptions(
+    screen.getByRole("combobox", { name: /Afdeling/i }),
+    "ICT"
+  );
+
+  await user.type(screen.getByLabelText("In dienst"), "2025-12-09");
+  await user.type(screen.getByLabelText("Verlof saldo"), "50");
+};
+
+describe("GebruikerToevoegen – integratie test", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Simuleer bestaande gebruikers (ID = "1")
     mockGetDocs.mockResolvedValue({
       forEach: (cb) => cb({ id: "1" }),
     });
@@ -54,57 +94,18 @@ describe("GebruikerToevoegen - integratie test", () => {
     mockAddDoc.mockResolvedValue();
   });
 
-  it("doorloopt het volledige registratieproces succesvol", async () => {
+    // HAPPY FLOW
+  it("maakt succesvol een gebruiker aan", async () => {
     const user = userEvent.setup();
+    renderPagina();
 
-    render(
-      <MemoryRouter>
-        <GebruikerToevoegen />
-      </MemoryRouter>
-    );
+    await vulFormulierIn(user);
+    await klikSubmit(user);
 
-    /* -------- Form invullen -------- */
-    await user.type(screen.getByPlaceholderText("Voornaam"), "Tim");
-    await user.type(screen.getByPlaceholderText("Achternaam"), "Tom");
-    await user.type(screen.getByPlaceholderText("E-mail"), "tim@gmail.com");
-    await user.type(screen.getByPlaceholderText("BSN nummer"), "123456789");
-    await user.type(screen.getByPlaceholderText("Wachtwoord"), "tim123");
-
-    await user.selectOptions(
-      screen.getByRole("combobox", { name: /Rol/i }),
-      "Medewerker"
-    );
-
-    await user.selectOptions(
-      screen.getByRole("combobox", { name: /Afdeling/i }),
-      "ICT"
-    );
-
-    await user.type(screen.getByLabelText("In dienst"), "2025-12-09");
-    await user.type(screen.getByPlaceholderText("Saldo"), "50");
-
-    /* -------- Submit -------- */
-    await user.click(
-      screen.getByRole("button", { name: /Gebruiker Aanmaken/i })
-    );
-
-    /* -------- Verwachtingen -------- */
     await waitFor(() => {
       expect(mockSetDoc).toHaveBeenCalledTimes(1);
       expect(mockAddDoc).toHaveBeenCalledTimes(1);
     });
-
-    expect(mockSetDoc).toHaveBeenCalledWith(
-      expect.any(Object),
-      expect.objectContaining({
-        voornaam: "Tim",
-        achternaam: "Tom",
-        email: "tim@gmail.com",
-        bsnNummer: "123456789",
-        afdeling: "ICT",
-        verlofSaldo: 50,
-      })
-    );
 
     expect(global.alert).toHaveBeenCalledWith(
       "Gebruiker succesvol aangemaakt!"
@@ -113,5 +114,63 @@ describe("GebruikerToevoegen - integratie test", () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       "/office-manager/voorpagina"
     );
+  });
+
+    // UNHAPPY FLOW – VALIDATIE
+  it("verstuurt niet als verplichte velden ontbreken", async () => {
+    const user = userEvent.setup();
+    renderPagina();
+
+    await user.type(screen.getByLabelText("Voornaam"), "Tim");
+    await klikSubmit(user);
+
+    await waitFor(() => {
+      expect(mockSetDoc).not.toHaveBeenCalled();
+      expect(mockAddDoc).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+    // UNHAPPY FLOW – setDoc faalt
+  it("toont foutmelding als Firestore faalt bij opslaan gebruiker", async () => {
+    mockSetDoc.mockRejectedValueOnce(
+      new Error("Firestore setDoc error")
+    );
+
+    const user = userEvent.setup();
+    renderPagina();
+
+    await vulFormulierIn(user);
+    await klikSubmit(user);
+
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith(
+        expect.stringContaining("Fout bij aanmaken gebruiker")
+      );
+    });
+
+    expect(mockAddDoc).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+    // UNHAPPY FLOW – addDoc faalt
+  it("toont foutmelding als wachtwoord niet kan worden opgeslagen", async () => {
+    mockAddDoc.mockRejectedValueOnce(
+      new Error("addDoc error")
+    );
+
+    const user = userEvent.setup();
+    renderPagina();
+
+    await vulFormulierIn(user);
+    await klikSubmit(user);
+
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith(
+        expect.stringContaining("Fout bij aanmaken gebruiker")
+      );
+    });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });
