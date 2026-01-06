@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, documentId, doc } from "firebase/firestore";
 
-function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen}) { 
+function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, idsZichtbaar}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -38,6 +38,7 @@ function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, Fe
                         userData={userData[0]}
                         verlofStatusData={verlofStatusData}
                         typeKaart={"geschiedenis"}
+                        idsZichtbaar={idsZichtbaar}
                     />
                 ))}
             </div>

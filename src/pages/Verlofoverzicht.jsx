@@ -3,7 +3,7 @@ import { useState } from 'react';
 import VerlofAfkeurenPopup from "../components/VerlofAfkeurenPopup.jsx";
 import VerlofOverzichtContainer from "../components/VerlofOverzichtContainer.jsx"
 
-function Verlofoverzicht({gebruiker}) {
+function Verlofoverzicht({gebruiker, idsZichtbaar}) {
   const navigate = useNavigate();
   
   const [popupWeergeven, setPopupWeergeven] = useState(false); 
@@ -14,7 +14,6 @@ function Verlofoverzicht({gebruiker}) {
     setVerlofData(verlofData)
     setPopupWeergeven(true)
   };
-
   
   return (
     <>
@@ -24,7 +23,7 @@ function Verlofoverzicht({gebruiker}) {
           <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
         </div>
           <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
-            <VerlofOverzichtContainer AfkeurenPopupWeergeven={AfkeurenPopupWeergeven} herladen={herladen}/>
+            <VerlofOverzichtContainer AfkeurenPopupWeergeven={AfkeurenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar}/>
           </div>
       </div>
       {popupWeergeven ?
