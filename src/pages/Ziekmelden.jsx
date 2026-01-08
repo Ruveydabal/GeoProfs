@@ -99,14 +99,18 @@
               </div>
               <div className='h-[20%] w-[80%] flex flex-row items-center justify-between'>
                 <div className='h-[80%] w-[45%] bg-white flex flex-row items-center justify-center rounded-[15px] text-lg font-bold'>
-                  <input className='h-[45%] w-[75%]'
+                  <input
+                    data-cy="vandaag-input"
+                    className='h-[45%] w-[75%]'
                     type='text'
                     value={vandaag}
                     readOnly
                   />
                 </div>
                 <div className='h-[80%] w-[45%] bg-white flex flex-row items-center justify-center rounded-[15px] text-lg font-bold'>
-                  <input className='h-[45%] w-[75%]'
+                  <input
+                    data-cy="morgen-input"
+                    className='h-[45%] w-[75%]'
                     type='text'
                     value={volgendeDag}
                     readOnly
@@ -114,7 +118,9 @@
                 </div>
               </div>
               <div className="bg-white w-[80%] h-[15%] text-lg font-bold text-black py-2 px-6 rounded-[15px] flex items-center justify-center transition-colors duration-300">
-                <input className='h-[45%] w-[12%]'
+               <input
+                  data-cy="verloftype-input"
+                  className='h-[45%] w-[12%]'
                   type="text"
                   value={verlofType}
                   readOnly
