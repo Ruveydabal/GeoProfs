@@ -1,44 +1,29 @@
-import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, beforeAll, vi } from 'vitest';
 import { render, screen, cleanup, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+
 import Login from '../../pages/Login.jsx';
+import { db } from '../../firebase';
 
-afterEach(() => cleanup());
+import { collection, addDoc, getDocs, deleteDoc,} from 'firebase/firestore';
 
-// Mock assets correct voor Vitest
-vi.mock('../media/AchtergrondLogin.jpg', () => ({ default: '' }));
-vi.mock('../media/GeoprofsLogo.png', () => ({ default: '' }));
-
-// Mock alleen useNavigate
+// alleen de router mock
 const mockNavigate = vi.fn();
+
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual,
-    useNavigate: () => mockNavigate, 
+    useNavigate: () => mockNavigate,
   };
 });
 
-// Mock Firebase Firestore 
-vi.mock('firebase/firestore', async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    getFirestore: vi.fn(() => ({ mockDb: true })),
-    collection: vi.fn(),
-    query: vi.fn(),
-    where: vi.fn(),
-    getDocs: vi.fn(),
-  };
-});
+//plaatjes 
+vi.mock('../media/AchtergrondLogin.jpg', () => ({ default: '' }));
+vi.mock('../media/GeoprofsLogo.png', () => ({ default: '' }));
 
-// Mock Firebase database import
-vi.mock('../firebase', () => ({
-  db: {},
-}));
-
-// Mock localstorage
+// local storage
 beforeAll(() => {
   global.localStorage = {
     store: {},
@@ -49,26 +34,30 @@ beforeAll(() => {
   };
 });
 
-import { getDocs } from 'firebase/firestore';
-
-// --- Mock localStorage ---
-beforeAll(() => {
-  global.localStorage = {
-    store: {},
-    getItem(key) { return this.store[key] || null; },
-    setItem(key, value) { this.store[key] = String(value); },
-    removeItem(key) { delete this.store[key]; },
-    clear() { this.store = {}; },
-  };
-});
-
-describe('Login Component Integratie', () => {
-  const setTrigger = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    localStorage.clear();
+// test helpers
+const seedGebruiker = async ({ email, wachtwoord, rolId }) => {
+  await addDoc(collection(db, 'gebruikers'), {
+    email,
+    rol_id: { id: rolId },
   });
+
+  await addDoc(collection(db, 'accounts'), {
+    email,
+    wachtwoord,
+  });
+};
+
+const clearFirestore = async () => {
+  const collections = ['gebruikers', 'accounts'];
+
+  for (const col of collections) {
+    const snap = await getDocs(collection(db, col));
+    await Promise.all(snap.docs.map(doc => deleteDoc(doc.ref)));
+  }
+};
+
+describe('Login integratietest (Firestore Emulator)', () => {
+  const setTrigger = vi.fn();
 
   const renderComponent = () =>
     render(
@@ -77,57 +66,105 @@ describe('Login Component Integratie', () => {
       </MemoryRouter>
     );
 
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    localStorage.clear();
+    await clearFirestore();
+  });
+
+  afterEach(() => cleanup());
+
   it('toont foutmelding als velden leeg zijn', async () => {
     renderComponent();
-    const user = userEvent.setup();
-    await user.click(screen.getByText('Log in'));
-    expect(await screen.findByText('Vul zowel e-mailadres als wachtwoord in.')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByText('Log in'));
+
+    expect(
+      await screen.findByText('Vul zowel e-mailadres als wachtwoord in.')
+    ).toBeInTheDocument();
   });
 
   it('toont foutmelding als gebruiker niet bestaat', async () => {
-    getDocs.mockResolvedValueOnce({ empty: true });
-
     renderComponent();
-    const user = userEvent.setup();
-    await user.type(screen.getByPlaceholderText('E-mail...'), 'nietbestaand@gmail.com');
-    await user.type(screen.getByPlaceholderText('Wachtwoord...'), 'iets');
-    await user.click(screen.getByText('Log in'));
 
-    expect(await screen.findByText('Gebruiker niet gevonden.')).toBeInTheDocument();
+    await userEvent.type(
+      screen.getByPlaceholderText('E-mail...'),
+      'niet@bestaand.nl'
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText('Wachtwoord...'),
+      'test'
+    );
+    await userEvent.click(screen.getByText('Log in'));
+
+    expect(
+      await screen.findByText('Gebruiker niet gevonden.')
+    ).toBeInTheDocument();
   });
 
   it('toont foutmelding bij verkeerd wachtwoord', async () => {
-    getDocs
-      .mockResolvedValueOnce({ empty: false, docs: [{ id: '1', data: () => ({ rol_id: { id: '3' } }), ref: 'ref' }] })
-      .mockResolvedValueOnce({ empty: false, docs: [{ data: () => ({ wachtwoord: 'anders' }) }] });
+    await seedGebruiker({
+      email: 'medewerker@gmail.com',
+      wachtwoord: 'correct',
+      rolId: '3',
+    });
 
     renderComponent();
-    const user = userEvent.setup();
-    await user.type(screen.getByPlaceholderText('E-mail...'), 'medewerker@gmail.com');
-    await user.type(screen.getByPlaceholderText('Wachtwoord...'), 'verkeerd');
-    await user.click(screen.getByText('Log in'));
 
-    expect(await screen.findByText('Onjuist wachtwoord.')).toBeInTheDocument();
+    await userEvent.type(
+      screen.getByPlaceholderText('E-mail...'),
+      'medewerker@gmail.com'
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText('Wachtwoord...'),
+      'fout'
+    );
+    await userEvent.click(screen.getByText('Log in'));
+
+    expect(
+      await screen.findByText('Onjuist wachtwoord.')
+    ).toBeInTheDocument();
   });
 
-  // --- Succesvolle login scenario's ---
   const gebruikers = [
-    { email: 'medewerker@gmail.com', wachtwoord: 'medewerker', rolId: '3', rol: 'medewerker', pad: '/medewerker/voorpagina' },
-    { email: 'officemanager@gmail.com', wachtwoord: 'officemanager', rolId: '1', rol: 'officemanager', pad: '/officemanager/voorpagina' },
-    { email: 'manager@gmail.com', wachtwoord: 'manager', rolId: '2', rol: 'manager', pad: '/manager/voorpagina' },
+    {
+      email: 'medewerker@gmail.com',
+      wachtwoord: 'medewerker',
+      rolId: '3',
+      rol: 'medewerker',
+      pad: '/medewerker/voorpagina',
+    },
+    {
+      email: 'officemanager@gmail.com',
+      wachtwoord: 'officemanager',
+      rolId: '1',
+      rol: 'officemanager',
+      pad: '/officemanager/voorpagina',
+    },
+    {
+      email: 'manager@gmail.com',
+      wachtwoord: 'manager',
+      rolId: '2',
+      rol: 'manager',
+      pad: '/manager/voorpagina',
+    },
   ];
 
   gebruikers.forEach(({ email, wachtwoord, rolId, rol, pad }) => {
-    it(`logt succesvol in en navigeert naar juiste pagina voor ${rol}`, async () => {
-      getDocs
-        .mockResolvedValueOnce({ empty: false, docs: [{ id: '1', data: () => ({ rol_id: { id: rolId } }), ref: 'ref' }] })
-        .mockResolvedValueOnce({ empty: false, docs: [{ data: () => ({ wachtwoord }) }] });
+    it(`logt succesvol in als ${rol}`, async () => {
+      await seedGebruiker({ email, wachtwoord, rolId });
 
       renderComponent();
-      const user = userEvent.setup();
-      await user.type(screen.getByPlaceholderText('E-mail...'), email);
-      await user.type(screen.getByPlaceholderText('Wachtwoord...'), wachtwoord);
-      await user.click(screen.getByText('Log in'));
+
+      await userEvent.type(
+        screen.getByPlaceholderText('E-mail...'),
+        email
+      );
+      await userEvent.type(
+        screen.getByPlaceholderText('Wachtwoord...'),
+        wachtwoord
+      );
+      await userEvent.click(screen.getByText('Log in'));
 
       await waitFor(() => {
         expect(localStorage.getItem('isLoggedIn')).toBe('true');
