@@ -87,6 +87,7 @@ describe('Verlof Overzicht Geschiedenis Component', () => {
     });
 });
 
+//document toevoegen aan database.
 async function DemoDataToevoegen(docId, userId, verlofType, startDatum, eindDatum, statusVerlofId, reden)
 {
   try {
@@ -105,6 +106,7 @@ async function DemoDataToevoegen(docId, userId, verlofType, startDatum, eindDatu
   }
 }
 
+//document verwijderen uit database.
 async function DemoDataVerwijderen(docId)
 {
   if (!docId) return;

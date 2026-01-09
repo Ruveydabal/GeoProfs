@@ -12,21 +12,27 @@ function VerlofOpenOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlo
     const momenteleUserId = localStorage.getItem("userId");
 
     useEffect(() => {
+        //user query maken
         let userQ = collection(db, "user");
         userQ = query(userQ, where(documentId(), "==", momenteleUserId));
+        //data fetchen
         FetchUserData(setUserData, setInfoText, userQ).then();
 
+        //VerlofStatus query maken
         let verlofStatusQ = collection(db, "statusVerlof");
         verlofStatusQ = query(verlofStatusQ);
+        //data fetchen
         FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ).then();
 
+        //verlof query maken
         let verlofQ = collection(db, "verlof");
         verlofQ = query(verlofQ,
             where("user_id", "==", doc(db, "user", momenteleUserId)),
             where("statusVerlof_id", "in", [doc(db, "statusVerlof", "3"), doc(db, "statusVerlof", "4")])
         );
+        //data fetchen
         FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen open verlof aanvragen.").then();
-    }, [herladen]);
+    }, [herladen, FetchUserData, FetchVerlofAanvraagData, FetchVerlofStatusData, momenteleUserId]);
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">
