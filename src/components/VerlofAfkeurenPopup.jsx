@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { db } from "../firebase";
 import { collection, doc, setDoc, addDoc, serverTimestamp  } from "firebase/firestore";
 
-function VerlofAfkeurenPopup({setPopupWeergeven, verlofData, setHerladen, gebruiker}) {
+function VerlofAfkeurenPopup({VerlofAfkeurenPopupWeergeven, verlofData, setHerladen, gebruiker}) {
 
   const [afkeurReden, setAfkeurReden] = useState("");
   const [foutMelding, setFoutMelding] = useState("");
@@ -45,7 +45,7 @@ function VerlofAfkeurenPopup({setPopupWeergeven, verlofData, setHerladen, gebrui
         laatstGeupdate: serverTimestamp(),
       });
 
-      setPopupWeergeven(false);
+      VerlofAfkeurenPopupWeergeven(false);
       setAfkeurReden("");
       setHerladen(prev => !prev);
 
@@ -57,7 +57,7 @@ function VerlofAfkeurenPopup({setPopupWeergeven, verlofData, setHerladen, gebrui
 
   function verlofAfkeurenAnnuleren(){
     setAfkeurReden("");
-    setPopupWeergeven(false);
+    VerlofAfkeurenPopupWeergeven(false);
   }
 
   return (

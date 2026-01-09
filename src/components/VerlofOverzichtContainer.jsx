@@ -3,7 +3,7 @@ import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
 import VerlofOpenOverzicht from "./VerlofOpenOverzicht.jsx";
 import VerlofManagerOverzicht from "./VerlofManagerOverzicht.jsx";
 
-function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaar}) {
+function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnulerenPopupWeergeven, herladen, idsZichtbaar}) {
 
     const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, q, leegText) => {
         try {
@@ -86,6 +86,7 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaa
                 FetchUserData={FetchUserData}
                 FetchVerlofStatusData={FetchVerlofStatusData}
                 herladen={herladen}
+                VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven}
             />
             {
                 localStorage.getItem("rol") != "medewerker" ?
@@ -94,7 +95,7 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaa
                     FetchUserData={FetchUserData}
                     FetchVerlofStatusData={FetchVerlofStatusData}
                     herladen={herladen}
-                    AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
+                    VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
                 />
                 : <></>
             }

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, orderBy, doc } from "firebase/firestore";
 
-function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven}) { 
+function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, VerlofAfkeurenPopupWeergeven}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -17,7 +17,7 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
 
         const verlofStatusQ = query(collection(db, "statusVerlof"));
         FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ);
-    }, [herladen]);
+    }, [herladen, FetchUserData, FetchVerlofAanvraagData, FetchVerlofStatusData]);
 
     useEffect(() => {
         if (!userData || userData.length === 0) return;
@@ -34,7 +34,7 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
         );
 
         FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen verlof aanvragen voor u op dit moment.");
-    }, [userData, herladen]);
+    }, [userData, herladen, FetchVerlofAanvraagData, momenteleUserId]);
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">
@@ -46,7 +46,7 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
                         userData={userData.filter(u => u.id == verlof.user_id.id)[0]}
                         verlofStatusData={verlofStatusData}
                         typeKaart={"manager"}
-                        AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
+                        VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
                     />
                 ))}
             </div>

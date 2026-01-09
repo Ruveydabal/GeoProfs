@@ -1,18 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import VerlofAfkeurenPopup from "../components/VerlofAfkeurenPopup.jsx";
+import VerlofAnnulerenPopup from "../components/VerlofAnnulerenPopup.jsx";
 import VerlofOverzichtContainer from "../components/VerlofOverzichtContainer.jsx"
 
 function Verlofoverzicht({gebruiker, idsZichtbaar}) {
   const navigate = useNavigate();
   
-  const [popupWeergeven, setPopupWeergeven] = useState(false); 
+  const [verlofAfkeurenPopupWeergeven, setVerlofAfkeurenPopupWeergeven] = useState(false); 
+  const [verlofAnnulerenPopupWeergeven, setVerlofAnnulerenPopupWeergeven] = useState(false); 
   const [verlofData, setVerlofData] = useState(null); 
   const [herladen, setHerladen] = useState(false);
 
-  const AfkeurenPopupWeergeven = (verlofData) => {
+  const VerlofAfkeurenPopupWeergeven = (verlofData) => {
     setVerlofData(verlofData)
-    setPopupWeergeven(true)
+    setVerlofAfkeurenPopupWeergeven(true)
+  };
+
+  const VerlofAnnulerenPopupWeergeven = (verlofData) => {
+    setVerlofData(verlofData)
+    setVerlofAnnulerenPopupWeergeven(true)
   };
   
   return (
@@ -23,11 +30,15 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
           <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
         </div>
           <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
-            <VerlofOverzichtContainer AfkeurenPopupWeergeven={AfkeurenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar}/>
+            <VerlofOverzichtContainer VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven} VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar}/>
           </div>
       </div>
-      {popupWeergeven ?
-      <VerlofAfkeurenPopup setPopupWeergeven={setPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
+      {verlofAfkeurenPopupWeergeven ?
+      <VerlofAfkeurenPopup setPopupWeergeven={setVerlofAfkeurenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
+      <></>
+      }
+      {verlofAnnulerenPopupWeergeven ?
+      <VerlofAnnulerenPopup setVerlofAnnulerenPopupWeergeven={setVerlofAnnulerenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
       <></>
       }
       
