@@ -1,109 +1,99 @@
-import { db } from "../firebase";
-import { useState, useEffect } from 'react';
-import { collection, query, getDocs } from "firebase/firestore";
-import VerlofOverzichtBalk from "./VerlofOverzichtBalk.jsx";
+import { getDocs } from "firebase/firestore";
+import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
+import VerlofOpenOverzicht from "./VerlofOpenOverzicht.jsx";
+import VerlofManagerOverzicht from "./VerlofManagerOverzicht.jsx";
 
-function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen}) {
-    const [verlofData, setVerlofData] = useState([]);
-    const [userData, setUserData] = useState([]);
-    const [verlofStatusData, setVerlofStatusData] = useState([]);
-    const [ladenOfFaalText, setLadenOfFaalText] = useState("Aan het laden...");
+function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaar}) {
 
-    const momenteleUserId = localStorage.getItem("userId");
-
-    useEffect(() => {
-        const FetchVerlofAanvragen = async () => {
+    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, q, leegText) => {
         try {
-            const verlofSnap = await getDocs(query(collection(db, "verlof")));
+            const verlofSnap = await getDocs(q);
 
-            if (verlofSnap.empty) {
-            setLadenOfFaalText("Er is geen verlof gevonden.");
-            setVerlofData([]);
-            return;
+            const data = verlofSnap.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            if (data.length === 0) {
+                setInfoText(leegText);
+                return;
             }
 
-            setVerlofData(verlofSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-            })));
+            setVerlofData(data);
+            setInfoText("");
 
         } catch (err) {
             console.error("Fout bij het ophalen van verlof aanvragen:", err);
-            setLadenOfFaalText("Er is iets misgegaan bij het ophalen van de verlof aanvragen.");
+            setInfoText("Er is iets misgegaan bij het ophalen van de verlof aanvragen.");
         }
-        };
+    };
 
-        const FetchUsers = async () => {
+    const FetchUserData = async (setUserData, setInfoText, q) => {
         try {
-            const userSnap = await getDocs(query(collection(db, "user")));
+            const userSnap = await getDocs(q);
 
             if (userSnap.empty) {
-            setLadenOfFaalText("Er zijn geen users gevonden.");
-            setUserData([]);
-            return;
+                setInfoText("Er zijn geen users gevonden.");
+                setUserData([]);
+                return;
             }
 
-            setUserData(userSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-            })));
+            const data = userSnap.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
 
+            setUserData(data);
         } catch (err) {
             console.error("Fout bij het ophalen van users:", err);
-            setLadenOfFaalText("Er is iets misgegaan bij het ophalen van de users.");
+            setInfoText("Er is iets misgegaan bij het ophalen van de users.");
         }
-        };
+    };
 
-        const FetchVerlofStatus = async () => {
+    const FetchVerlofStatusData = async (setVerlofStatusData, setInfoText, q) => {
         try {
-            const statusSnap = await getDocs(query(collection(db, "statusVerlof")));
+            const statusSnap = await getDocs(q);
 
             if (statusSnap.empty) {
-            setLadenOfFaalText("Er zijn geen verlof statusen gevonden.");
-            setVerlofStatusData([]);
-            return;
+                setInfoText("Er zijn geen users gevonden.");
+                setVerlofStatusData([]);
+                return;
             }
 
-            setVerlofStatusData(statusSnap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-            })));
+            const data = statusSnap.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
 
+            setVerlofStatusData(data);
         } catch (err) {
             console.error("Fout bij ophalen verlof status:", err);
-            setLadenOfFaalText("Er is iets misgegaan bij ophalen van de verlof statusen.");
+            setInfoText("Er is iets misgegaan bij ophalen van de verlof statusen.");
         }
-        };
+    };
 
-        FetchVerlofAanvragen(),
-        FetchUsers(),
-        FetchVerlofStatus()
-    }, [herladen]);
-
-    if(!verlofData || verlofData.length == 0 || !userData || userData.length == 0 || !verlofStatusData || verlofStatusData.length == 0){
-        return(ladenOfFaalText)
-    }
     return (
         <div className="flex w-full h-full divide-x divide-[#D0D0D0]">
-            <VerlofOverzichtBalk 
-                verlofData={verlofData.filter(x => x.user_id.id === momenteleUserId && (x.statusVerlof_id?.id == 1 || x.statusVerlof_id?.id == 2))}
-                typeKaart="geschiedenis"
-                userData={userData}
-                verlofStatusData={verlofStatusData}
+            <VerlofGeschiedenisOverzicht 
+                FetchVerlofAanvraagData={FetchVerlofAanvraagData}
+                FetchUserData={FetchUserData}
+                FetchVerlofStatusData={FetchVerlofStatusData}
+                herladen={herladen}
+                idsZichtbaar={idsZichtbaar}
             />
-             <VerlofOverzichtBalk 
-                verlofData={verlofData.filter(x => x.user_id.id === momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4))}
-                typeKaart="openAanvragen"
-                userData={userData}
-                verlofStatusData={verlofStatusData}
+             <VerlofOpenOverzicht 
+                FetchVerlofAanvraagData={FetchVerlofAanvraagData}
+                FetchUserData={FetchUserData}
+                FetchVerlofStatusData={FetchVerlofStatusData}
+                herladen={herladen}
             />
             {
                 localStorage.getItem("rol") != "medewerker" ?
-                <VerlofOverzichtBalk 
-                    verlofData={verlofData.filter(x => x.user_id.id != momenteleUserId && (x.statusVerlof_id?.id == 3 || x.statusVerlof_id?.id == 4) && new Set(userData.filter(x => x.afdeling == userData.filter(x => x.id === momenteleUserId)[0].afdeling).map(x => x.id)).has(x.user_id.id))}
-                    typeKaart="manager"
-                    userData={userData}
-                    verlofStatusData={verlofStatusData}
+                <VerlofManagerOverzicht 
+                    FetchVerlofAanvraagData={FetchVerlofAanvraagData}
+                    FetchUserData={FetchUserData}
+                    FetchVerlofStatusData={FetchVerlofStatusData}
+                    herladen={herladen}
                     AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
                 />
                 : <></>
