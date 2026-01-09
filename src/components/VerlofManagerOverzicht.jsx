@@ -19,7 +19,6 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
         //fetch VerlofStatus data
         const verlofStatusQ = query(collection(db, "statusVerlof"));
         FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ);
-    }, [herladen, FetchUserData, FetchVerlofStatusData]);
     }, [herladen, FetchUserData, FetchVerlofAanvraagData, FetchVerlofStatusData]);
 
     useEffect(() => {

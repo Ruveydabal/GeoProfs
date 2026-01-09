@@ -23,7 +23,6 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
 
             setVerlofData(data);
             setInfoText("");
-
         } catch (err) {
             console.error("Fout bij het ophalen van verlof aanvragen:", err);
             setInfoText("Er is iets misgegaan bij het ophalen van de verlof aanvragen.");
@@ -93,6 +92,7 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
                 FetchVerlofStatusData={FetchVerlofStatusData}
                 herladen={herladen}
                 VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven}
+                idsZichtbaar={idsZichtbaar}
             />
             {
                 localStorage.getItem("rol") != "medewerker" ?
@@ -102,6 +102,7 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
                     FetchVerlofStatusData={FetchVerlofStatusData}
                     herladen={herladen}
                     VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
+                    idsZichtbaar={idsZichtbaar}
                 />
                 : <></>
             }

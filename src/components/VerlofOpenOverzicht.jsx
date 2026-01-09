@@ -3,13 +3,15 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, documentId, doc } from "firebase/firestore";
 
-function VerlofOpenOverzicht({FetchVerlofAanvraagData, VerlofAnnulerenPopupWeergeven, FetchUserData, FetchVerlofStatusData, herladen}) { 
+function VerlofOpenOverzicht({FetchVerlofAanvraagData, VerlofAnnulerenPopupWeergeven, FetchUserData, FetchVerlofStatusData, herladen, idsZichtbaar}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
     const [infoText, setInfoText] = useState("Aan het laden...");
 
     const momenteleUserId = localStorage.getItem("userId");
+
+    console.log(herladen)
 
     useEffect(() => {
         //user query maken
@@ -32,6 +34,7 @@ function VerlofOpenOverzicht({FetchVerlofAanvraagData, VerlofAnnulerenPopupWeerg
         );
         //data fetchen
         FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen open verlof aanvragen.").then();
+        console.log("in")
     }, [herladen, FetchUserData, FetchVerlofAanvraagData, FetchVerlofStatusData, momenteleUserId]);
 
     return (
@@ -45,6 +48,7 @@ function VerlofOpenOverzicht({FetchVerlofAanvraagData, VerlofAnnulerenPopupWeerg
                         verlofStatusData={verlofStatusData}
                         typeKaart={"openAanvragen"}
                         VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven}
+                        idsZichtbaar={idsZichtbaar}
                     />
                 ))}
             </div>
