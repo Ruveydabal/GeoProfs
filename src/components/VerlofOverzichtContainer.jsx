@@ -5,15 +5,17 @@ import VerlofManagerOverzicht from "./VerlofManagerOverzicht.jsx";
 
 function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnulerenPopupWeergeven, herladen, idsZichtbaar}) {
 
-    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, q, leegText) => {
+    const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, query, leegText) => {
         try {
-            const verlofSnap = await getDocs(q);
+            const verlofSnap = await getDocs(query);
 
+            //document id toevoegen aan data
             const data = verlofSnap.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
 
+            //als er geen data is, weergeef meegegeven waarshuwingstekst
             if (data.length === 0) {
                 setInfoText(leegText);
                 return;
@@ -28,16 +30,18 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
         }
     };
 
-    const FetchUserData = async (setUserData, setInfoText, q) => {
+    const FetchUserData = async (setUserData, setInfoText, query) => {
         try {
-            const userSnap = await getDocs(q);
+            const userSnap = await getDocs(query);
 
+            //als er geen data is, weergeef deze waarshuwingstekst
             if (userSnap.empty) {
                 setInfoText("Er zijn geen users gevonden.");
                 setUserData([]);
                 return;
             }
 
+            //document id toevoegen aan data
             const data = userSnap.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
@@ -50,16 +54,18 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
         }
     };
 
-    const FetchVerlofStatusData = async (setVerlofStatusData, setInfoText, q) => {
+    const FetchVerlofStatusData = async (setVerlofStatusData, setInfoText, query) => {
         try {
-            const statusSnap = await getDocs(q);
+            const statusSnap = await getDocs(query);
 
+            //als er geen data is, weergeef deze waarshuwingstekst
             if (statusSnap.empty) {
                 setInfoText("Er zijn geen users gevonden.");
                 setVerlofStatusData([]);
                 return;
             }
 
+            //document id toevoegen aan data
             const data = statusSnap.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()

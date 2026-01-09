@@ -12,6 +12,7 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
   const [verlofData, setVerlofData] = useState(null); 
   const [herladen, setHerladen] = useState(false);
 
+  //open afkeur popup wanneer een manager op afkeuren drukt op een verlof kaart
   const VerlofAfkeurenPopupWeergeven = (verlofData) => {
     setVerlofData(verlofData)
     setVerlofAfkeurenPopupWeergeven(true)
