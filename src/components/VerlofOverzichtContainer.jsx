@@ -18,6 +18,7 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
             //als er geen data is, weergeef meegegeven waarshuwingstekst
             if (data.length === 0) {
                 setInfoText(leegText);
+                setVerlofData([]);
                 return;
             }
 

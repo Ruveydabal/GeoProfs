@@ -8,7 +8,6 @@ function VerlofAnnulerenPopup({setVerlofAnnulerenPopupWeergeven, verlofData, set
   {
     if (!docId)
       console.error("Geen document ID opgegeven voor verwijderen.");
-
     try {
       await deleteDoc(doc(db, "verlof", docId));
     } catch (error) {

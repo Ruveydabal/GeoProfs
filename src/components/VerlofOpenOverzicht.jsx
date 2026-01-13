@@ -11,8 +11,6 @@ function VerlofOpenOverzicht({FetchVerlofAanvraagData, VerlofAnnulerenPopupWeerg
 
     const momenteleUserId = localStorage.getItem("userId");
 
-    console.log(herladen)
-
     useEffect(() => {
         //user query maken
         let userQ = collection(db, "user");
@@ -34,7 +32,6 @@ function VerlofOpenOverzicht({FetchVerlofAanvraagData, VerlofAnnulerenPopupWeerg
         );
         //data fetchen
         FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen open verlof aanvragen.").then();
-        console.log("in")
     }, [herladen, FetchUserData, FetchVerlofAanvraagData, FetchVerlofStatusData, momenteleUserId]);
 
     return (
