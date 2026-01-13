@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, orderBy, doc } from "firebase/firestore";
 
-function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven}) { 
+function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven, voegToastToe}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
     const [infoText, setInfoText] = useState("Aan het laden...");
+    const [toastGetoont, setToastGetoont] = useState(false);
 
     const momenteleUserId = localStorage.getItem("userId");
 
@@ -38,6 +39,29 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
         );
         FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen verlof aanvragen voor u op dit moment.");
     }, [userData, herladen, FetchVerlofAanvraagData, momenteleUserId]);
+
+    const openAanvragen = verlofData.filter(
+        v => v.statusVerlof_id.id === "3"
+    );
+
+    useEffect(() => {
+        if (!voegToastToe) return;
+
+        if (openAanvragen.length > 0 && !toastGetoont) {
+            // toast toevoegen via App.jsx
+            voegToastToe(
+                `U heeft ${openAanvragen.length} verlofaanvraag(en) in afwachting.`
+            );
+            setToastGetoont(true);
+        }
+
+        if (openAanvragen.length === 0) {
+            // reset zodat nieuwe aanvragen later opnieuw een toast kunnen triggeren
+            setToastGetoont(false);
+        }
+    }, [openAanvragen, toastGetoont, voegToastToe]);
+
+
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">

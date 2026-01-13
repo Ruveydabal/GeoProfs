@@ -80,10 +80,12 @@ function App() {
   // Toasts centraal regelen
   const [toasts, setToasts] = useState([]);
 
-  function voegToastToe(bericht, duur = 3000) {
-    const id = Date.now();
-    setToasts((vorige) => [...vorige, { id, bericht, duur }]);
-  }
+ function voegToastToe(bericht, duur = null) {
+  // duur = null betekent: toast verdwijnt niet automatisch
+  const id = Date.now();
+  setToasts((vorige) => [...vorige, { id, bericht, duur }]);
+}
+
 
   function verwijderToast(id) {
     setToasts((vorige) => vorige.filter(t => t.id !== id));

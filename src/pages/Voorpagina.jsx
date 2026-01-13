@@ -10,6 +10,7 @@ import WeekNavigatie from '../components/WeekNavigatie'
 
 function Voorpagina({ voegToastToe, verwijderToast }) {
   let navigate = useNavigate();
+  const [managerToastGetoond, setManagerToastGetoond] = useState(false);
   const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
   const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
   const [maand, SetMaand] = useState(new Date().getMonth()) //pakt de huidige maand in integer (0-11)
@@ -147,6 +148,54 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
     haalGoedgekeurdeAanvragenOp();
   }, []);
 
+  useEffect(() => {
+  const toonManagerToast = async () => {
+    try {
+      const rol = localStorage.getItem("rol");
+      const userId = localStorage.getItem("userId");
+      if (rol !== "manager" || !userId) return;
+      if (localStorage.getItem("managerVerlofToastGetoond")) return;
+
+      // 1️⃣ manager-data ophalen
+      const userSnap = await getDoc(doc(db, "user", userId));
+      if (!userSnap.exists()) return;
+      const afdeling = userSnap.data().afdeling;
+
+      // 2️⃣ alle openstaande aanvragen ophalen (status 3)
+      const aanvragenSnap = await getDocs(collection(db, "verlof"));
+      const aanvragen = [];
+      for (const docSnap of aanvragenSnap.docs) {
+        const aanvraag = docSnap.data();
+        if (aanvraag.statusVerlof_id?.id !== "3") continue; // alleen status 3
+        if (!aanvraag.user_id) continue;
+
+        const gebruikerDoc = await getDoc(aanvraag.user_id);
+        if (!gebruikerDoc.exists()) continue;
+
+        if (gebruikerDoc.data().afdeling === afdeling) {
+          aanvragen.push(aanvraag);
+        }
+      }
+
+      // 3️⃣ toast tonen
+      if (aanvragen.length > 0) {
+        voegToastToe(
+          `U heeft ${aanvragen.length} nieuwe verlofaanvraag(en) in afwachting.`,
+          null // verdwijnt niet automatisch
+        );
+        localStorage.setItem("managerVerlofToastGetoond", "true");
+      }
+
+    } catch (error) {
+      console.error("Fout bij ophalen nieuwe verlofaanvragen:", error);
+    }
+  };
+
+  toonManagerToast();
+}, [voegToastToe]);
+
+
+
   return (
     <>
       <div className='flex w-full h-full flex-col text-[1.7vh]'>
@@ -180,7 +229,17 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
 
 
             <div className='flex-1'></div>
-            <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]' onClick={() => navigate('/verlofoverzicht')}>Aanvraag overzicht →</button>
+           <button
+              className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]'
+              onClick={() => {
+                // toast verwijderen als manager op de knop klikt
+                verwijderToast(null); // verwijdert alle toasts
+                navigate('/verlofoverzicht');
+              }}
+              >
+              Aanvraag overzicht →
+            </button>
+
           </div>
         </div>
         {/* zijbalk */}
