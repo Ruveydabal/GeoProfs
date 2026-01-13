@@ -98,7 +98,6 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
       <VerlofAnnulerenPopup setVerlofAnnulerenPopupWeergeven={setVerlofAnnulerenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
       <></>
       }
-      
   </>
   );
 }

@@ -27,10 +27,7 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, Verl
                 {
                     typeKaart == "openAanvragen" && verlofData.statusVerlof_id.id == 3 ? 
                     <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAnnulerenPopupWeergeven(verlofData)}>Annuleer Verzoek</button>
-                    
-                    
                     :
-
                     typeKaart == "manager" && (verlofData.statusVerlof_id.id == 3 || verlofData.statusVerlof_id.id == 4) ? 
                     <div className='flex direction-row justify-between'>
                         <div>
@@ -39,9 +36,7 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, Verl
                         </div>
                         <Checkbox onChange={(e) => UpdateCheck(e.target.checked)}/>
                     </div>
-
                     :
-
                     <p className='mb-[5px] text-[18px]'>{verlofStatusData.filter(x => x.id == verlofData.statusVerlof_id?.id)[0].omschrijving}</p>
                 }
                 {
