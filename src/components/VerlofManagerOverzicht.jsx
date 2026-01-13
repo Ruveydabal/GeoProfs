@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, orderBy, doc } from "firebase/firestore";
 
-function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren}) { 
+function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -19,7 +19,7 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
         //fetch VerlofStatus data
         const verlofStatusQ = query(collection(db, "statusVerlof"));
         FetchVerlofStatusData(setVerlofStatusData, setInfoText, verlofStatusQ);
-    }, [herladen, FetchUserData, FetchVerlofStatusData]);
+    }, [herladen, FetchUserData, FetchVerlofAanvraagData, FetchVerlofStatusData]);
 
     useEffect(() => {
         if (!userData || userData.length === 0) return;
@@ -56,9 +56,9 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
                         userData={userData.filter(u => u.id == verlof.user_id.id)[0]}
                         verlofStatusData={verlofStatusData}
                         typeKaart={"manager"}
-                        AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
                         idsZichtbaar={idsZichtbaar}
                         verlofGoedkeuren={verlofGoedkeuren}
+                        VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
                         multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
                         setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
                     />

@@ -3,7 +3,8 @@ import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
 import VerlofOpenOverzicht from "./VerlofOpenOverzicht.jsx";
 import VerlofManagerOverzicht from "./VerlofManagerOverzicht.jsx";
 
-function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren}) {
+function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnulerenPopupWeergeven, herladen, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren}) {
+
     const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, query, leegText) => {
         try {
             const verlofSnap = await getDocs(query);
@@ -17,12 +18,12 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaa
             //als er geen data is, weergeef meegegeven waarshuwingstekst
             if (data.length === 0) {
                 setInfoText(leegText);
+                setVerlofData([]);
                 return;
             }
 
             setVerlofData(data);
             setInfoText("");
-
         } catch (err) {
             console.error("Fout bij het ophalen van verlof aanvragen:", err);
             setInfoText("Er is iets misgegaan bij het ophalen van de verlof aanvragen.");
@@ -91,6 +92,8 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaa
                 FetchUserData={FetchUserData}
                 FetchVerlofStatusData={FetchVerlofStatusData}
                 herladen={herladen}
+                VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven}
+                idsZichtbaar={idsZichtbaar}
             />
             {
                 localStorage.getItem("rol") != "medewerker" ?
@@ -99,7 +102,7 @@ function VerlofOverzichtContainer({AfkeurenPopupWeergeven, herladen, idsZichtbaa
                     FetchUserData={FetchUserData}
                     FetchVerlofStatusData={FetchVerlofStatusData}
                     herladen={herladen}
-                    AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
+                    VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
                     idsZichtbaar={idsZichtbaar}
                     verlofGoedkeuren={verlofGoedkeuren}
                     multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}

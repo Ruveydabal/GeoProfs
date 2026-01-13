@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Checkbox from './basis-components/CheckBox';
 
-function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, AfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds}) {
+function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds}) {
     function UpdateCheck(value){
         if(value){
             setMultiGeselecteerdeKaartIds([...multiGeselecteerdeKaartIds, verlofData.id]);
@@ -27,13 +27,16 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, Afke
             <div className="w-full h-auto pt-[20px]">
                 {
                     typeKaart == "openAanvragen" && verlofData.statusVerlof_id.id == 3 ? 
-                    <p>annuleren mogelijk</p> :
+                    <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAnnulerenPopupWeergeven(verlofData)}>Annuleer Verzoek</button>
+                    
+                    
+                    :
 
                     typeKaart == "manager" && (verlofData.statusVerlof_id.id == 3 || verlofData.statusVerlof_id.id == 4) ? 
                     <div className='flex direction-row justify-between'>
                         <div>
                             <button className='h-[40px] w-[110px] bg-[#00BC00] text-white rounded-[15px] cursor-pointer mr-[20px]' onClick={() => verlofGoedkeuren(verlofData) }>Goedkeuren</button>
-                            <button className='h-[40px] w-[100px] bg-[#DF121B] text-white rounded-[15px] cursor-pointer' onClick={() => AfkeurenPopupWeergeven(verlofData)}>Afkeuren</button>
+                            <button className='h-[40px] w-[100px] bg-[#DF121B] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAfkeurenPopupWeergeven(verlofData)}>Afkeuren</button>
                         </div>
                         <Checkbox onChange={(e) => UpdateCheck(e.target.checked)}/>
                     </div>
