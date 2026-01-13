@@ -1,4 +1,7 @@
 import ToastComponent from "./ToastComponent";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { db } from '../firebase';
+
 
 function ToastContainer({ toasts, verwijderToast }) {
   return (

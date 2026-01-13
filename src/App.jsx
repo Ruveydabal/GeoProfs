@@ -87,9 +87,14 @@ function App() {
 }
 
 
-  function verwijderToast(id) {
+ function verwijderToast(id = null) {
+  if (id === null) {
+    setToasts([]); // verwijder alles
+  } else {
     setToasts((vorige) => vorige.filter(t => t.id !== id));
   }
+}
+
 
   return (
     <BrowserRouter>

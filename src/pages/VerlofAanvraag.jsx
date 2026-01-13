@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { db } from '../firebase';
-import { doc, setDoc, getDocs, serverTimestamp, addDoc, collection } from "firebase/firestore";
+import { doc, setDoc, getDocs, serverTimestamp, addDoc, collection, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import moment from 'moment';
 import 'moment/locale/nl';
