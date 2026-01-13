@@ -65,6 +65,14 @@ function Header({ gebruiker }) {
               </button>
             )}
 
+            {gebruiker?.rol === "Office Manager" && (
+              <button 
+                className="h-[40px] w-full cursor-pointer border-2 border-[#D0D0D0] rounded-[15px] mb-[5px]"
+                onClick={() => navigate(`/gebruiker-registratie`)} >
+                Gebruiker Toevoegen
+              </button>
+            )}
+
             <button 
               className="h-[40px] w-full cursor-pointer border-2 rounded-[15px] bg-[#DF121B] text-white"
               onClick={handleUitloggen} >
