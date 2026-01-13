@@ -226,13 +226,14 @@ function GebruikerToevoegen() {
               <div className="w-full flex justify-between mt-6">
                 <button
                   type="button"
-                  onClick={() => navigate("/office-manager/voorpagina")} 
+                  onClick={() => navigate("/officemanager/voorpagina")}
                   className="px-4 py-2 bg-[#FFFFFF] text-black rounded-[15px]" >
                   Annuleren
                 </button>
 
                 <button
                   type="submit"
+                  onClick={() => navigate("/officemanager/voorpagina")}
                   className="px-4 py-2 bg-[#2AAFF2] text-white rounded-[15px]" >
                   Gebruiker Aanmaken
                 </button>
