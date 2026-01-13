@@ -1,7 +1,7 @@
-import { doc, setDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
+import { doc, addDoc, collection, serverTimestamp, deleteDoc } from "firebase/firestore";
 import { db } from '../firebase.js';
 
-function VerlofAnnulerenPopup({setVerlofAnnulerenPopupWeergeven, verlofData, setHerladen}) {
+function VerlofAnnulerenPopup({setVerlofAnnulerenPopupWeergeven, verlofData, setHerladen, gebruiker}) {
 
   //document verwijderen uit database.
   async function VerlofAanvraagVerwijderen(docId)
@@ -15,8 +15,28 @@ function VerlofAnnulerenPopup({setVerlofAnnulerenPopupWeergeven, verlofData, set
     }
   }
 
+  async function AuditToevoegen() {
+    // Audit toevoegen
+    await addDoc(collection(db, "auditTrail"), {
+      actie: { id: 3, titel: "verwijderen" },
+      tabel: { id: 2, tabelNaam: "verlof" },
+      uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+      },
+      uitgevoerdOp: {
+        id: verlofData.id,
+        tabel: { id: 2, tabelNaam: "verlof" },
+      },
+      laatstGeupdate: serverTimestamp(),
+    });
+  }
+
+
   const VerlofWelAnnuleren = async () => {
     await VerlofAanvraagVerwijderen(verlofData.id);
+    await AuditToevoegen();
     setVerlofAnnulerenPopupWeergeven(false);
     setHerladen(prev => !prev);
   };

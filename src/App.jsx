@@ -110,7 +110,7 @@ function App() {
 
         <Route path="/audit-overzicht" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <AuditOverzicht />
+            <AuditOverzicht gebruiker={gebruiker} />
           </HeaderZonderRefresh>
         }/>
 
