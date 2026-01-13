@@ -1,7 +1,7 @@
 import VerlofKaart from "./VerlofKaart.jsx";
 import { useState, useEffect } from 'react';
 import { db } from "../firebase";
-import { collection, query, where, documentId, doc } from "firebase/firestore";
+import { collection, query, where, documentId, doc, orderBy } from "firebase/firestore";
 
 function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, idsZichtbaar}) { 
     const [verlofData, setVerlofData] = useState([]);
@@ -28,7 +28,8 @@ function VerlofGeschiedenisOverzicht({FetchVerlofAanvraagData, FetchUserData, Fe
         let verlofQ = collection(db, "verlof");
         verlofQ = query(verlofQ,
             where("user_id", "==", doc(db, "user", momenteleUserId)),
-            where("statusVerlof_id", "in", [doc(db, "statusVerlof", "1"), doc(db, "statusVerlof", "2")])
+            where("statusVerlof_id", "in", [doc(db, "statusVerlof", "1"), doc(db, "statusVerlof", "2")]),
+            orderBy('laatstGeupdate', 'desc')
         );
         //data fetchen
         FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen verleden verlof aanvragen.").then();

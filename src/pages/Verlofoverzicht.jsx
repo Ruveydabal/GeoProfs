@@ -64,12 +64,11 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
     }
   };
 
-  
-
   function MassaGoedkeuren() {
-    console.log(multiGeselecteerdeKaartIds)
+    multiGeselecteerdeKaartIds.forEach(verlof => {
+      verlofGoedkeuren(verlof);
+    });
     setMultiGeselecteerdeKaartIds([])
-    setHerladen(prev => !prev);
   }
   
   return (
@@ -80,7 +79,15 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
           <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
         </div>
           <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
-            <VerlofOverzichtContainer VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven} VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar} verlofGoedkeuren={verlofGoedkeuren} multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds} setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds} MassaGoedkeuren={MassaGoedkeuren}/>
+            <VerlofOverzichtContainer
+              VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
+              VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven}
+              herladen={herladen}
+              idsZichtbaar={idsZichtbaar}
+              verlofGoedkeuren={verlofGoedkeuren}
+              multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
+              setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
+              MassaGoedkeuren={MassaGoedkeuren}/>
           </div>
       </div>
       {verlofAfkeurenPopupWeergeven ?

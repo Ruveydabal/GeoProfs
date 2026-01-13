@@ -27,6 +27,7 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
         //array van alle users in dezelfde afdeling als de huidige user
         const usersInAfdeling = userData
             .filter(u => u.afdeling === userData.filter(x => x.id === momenteleUserId)[0].afdeling)
+            .filter(u => u.id !== momenteleUserId)
             .map(u => doc(db, "user", u.id));
 
         //fetch verlof data voor users in dezelfde afdeling

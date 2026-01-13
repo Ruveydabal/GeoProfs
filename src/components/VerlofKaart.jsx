@@ -4,12 +4,11 @@ import Checkbox from './basis-components/CheckBox';
 function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds}) {
     function UpdateCheck(value){
         if(value){
-            setMultiGeselecteerdeKaartIds([...multiGeselecteerdeKaartIds, verlofData.id]);
+            setMultiGeselecteerdeKaartIds([...multiGeselecteerdeKaartIds, verlofData]);
         }
         else{
-            setMultiGeselecteerdeKaartIds(multiGeselecteerdeKaartIds.filter(item => item !== verlofData.id));
+            setMultiGeselecteerdeKaartIds(multiGeselecteerdeKaartIds.filter(item => item.id !== verlofData.id));
         }
-
     }
 
     if (!verlofData || !typeKaart){
