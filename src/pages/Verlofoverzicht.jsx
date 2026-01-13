@@ -3,6 +3,8 @@ import { useState } from 'react';
 import VerlofAfkeurenPopup from "../components/VerlofAfkeurenPopup.jsx";
 import VerlofAnnulerenPopup from "../components/VerlofAnnulerenPopup.jsx";
 import VerlofOverzichtContainer from "../components/VerlofOverzichtContainer.jsx"
+import { db } from "../firebase";
+import { collection, doc, setDoc, addDoc, serverTimestamp  } from "firebase/firestore";
 
 function Verlofoverzicht({gebruiker, idsZichtbaar}) {
   const navigate = useNavigate();
@@ -22,6 +24,44 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
     setVerlofData(verlofData)
     setVerlofAnnulerenPopupWeergeven(true)
   };
+
+  const verlofGoedkeuren = async (verlofData) => {
+    try {
+      const verlofRef = doc(db, "verlof", verlofData.id);
+      const statusVerlofRef = doc(db, "statusVerlof", "1");
+
+      // Verlof updaten
+      await setDoc(
+        verlofRef,
+        {
+        statusVerlof_id: statusVerlofRef,
+        laatstGeupdate: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 2, titel: "aanpassen" },
+        tabel: { id: 2, tabelNaam: "verlof" },
+        uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+        },
+        typeUitvoering: { id: 2, titel: "goedgekeurd" },
+        uitgevoerdOp: {
+        id: verlofData.id,
+        tabel: { id: 2, tabelNaam: "verlof" },
+        },
+        laatstGeupdate: serverTimestamp(),
+      });
+
+      setHerladen(prev => !prev);
+    } catch (error) {
+      console.error(error)
+    }
+  };
   
   return (
     <>
@@ -31,7 +71,7 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
           <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
         </div>
           <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
-            <VerlofOverzichtContainer VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven} VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar}/>
+            <VerlofOverzichtContainer VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven} VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar} verlofGoedkeuren={verlofGoedkeuren}/>
           </div>
       </div>
       {verlofAfkeurenPopupWeergeven ?

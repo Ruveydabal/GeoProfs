@@ -3,7 +3,7 @@ import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
 import VerlofOpenOverzicht from "./VerlofOpenOverzicht.jsx";
 import VerlofManagerOverzicht from "./VerlofManagerOverzicht.jsx";
 
-function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnulerenPopupWeergeven, herladen, idsZichtbaar}) {
+function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnulerenPopupWeergeven, herladen, idsZichtbaar, verlofGoedkeuren}) {
 
     const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, query, leegText) => {
         try {
@@ -104,6 +104,7 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
                     herladen={herladen}
                     VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
                     idsZichtbaar={idsZichtbaar}
+                    verlofGoedkeuren={verlofGoedkeuren}
                 />
                 : <></>
             }
