@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, orderBy, doc } from "firebase/firestore";
 
-function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven}) { 
+function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -50,6 +50,8 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
                         verlofStatusData={verlofStatusData}
                         typeKaart={"manager"}
                         AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
+                        idsZichtbaar={idsZichtbaar}
+                        verlofGoedkeuren={verlofGoedkeuren}
                     />
                 ))}
             </div>
