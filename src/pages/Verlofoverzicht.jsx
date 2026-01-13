@@ -8,6 +8,7 @@ import { collection, doc, setDoc, addDoc, serverTimestamp  } from "firebase/fire
 function Verlofoverzicht({gebruiker, idsZichtbaar}) {
   const navigate = useNavigate();
   
+  const [multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds] = useState([]);
   const [popupWeergeven, setPopupWeergeven] = useState(false); 
   const [verlofData, setVerlofData] = useState(null); 
   const [herladen, setHerladen] = useState(false);
@@ -55,6 +56,14 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
       console.error(error)
     }
   };
+
+  
+
+  function MassaGoedkeuren() {
+    console.log(multiGeselecteerdeKaartIds)
+    setMultiGeselecteerdeKaartIds([])
+    setHerladen(prev => !prev);
+  }
   
   return (
     <>
@@ -64,7 +73,7 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
           <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
         </div>
           <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
-            <VerlofOverzichtContainer AfkeurenPopupWeergeven={AfkeurenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar} verlofGoedkeuren={verlofGoedkeuren}/>
+            <VerlofOverzichtContainer AfkeurenPopupWeergeven={AfkeurenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar} verlofGoedkeuren={verlofGoedkeuren} multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds} setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds} MassaGoedkeuren={MassaGoedkeuren}/>
           </div>
       </div>
       {popupWeergeven ?

@@ -128,7 +128,7 @@ function App() {
 
         <Route path="/verlofoverzicht" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <Verlofoverzicht gebruiker={gebruiker} idsZichtbaar={false}/>
+            <Verlofoverzicht gebruiker={gebruiker} idsZichtbaar={true}/>
           </HeaderZonderRefresh>
         }/>
 

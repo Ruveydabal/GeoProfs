@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, orderBy, doc } from "firebase/firestore";
 
-function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren}) { 
+function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, AfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -41,6 +41,13 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
 
     return (
             <div className="h-full flex-1 px-[10px] overflow-y-scroll ">
+                <div className="w-full h-[60px]">
+                    <button
+                        onClick={MassaGoedkeuren}
+                        disabled={multiGeselecteerdeKaartIds.length === 0}
+                        className={`h-[40px] w-[150px] rounded-[15px] ${multiGeselecteerdeKaartIds.length === 0 ? "bg-[#166C16] cursor-not-allowed text-[#8E8E8E]" : "bg-[#00BC00] cursor-pointer text-white"}`}>
+                    Alle goedkeuren</button>
+                </div>
                 { verlofData.length == 0 ? <p className="w-full text-center">{infoText}</p> :
                 verlofData.map((verlof) => (
                     <VerlofKaart
@@ -52,6 +59,8 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
                         AfkeurenPopupWeergeven={AfkeurenPopupWeergeven}
                         idsZichtbaar={idsZichtbaar}
                         verlofGoedkeuren={verlofGoedkeuren}
+                        multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
+                        setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
                     />
                 ))}
             </div>
