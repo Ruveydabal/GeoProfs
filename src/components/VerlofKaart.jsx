@@ -1,9 +1,15 @@
 import moment from 'moment';
 import Checkbox from './basis-components/CheckBox';
-import { useState } from 'react';
 
-function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven}) {
-    const [multiselectGechecked, SetMultiselectGechecked] = useState(false)
+function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds}) {
+    function UpdateCheck(value){
+        if(value){
+            setMultiGeselecteerdeKaartIds([...multiGeselecteerdeKaartIds, verlofData]);
+        }
+        else{
+            setMultiGeselecteerdeKaartIds(multiGeselecteerdeKaartIds.filter(item => item.id !== verlofData.id));
+        }
+    }
 
     if (!verlofData || !typeKaart){
         "kaart kon niet laden."
@@ -27,18 +33,16 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, Verl
                 {
                     typeKaart == "openAanvragen" && verlofData.statusVerlof_id.id == 3 ? 
                     <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAnnulerenPopupWeergeven(verlofData)}>Annuleer Verzoek</button>
-                    
-                    
                     :
-
                     typeKaart == "manager" && (verlofData.statusVerlof_id.id == 3 || verlofData.statusVerlof_id.id == 4) ? 
-                    <>
-                        <button className='h-[40px] w-[110px] bg-[#00BC00] text-white rounded-[15px] cursor-pointer mr-[20px]' onClick={() => verlofGoedkeuren(verlofData) }>Goedkeuren</button>
-                        <button className='h-[40px] w-[100px] bg-[#DF121B] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAfkeurenPopupWeergeven(verlofData)}>Afkeuren</button>
-                    </>
-
+                    <div className='flex direction-row justify-between'>
+                        <div>
+                            <button className='h-[40px] w-[110px] bg-[#00BC00] text-white rounded-[15px] cursor-pointer mr-[20px]' onClick={() => verlofGoedkeuren(verlofData) }>Goedkeuren</button>
+                            <button className='h-[40px] w-[100px] bg-[#DF121B] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAfkeurenPopupWeergeven(verlofData)}>Afkeuren</button>
+                        </div>
+                        <Checkbox onChange={(e) => UpdateCheck(e.target.checked)}/>
+                    </div>
                     :
-
                     <p className='mb-[5px] text-[18px]'>{verlofStatusData.filter(x => x.id == verlofData.statusVerlof_id?.id)[0].omschrijving}</p>
                 }
                 {
