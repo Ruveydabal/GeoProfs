@@ -7,6 +7,7 @@ import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
 import MaandNavigatie from '../components/MaandNavigatie'
 import WeekNavigatie from '../components/WeekNavigatie'
+import { onSnapshot } from "firebase/firestore";
 
 function Voorpagina({ voegToastToe, verwijderToast }) {
   let navigate = useNavigate();
@@ -149,39 +150,54 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
   }, []);
 
 
-  useEffect(() => {
-    const toonManagerToast = async () => {
-      const rol = localStorage.getItem("rol");
-      const userId = localStorage.getItem("userId");
+useEffect(() => {
+  const rol = localStorage.getItem("rol");
+  if (rol !== "manager") return;
 
-      if (rol !== "manager" || !userId) return;
+  const userId = localStorage.getItem("userId");
+  if (!userId) return;
 
-      const userSnap = await getDoc(doc(db, "user", userId));
-      if (!userSnap.exists()) return;
-      const afdelingManager = userSnap.data().afdeling;
+  const userRef = doc(db, "user", userId);
 
-      const aanvragenSnap = await getDocs(collection(db, "verlof"));
+  // haal afdeling van de manager
+  getDoc(userRef).then(userSnap => {
+    if (!userSnap.exists()) return;
+    const afdelingManager = userSnap.data().afdeling;
+
+    const aanvragenRef = collection(db, "verlof");
+    const q = query(
+      aanvragenRef,
+      where("statusVerlof_id", "==", doc(db, "statusVerlof", "3"))
+    );
+
+    // realtime listener
+    const unsubscribe = onSnapshot(q, snapshot => {
       let count = 0;
 
-      for (const docSnap of aanvragenSnap.docs) {
+      snapshot.forEach(async docSnap => {
         const aanvraag = docSnap.data();
-        if (!aanvraag.statusVerlof_id || aanvraag.statusVerlof_id.id !== "3") continue;
-        if (!aanvraag.user_id) continue;
+        if (!aanvraag.user_id) return;
 
         const gebruikerSnap = await getDoc(aanvraag.user_id);
-        if (!gebruikerSnap.exists()) continue;
+        if (!gebruikerSnap.exists()) return;
 
         if (gebruikerSnap.data().afdeling === afdelingManager) count++;
-      }
+      });
 
-      if (count > 0) {
-        voegToastToe(`U heeft ${count} nieuwe verlofaanvraag(en) in afwachting.`, null);
-        localStorage.setItem("managerVerlofToastGetoond", "true");
-      }
-    };
+      // korte timeout zodat async getDocs klaar is
+      setTimeout(() => {
+        if (count > 0 && !managerToastGetoond) {
+          voegToastToe(`U heeft ${count} nieuwe verlofaanvraag(en) in afwachting.`);
+          setManagerToastGetoond(true);
+        }
+      }, 100);
+    });
 
-    toonManagerToast();
-  }, []);
+    // cleanup
+    return () => unsubscribe();
+  });
+}, [voegToastToe]);
+
 
 
 
@@ -221,7 +237,6 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
            <button  className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]'
               onClick={() => {
                 verwijderToast(); // verwijder alle toasts
-                localStorage.removeItem("managerVerlofToastGetoond"); // optioneel reset
                 navigate('/verlofoverzicht');
               }}
             >
