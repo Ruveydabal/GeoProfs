@@ -62,6 +62,55 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
       console.error(error)
     }
   };
+
+  const VerlofMarkerenAlsGezien = async (verlofData, gezien) => {
+    const verlofRef = doc(db, "verlof", verlofData.id);
+    const statusVerlofRef = null;
+
+    if (gezien) {
+      statusVerlofRef = doc(db, "statusVerlof", "1");
+    }
+    else {
+
+    }
+
+
+    try {
+      const verlofRef = doc(db, "verlof", verlofData.id);
+      const statusVerlofRef = doc(db, "statusVerlof", "1");
+
+      // Verlof updaten
+      await setDoc(
+        verlofRef,
+        {
+        statusVerlof_id: statusVerlofRef,
+        laatstGeupdate: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 2, titel: "aanpassen" },
+        tabel: { id: 2, tabelNaam: "verlof" },
+        uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+        },
+        typeUitvoering: { id: 2, titel: "goedgekeurd" },
+        uitgevoerdOp: {
+        id: verlofData.id,
+        tabel: { id: 2, tabelNaam: "verlof" },
+        },
+        laatstGeupdate: serverTimestamp(),
+      });
+
+      setHerladen(prev => !prev);
+    } catch (error) {
+      console.error(error)
+    }
+  };
   
   return (
     <>
