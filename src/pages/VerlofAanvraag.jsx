@@ -8,7 +8,7 @@ import 'moment/locale/nl';
 moment.locale('nl');
 
 
-function VerlofAanvraag() {
+function VerlofAanvraag({gebruiker}) {
     const [verlofAanvraagDag, setVerlofAanvraagDag ] = useState("");
     const [verlofAanvraagTotDag, setVerlofAanvraagTotDag] = useState("");
     const [verlofType, setVerlofType ] = useState(""); //ID van db 1, 2, 3, 4
@@ -52,22 +52,21 @@ function VerlofAanvraag() {
         haalUserOp();
     }
 
-      //haal verloftypes uit Firestore
-      const haalVerlofTypesOp = async () => {
-          try {
-              const querySnapshot = await getDocs(collection(db, "typeVerlof"));
-              const types = querySnapshot.docs.map(doc => ({
-                  id: doc.id,
-                  ...doc.data(),
-              }));
-              setAlleVerlofTypes(types);
-          } catch (error) {
-              console.error("Fout bij ophalen verloftypes:", error);
-          }
-      };
-
-      haalVerlofTypesOp();
-  }, []);
+    //haal verloftypes uit Firestore
+    const haalVerlofTypesOp = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, "typeVerlof"));
+            const types = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setAlleVerlofTypes(types);
+        } catch (error) {
+            console.error("Fout bij ophalen verloftypes:", error);
+        }
+    };
+    haalVerlofTypesOp();
+    }, []);
 
     // Versturen  verlofaanvraag
     const handleVerzend = async () => {
@@ -85,12 +84,10 @@ function VerlofAanvraag() {
         alert("Vul een reden voor het verlof in.");
         return;
     }
-
-    
-
     setLoading(true);
     try {
-      await addDoc(collection(db, "verlof"), {
+      const verlofRef = doc(db, "verlof");
+      await setDoc(verlofRef, {
         user_id: doc(db, "user", userId),
         typeVerlof_id: doc(db, "typeVerlof", verlofType),
         startDatum: moment(verlofAanvraagDag, 'YYYY-MM-DD').toDate(),
@@ -99,6 +96,23 @@ function VerlofAanvraag() {
         omschrijvingRedenVerlof: reden || "Geen reden opgegeven",
         createdAt: serverTimestamp(),
       });
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+          actie: { id: 1, titel: "aanmaken" },
+          tabel: { id: 2, tabelNaam: "verlof" },
+          uitgevoerdDoorUser: {
+          id: localStorage.getItem("userId"),
+          naam: gebruiker.voornaam,
+          achternaam: gebruiker.achternaam,
+          },
+          uitgevoerdOp: {
+          id: verlofRef.id,
+          tabel: { id: 2, tabelNaam: "verlof" },
+          },
+          laatstGeupdate: serverTimestamp(),
+      });
+
       alert("Verlofaanvraag is verzonden!");
 
       const rol = localStorage.getItem("rol");

@@ -145,6 +145,7 @@ function AuditTabel() {
                                 </td>
                                 <td className="min-w-[300px] border border-[#D0D0D0]">
                                     <p className="pl-[10px]">
+                                        {console.log(audit?.uitgevoerdOp)}
                                         {
                                             //check of veld bestaat
                                             !audit?.uitgevoerdOp ? 
@@ -152,7 +153,7 @@ function AuditTabel() {
 
                                             //check of tabel user is, dan gebruik naam
                                             audit?.uitgevoerdOp.tabel.tabelNaam == "user" ?
-                                            audit?.uitgevoerdOp.naam :
+                                            audit?.uitgevoerdOp.tabel.naam :
 
                                             //anders gebruik tabel en id
                                             audit?.uitgevoerdOp.tabel.tabelNaam + " id: " + audit?.uitgevoerdOp.id

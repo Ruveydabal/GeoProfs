@@ -116,13 +116,13 @@ function App() {
 
         <Route path="/gebruiker-registratie" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <GebruikerToevoegen />
+            <GebruikerToevoegen gebruiker={gebruiker} />
           </HeaderZonderRefresh>
         }/>
 
         <Route path="/profiel/:userId" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <Profiel setTrigger={setTrigger} />
+            <Profiel setTrigger={setTrigger} gebruiker={gebruiker} />
           </HeaderZonderRefresh>
         }/>
 
