@@ -1,7 +1,9 @@
 import moment from 'moment';
 import Checkbox from './basis-components/CheckBox';
+import BookmarkUnchecked from '../media/bookmark.png';
+import BookmarkChecked from '../media/bookmark-checked.png';
 
-function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds}) {
+function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, VerlofMarkerenAlsGezien}) {
     function UpdateCheck(value){
         if(value){
             setMultiGeselecteerdeKaartIds([...multiGeselecteerdeKaartIds, verlofData]);
@@ -25,7 +27,13 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, Verl
                     <p>{`Van ${moment(verlofData.startDatum.toDate()).format("DD-MM-YYYY")}, tot ${moment(verlofData.eindDatum.toDate()).format("DD-MM-YYYY")}`}</p>
                 </div>
                 <div className='w-[30px]'>
-                    <button className='w-[30px] h-[30px] bg-[#ff0000]' onClick={}></button>
+                    {
+                        typeKaart == "manager" ?
+                        <button className='w-[30px] h-[30px] cursor-pointer' onClick={() => VerlofMarkerenAlsGezien(verlofData, verlofData.statusVerlof_id?.id == 3)}>
+                            <img src={verlofData.statusVerlof_id?.id == 3 ? BookmarkUnchecked : BookmarkChecked} alt="" />
+                        </button>
+                        : <></>
+                    }
                 </div>
             </div>
 

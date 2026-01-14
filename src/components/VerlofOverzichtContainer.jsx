@@ -3,7 +3,7 @@ import VerlofGeschiedenisOverzicht from "./VerlofGeschiedenisOverzicht.jsx";
 import VerlofOpenOverzicht from "./VerlofOpenOverzicht.jsx";
 import VerlofManagerOverzicht from "./VerlofManagerOverzicht.jsx";
 
-function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnulerenPopupWeergeven, herladen, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren}) {
+function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnulerenPopupWeergeven, herladen, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren, VerlofMarkerenAlsGezien}) {
 
     const FetchVerlofAanvraagData = async (setVerlofData, setInfoText, query, leegText) => {
         try {
@@ -108,6 +108,7 @@ function VerlofOverzichtContainer({VerlofAfkeurenPopupWeergeven, VerlofAnnuleren
                     multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
                     setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
                     MassaGoedkeuren={MassaGoedkeuren}
+                    VerlofMarkerenAlsGezien={VerlofMarkerenAlsGezien}
                 />
                 : <></>
             }

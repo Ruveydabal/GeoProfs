@@ -70,23 +70,24 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
     });
     setMultiGeselecteerdeKaartIds([])
   }
-  
 
   const VerlofMarkerenAlsGezien = async (verlofData, gezien) => {
-    const verlofRef = doc(db, "verlof", verlofData.id);
-    const statusVerlofRef = null;
-
-    if (gezien) {
-      statusVerlofRef = doc(db, "statusVerlof", "1");
-    }
-    else {
-
-    }
-
-
-    try {
+      try {
       const verlofRef = doc(db, "verlof", verlofData.id);
-      const statusVerlofRef = doc(db, "statusVerlof", "1");
+      var statusVerlofRef;
+      var typeUitvoering;
+
+      if (gezien) {
+        statusVerlofRef = doc(db, "statusVerlof", "4");
+        typeUitvoering = { id: 4, titel: "Gezien" };
+      }
+      else if (!gezien) {
+        statusVerlofRef = doc(db, "statusVerlof", "3");
+        typeUitvoering = { id: 3, titel: "In Afwachting" };
+      }
+      else {
+        return;
+      }
 
       // Verlof updaten
       await setDoc(
@@ -107,7 +108,7 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
         naam: gebruiker.voornaam,
         achternaam: gebruiker.achternaam,
         },
-        typeUitvoering: { id: 2, titel: "goedgekeurd" },
+        typeUitvoering: typeUitvoering,
         uitgevoerdOp: {
         id: verlofData.id,
         tabel: { id: 2, tabelNaam: "verlof" },
@@ -137,7 +138,8 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
               verlofGoedkeuren={verlofGoedkeuren}
               multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
               setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
-              MassaGoedkeuren={MassaGoedkeuren}/>
+              MassaGoedkeuren={MassaGoedkeuren}
+              VerlofMarkerenAlsGezien={VerlofMarkerenAlsGezien}/>
           </div>
       </div>
       {verlofAfkeurenPopupWeergeven ?
