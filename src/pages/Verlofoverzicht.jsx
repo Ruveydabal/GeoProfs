@@ -9,6 +9,7 @@ import { collection, doc, setDoc, addDoc, serverTimestamp  } from "firebase/fire
 function Verlofoverzicht({gebruiker, idsZichtbaar}) {
   const navigate = useNavigate();
   
+  const [multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds] = useState([]);
   const [verlofAfkeurenPopupWeergeven, setVerlofAfkeurenPopupWeergeven] = useState(false); 
   const [verlofAnnulerenPopupWeergeven, setVerlofAnnulerenPopupWeergeven] = useState(false); 
   const [verlofData, setVerlofData] = useState(null); 
@@ -62,6 +63,13 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
       console.error(error)
     }
   };
+
+  function MassaGoedkeuren() {
+    multiGeselecteerdeKaartIds.forEach(verlof => {
+      verlofGoedkeuren(verlof);
+    });
+    setMultiGeselecteerdeKaartIds([])
+  }
   
   return (
     <>
@@ -71,7 +79,15 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
           <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
         </div>
           <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
-            <VerlofOverzichtContainer VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven} VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven} herladen={herladen} idsZichtbaar={idsZichtbaar} verlofGoedkeuren={verlofGoedkeuren}/>
+            <VerlofOverzichtContainer
+              VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
+              VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven}
+              herladen={herladen}
+              idsZichtbaar={idsZichtbaar}
+              verlofGoedkeuren={verlofGoedkeuren}
+              multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
+              setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
+              MassaGoedkeuren={MassaGoedkeuren}/>
           </div>
       </div>
       {verlofAfkeurenPopupWeergeven ?
@@ -82,7 +98,6 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
       <VerlofAnnulerenPopup setVerlofAnnulerenPopupWeergeven={setVerlofAnnulerenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
       <></>
       }
-      
   </>
   );
 }
