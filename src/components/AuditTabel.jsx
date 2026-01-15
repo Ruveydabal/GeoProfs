@@ -145,7 +145,6 @@ function AuditTabel() {
                                 </td>
                                 <td className="min-w-[300px] border border-[#D0D0D0]">
                                     <p className="pl-[10px]">
-                                        {console.log(audit?.uitgevoerdOp)}
                                         {
                                             //check of veld bestaat
                                             !audit?.uitgevoerdOp ? 

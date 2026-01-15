@@ -104,7 +104,7 @@ function App() {
 
         <Route path="/verlofaanvraag" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <VerlofAanvraag />
+            <VerlofAanvraag gebruiker={gebruiker} />
           </HeaderZonderRefresh>
         }/>
 
