@@ -9,9 +9,9 @@ import MaandNavigatie from '../components/MaandNavigatie'
 import WeekNavigatie from '../components/WeekNavigatie'
 import { onSnapshot } from "firebase/firestore";
 
+
 function Voorpagina({ voegToastToe, verwijderToast }) {
   let navigate = useNavigate();
-  const [managerToastGetoond, setManagerToastGetoond] = useState(false);
   const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
   const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
   const [maand, SetMaand] = useState(new Date().getMonth()) //pakt de huidige maand in integer (0-11)
@@ -20,6 +20,9 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
   const [rolNaam, setRolNaam] = useState(null);
   const [afdelingUser, setAfdelingUser] = useState(null);
   const [verlofSaldo, setVerlofSaldo] = useState(null);
+  const [toastGezien, setToastGezien] = useState(false); // voorkomt meerdere toasts
+
+  
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -152,51 +155,74 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
 
 useEffect(() => {
   const rol = localStorage.getItem("rol");
-  if (rol !== "manager") return;
+  if (rol !== "manager") return; // Alleen managers krijgen toast
 
   const userId = localStorage.getItem("userId");
   if (!userId) return;
 
   const userRef = doc(db, "user", userId);
 
-  // haal afdeling van de manager
-  getDoc(userRef).then(userSnap => {
+  let unsubscribe = null;
+
+  const setupListener = async () => {
+    const userSnap = await getDoc(userRef);
     if (!userSnap.exists()) return;
     const afdelingManager = userSnap.data().afdeling;
 
     const aanvragenRef = collection(db, "verlof");
     const q = query(
       aanvragenRef,
-      where("statusVerlof_id", "==", doc(db, "statusVerlof", "3"))
+      where("statusVerlof_id", "==", doc(db, "statusVerlof", "3")) // in afwachting
     );
 
-    // realtime listener
-    const unsubscribe = onSnapshot(q, snapshot => {
-      let count = 0;
+    unsubscribe = onSnapshot(q, async snapshot => {
+      // Alleen aanvragen van medewerkers in dezelfde afdeling
+      const aanvragenVoorAfdeling = await Promise.all(
+        snapshot.docs.map(async docSnap => {
+          const aanvraag = docSnap.data();
+          if (!aanvraag.user_id) return null;
 
-      snapshot.forEach(async docSnap => {
-        const aanvraag = docSnap.data();
-        if (!aanvraag.user_id) return;
+          const gebruikerSnap = await getDoc(aanvraag.user_id);
+          if (!gebruikerSnap.exists()) return null;
 
-        const gebruikerSnap = await getDoc(aanvraag.user_id);
-        if (!gebruikerSnap.exists()) return;
+          const gebruikerData = gebruikerSnap.data();
+          if (gebruikerData.afdeling === afdelingManager && gebruikerData.rol !== "manager") {
+            return docSnap.id;
+          }
+          return null;
+        })
+      );
 
-        if (gebruikerSnap.data().afdeling === afdelingManager) count++;
-      });
+      const echteAanvragen = aanvragenVoorAfdeling.filter(Boolean);
 
-      // korte timeout zodat async getDocs klaar is
-      setTimeout(() => {
-        if (count > 0 && !managerToastGetoond) {
-          voegToastToe(`U heeft ${count} nieuwe verlofaanvraag(en) in afwachting.`);
-          setManagerToastGetoond(true);
-        }
-      }, 100);
+      // Alleen één toast tonen per bezoek aan de voorpagina
+      if (echteAanvragen.length > 0 && !toastGezien) {
+        voegToastToe(`U heeft ${echteAanvragen.length} nieuwe verlofaanvraag(en) in afwachting.`);
+        setToastGezien(true);
+      }
     });
+  };
 
-    // cleanup
-    return () => unsubscribe();
-  });
+  setupListener();
+
+  return () => {
+    if (unsubscribe) unsubscribe();
+    setToastGezien(false);
+  };
 }, [voegToastToe]);
+
+
+
+
+
+
+  useEffect(() => {
+    return () => {
+      // Voorpagina wordt verlaten (route change of logout)
+      verwijderToast();
+      sessionStorage.removeItem("managerToastSeen");
+    };
+  }, []);
 
 
 
@@ -236,12 +262,16 @@ useEffect(() => {
             <div className='flex-1'></div>
            <button  className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mr-[50px]'
               onClick={() => {
-                verwijderToast(); // verwijder alle toasts
+                // Verwijder alle toasts en reset de "managerToastSeen" status
+                verwijderToast();
+                sessionStorage.removeItem("managerToastSeen");
+                setToastGezien(false); // reset lokale state zodat toast opnieuw kan triggeren bij nieuwe aanvragen
                 navigate('/verlofoverzicht');
               }}
-            >
-              Aanvraag overzicht →
-            </button>
+              >
+            Aanvraag overzicht →
+          </button>
+
 
 
 
