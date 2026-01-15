@@ -100,8 +100,6 @@ function VerlofAanvraag({gebruiker}) {
         createdAt: serverTimestamp(),
       });
 
-
-
       // Audit toevoegen
       await addDoc(collection(db, "auditTrail"), {
         actie: { id: 1, titel: "aanmaken" },
@@ -117,9 +115,6 @@ function VerlofAanvraag({gebruiker}) {
         },
         laatstGeupdate: serverTimestamp(),
       });
-
-
-
 
       alert("Verlofaanvraag is verzonden!");
 
