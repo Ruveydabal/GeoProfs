@@ -7,6 +7,7 @@ import MaandKalender from '../components/MaandKalender'
 import WeekKalender from '../components/WeekKalender'
 import MaandNavigatie from '../components/MaandNavigatie'
 import WeekNavigatie from '../components/WeekNavigatie'
+import GebruikerLijst from '../components/GebruikerLijst.jsx';
 
 function Voorpagina({ voegToastToe, verwijderToast }) {
   let navigate = useNavigate();
@@ -186,7 +187,7 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
         {/* zijbalk */}
         <div className='h-[calc(100%-120px)] w-full flex'>
           <div className='flex flex-col h-full w-[20%] items-center'>
-            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]' onClick={() => navigate('/ziekmelden')}>Ziek melden</button>
+            <button className='min-h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]' onClick={() => navigate('/ziekmelden')}>Ziek melden</button>
             {/* saldo vakje */
               typeof verlofSaldo !== 'undefined' ?
               <div className='flex flex-col h-auto max-w-[90%] w-[250px] bg-[#fff] rounded-[15px] mt-[40px] py-[5px] border border-solid border-[#D0D0D0]'>
@@ -197,6 +198,11 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
               :
               <></>
             }
+            <div className='h-[40px] w-[90%]'>
+              <div className='h-[20px] w-full border-b border-solid border-[#D0D0D0]'></div>
+              <div className='h-[20px] w-full'></div>
+            </div>
+            <GebruikerLijst/>
           </div>
           {/* render de kalender */}
           <div className='h-[calc(100%-20px)] w-[calc(80%-50px)] bg-[#f0f0f0]'>
