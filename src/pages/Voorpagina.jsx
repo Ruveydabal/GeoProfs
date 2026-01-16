@@ -22,7 +22,14 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
   const [verlofSaldo, setVerlofSaldo] = useState(null);
   const [toastGezien, setToastGezien] = useState(false); // voorkomt meerdere toasts
 
-  
+  useEffect(() => {
+  const rol = localStorage.getItem("rol");
+
+  if (rol === "manager") {
+    verwijderToast();      // oude toast weg
+    setToastGezien(false); // opnieuw kunnen triggeren
+  }
+}, []);
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -153,77 +160,73 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
   }, []);
 
 
-useEffect(() => {
-  const rol = localStorage.getItem("rol");
-  if (rol !== "manager") return; // Alleen managers krijgen toast
+  useEffect(() => {
+    const rol = localStorage.getItem("rol");
 
-  const userId = localStorage.getItem("userId");
-  if (!userId) return;
+    //HARD STOP: medewerkers krijgen nooit een toast
+    if (rol !== "manager") {
+      verwijderToast();       // extra zekerheid
+      return;
+    }
 
-  const userRef = doc(db, "user", userId);
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
 
-  let unsubscribe = null;
+    const userRef = doc(db, "user", userId);
+    let unsubscribe = null;
 
-  const setupListener = async () => {
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) return;
-    const afdelingManager = userSnap.data().afdeling;
+    const setupListener = async () => {
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) return;
 
-    const aanvragenRef = collection(db, "verlof");
-    const q = query(
-      aanvragenRef,
-      where("statusVerlof_id", "==", doc(db, "statusVerlof", "3")) // in afwachting
-    );
+      const afdelingManager = userSnap.data().afdeling;
 
-    unsubscribe = onSnapshot(q, async snapshot => {
-      // Alleen aanvragen van medewerkers in dezelfde afdeling
-      const aanvragenVoorAfdeling = await Promise.all(
-        snapshot.docs.map(async docSnap => {
-          const aanvraag = docSnap.data();
-          if (!aanvraag.user_id) return null;
-
-          const gebruikerSnap = await getDoc(aanvraag.user_id);
-          if (!gebruikerSnap.exists()) return null;
-
-          const gebruikerData = gebruikerSnap.data();
-          if (gebruikerData.afdeling === afdelingManager && gebruikerData.rol !== "manager") {
-            return docSnap.id;
-          }
-          return null;
-        })
+      const aanvragenRef = collection(db, "verlof");
+      const q = query(
+        aanvragenRef,
+        where("statusVerlof_id", "==", doc(db, "statusVerlof", "3")) // in afwachting
       );
 
-      const echteAanvragen = aanvragenVoorAfdeling.filter(Boolean);
+      unsubscribe = onSnapshot(q, async snapshot => {
+        const aanvragenVoorAfdeling = await Promise.all(
+          snapshot.docs.map(async docSnap => {
+            const aanvraag = docSnap.data();
+            if (!aanvraag.user_id) return null;
 
-      // Alleen één toast tonen per bezoek aan de voorpagina
-      if (echteAanvragen.length > 0 && !toastGezien) {
-        voegToastToe(`U heeft ${echteAanvragen.length} nieuwe verlofaanvraag(en) in afwachting.`);
-        setToastGezien(true);
-      }
-    });
-  };
+            const gebruikerSnap = await getDoc(aanvraag.user_id);
+            if (!gebruikerSnap.exists()) return null;
 
-  setupListener();
+            const gebruikerData = gebruikerSnap.data();
 
-  return () => {
-    if (unsubscribe) unsubscribe();
-    setToastGezien(false);
-  };
-}, [voegToastToe]);
+            // alleen medewerkers uit eigen afdeling
+            if (
+              gebruikerData.afdeling === afdelingManager &&
+              gebruikerData.rol !== "manager"
+            ) {
+              return docSnap.id;
+            }
+            return null;
+          })
+        );
 
+        const echteAanvragen = aanvragenVoorAfdeling.filter(Boolean);
 
-
-
-
-
-  useEffect(() => {
-    return () => {
-      // Voorpagina wordt verlaten (route change of logout)
-      verwijderToast();
-      sessionStorage.removeItem("managerToastSeen");
+        if (echteAanvragen.length > 0 && !toastGezien) {
+          voegToastToe(
+            `U heeft ${echteAanvragen.length} nieuwe verlofaanvraag(en) in afwachting.`,
+            5000
+          );
+          setToastGezien(true);
+        }
+      });
     };
-  }, []);
 
+    setupListener();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [voegToastToe, verwijderToast, toastGezien]);
 
 
 
@@ -233,7 +236,18 @@ useEffect(() => {
         {/* topbalk */}
         <div className='h-[120px] w-full flex'>
           <div className='flex h-[120px] w-[20%] justify-center items-center'>
-            <button className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]' onClick={() => navigate('/verlofAanvraag')}>Verlof aanvragen</button>
+           <button
+            className='h-[40px] max-w-[90%] w-[250px] bg-[#2AAFF2] text-white rounded-[15px]'
+              onClick={() => {
+                const rol = localStorage.getItem("rol"); // altijd up-to-date
+                if (rol === "medewerker") {
+                  navigate('/verlofaanvraag'); // direct naar pagina
+                }
+              }}
+            >
+            Verlof aanvragen
+          </button>
+
           </div>
           <div className='flex h-full w-[80%] items-center'>
             {/* vorige/volgende week/maand selecteren */
@@ -271,9 +285,6 @@ useEffect(() => {
               >
             Aanvraag overzicht →
           </button>
-
-
-
 
           </div>
         </div>
