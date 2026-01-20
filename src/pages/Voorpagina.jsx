@@ -20,16 +20,8 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
   const [rolNaam, setRolNaam] = useState(null);
   const [afdelingUser, setAfdelingUser] = useState(null);
   const [verlofSaldo, setVerlofSaldo] = useState(null);
-  const [toastGezien, setToastGezien] = useState(false); // voorkomt meerdere toasts
-
-  useEffect(() => {
-  const rol = localStorage.getItem("rol");
-
-  if (rol === "manager") {
-    verwijderToast();      // oude toast weg
-    setToastGezien(false); // opnieuw kunnen triggeren
-  }
-}, []);
+  const TOAST_KEY = "managerToastSeen";
+  
 
   //array met alle dagen van de geselecteerde week
   var weekDagen = []
@@ -210,14 +202,17 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
         );
 
         const echteAanvragen = aanvragenVoorAfdeling.filter(Boolean);
+        const toastAlGezien = sessionStorage.getItem(TOAST_KEY);
 
-        if (echteAanvragen.length > 0 && !toastGezien) {
+        if (echteAanvragen.length > 0 && !toastAlGezien) {
           voegToastToe(
             `U heeft ${echteAanvragen.length} nieuwe verlofaanvraag(en) in afwachting.`,
             5000
           );
-          setToastGezien(true);
+
+          sessionStorage.setItem(TOAST_KEY, "true");
         }
+
       });
     };
 
@@ -226,7 +221,7 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, [voegToastToe, verwijderToast, toastGezien]);
+  }, []);
 
 
 
@@ -278,8 +273,6 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
               onClick={() => {
                 // Verwijder alle toasts en reset de "managerToastSeen" status
                 verwijderToast();
-                sessionStorage.removeItem("managerToastSeen");
-                setToastGezien(false); // reset lokale state zodat toast opnieuw kan triggeren bij nieuwe aanvragen
                 navigate('/verlofoverzicht');
               }}
               >

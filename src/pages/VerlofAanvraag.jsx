@@ -98,8 +98,10 @@ function VerlofAanvraag() {
         statusVerlof_id: doc(db, "statusVerlof", "3"),
         omschrijvingRedenVerlof: reden || "Geen reden opgegeven",
         createdAt: serverTimestamp(),
+        toastNeeded: true,
       });
       alert("Verlofaanvraag is verzonden!");
+      sessionStorage.removeItem("managerToastSeen");
 
       const rol = localStorage.getItem("rol");
       if (rol) {
