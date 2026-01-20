@@ -30,6 +30,12 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
             .filter(u => u.id !== momenteleUserId)
             .map(u => doc(db, "user", u.id));
 
+        if (usersInAfdeling.length === 0) {
+            setVerlofData([]);
+            setInfoText("Er zijn geen verlof aanvragen voor u op dit moment.");
+            return;
+        }
+
         //fetch verlof data voor users in dezelfde afdeling
         const verlofQ = query(
             collection(db, "verlof"),

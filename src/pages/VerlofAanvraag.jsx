@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
 import { db } from '../firebase';
-import { doc, setDoc, getDocs, serverTimestamp, addDoc, collection } from "firebase/firestore";
+import { doc, setDoc, getDocs, serverTimestamp, addDoc, collection, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import moment from 'moment';
 import 'moment/locale/nl';
 moment.locale('nl');
 
 
-function VerlofAanvraag() {
+function VerlofAanvraag({gebruiker}) {
     const [verlofAanvraagDag, setVerlofAanvraagDag ] = useState("");
     const [verlofAanvraagTotDag, setVerlofAanvraagTotDag] = useState("");
     const [verlofType, setVerlofType ] = useState(""); //ID van db 1, 2, 3, 4
@@ -90,15 +89,33 @@ function VerlofAanvraag() {
 
     setLoading(true);
     try {
-      await addDoc(collection(db, "verlof"), {
+      const verlofRef = doc(collection(db, "verlof"));
+      await setDoc(verlofRef, {
         user_id: doc(db, "user", userId),
         typeVerlof_id: doc(db, "typeVerlof", verlofType),
-        startDatum: moment(verlofAanvraagDag, 'YYYY-MM-DD').toDate(),
-        eindDatum: moment(verlofAanvraagTotDag, 'YYYY-MM-DD').toDate(),
+        startDatum: moment(verlofAanvraagDag, "YYYY-MM-DD").toDate(),
+        eindDatum: moment(verlofAanvraagTotDag, "YYYY-MM-DD").toDate(),
         statusVerlof_id: doc(db, "statusVerlof", "3"),
         omschrijvingRedenVerlof: reden || "Geen reden opgegeven",
         createdAt: serverTimestamp(),
       });
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 1, titel: "aanmaken" },
+        tabel: { id: 2, tabelNaam: "verlof" },
+        uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+        },
+        uitgevoerdOp: {
+        id: verlofRef.id,
+        tabel: { id: 2, tabelNaam: "verlof"},
+        },
+        laatstGeupdate: serverTimestamp(),
+      });
+
       alert("Verlofaanvraag is verzonden!");
 
       const rol = localStorage.getItem("rol");

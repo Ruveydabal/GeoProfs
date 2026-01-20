@@ -2,12 +2,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { db } from "../firebase";
-import { doc, getDoc, updateDoc, Timestamp, collection, query, where, getDocs} from "firebase/firestore";
+import { doc, getDoc, updateDoc, Timestamp, collection, query, where, getDocs, serverTimestamp, addDoc} from "firebase/firestore";
 
 import ProfielLijstItem from '../components/ProfielLijstItem.jsx';
 import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx';
 
-function Profiel({ setTrigger }) {
+function Profiel({ setTrigger, gebruiker }) {
     const { userId: id } = useParams();
     const navigate = useNavigate();
 
@@ -101,6 +101,23 @@ function Profiel({ setTrigger }) {
                     afdeling,
                     inDienst: inDienst ? Timestamp.fromDate(inDienst.toDate()) : null,
                     verlofSaldo: Number(verlofSaldo)
+                });
+
+                // Audit toevoegen
+                await addDoc(collection(db, "auditTrail"), {
+                    actie: { id: 2, titel: "aanpassen" },
+                    tabel: { id: 1, tabelNaam: "user" },
+                    uitgevoerdDoorUser: {
+                    id: localStorage.getItem("userId"),
+                    naam: gebruiker.voornaam,
+                    achternaam: gebruiker.achternaam,
+                    },
+                    typeUitvoering: { id: 5, titel: "infoVeranderd" },
+                    uitgevoerdOp: {
+                    id: id,
+                    tabel: { id: 1, tabelNaam: "user", naam: voornaam + " " + achternaam },
+                    },
+                    laatstGeupdate: serverTimestamp(),
                 });
 
                 // Header direct updaten
