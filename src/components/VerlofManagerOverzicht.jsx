@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from "../firebase";
 import { collection, query, where, orderBy, doc } from "firebase/firestore";
 
-function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren}) { 
+function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVerlofStatusData, herladen, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, MassaGoedkeuren, VerlofMarkerenAlsGezien}) { 
     const [verlofData, setVerlofData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [verlofStatusData, setVerlofStatusData] = useState([]);
@@ -41,7 +41,7 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
             collection(db, "verlof"),
             where("user_id", "in", usersInAfdeling),
             where("statusVerlof_id", "in", [doc(db, "statusVerlof", "3"), doc(db, "statusVerlof", "4")]),
-            orderBy("createdAt", "desc")
+            orderBy("statusVerlof_id", "desc")
         );
         FetchVerlofAanvraagData(setVerlofData, setInfoText, verlofQ, "U heeft geen verlof aanvragen voor u op dit moment.");
     }, [userData, herladen, FetchVerlofAanvraagData, momenteleUserId]);
@@ -68,6 +68,7 @@ function VerlofManagerOverzicht({FetchVerlofAanvraagData, FetchUserData, FetchVe
                         VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
                         multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
                         setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
+                        VerlofMarkerenAlsGezien={VerlofMarkerenAlsGezien}
                     />
                 ))}
             </div>

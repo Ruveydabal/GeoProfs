@@ -70,6 +70,57 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
     });
     setMultiGeselecteerdeKaartIds([])
   }
+
+  const VerlofMarkerenAlsGezien = async (verlofData, gezien) => {
+      try {
+      const verlofRef = doc(db, "verlof", verlofData.id);
+      var statusVerlofRef;
+      var typeUitvoering;
+
+      if (gezien) {
+        statusVerlofRef = doc(db, "statusVerlof", "4");
+        typeUitvoering = { id: 4, titel: "Gezien" };
+      }
+      else if (!gezien) {
+        statusVerlofRef = doc(db, "statusVerlof", "3");
+        typeUitvoering = { id: 3, titel: "In Afwachting" };
+      }
+      else {
+        return;
+      }
+
+      // Verlof updaten
+      await setDoc(
+        verlofRef,
+        {
+        statusVerlof_id: statusVerlofRef,
+        laatstGeupdate: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 2, titel: "aanpassen" },
+        tabel: { id: 2, tabelNaam: "verlof" },
+        uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+        },
+        typeUitvoering: typeUitvoering,
+        uitgevoerdOp: {
+        id: verlofData.id,
+        tabel: { id: 2, tabelNaam: "verlof" },
+        },
+        laatstGeupdate: serverTimestamp(),
+      });
+
+      setHerladen(prev => !prev);
+    } catch (error) {
+      console.error(error)
+    }
+  };
   
   return (
     <>
@@ -87,7 +138,8 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
               verlofGoedkeuren={verlofGoedkeuren}
               multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
               setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
-              MassaGoedkeuren={MassaGoedkeuren}/>
+              MassaGoedkeuren={MassaGoedkeuren}
+              VerlofMarkerenAlsGezien={VerlofMarkerenAlsGezien}/>
           </div>
       </div>
       {verlofAfkeurenPopupWeergeven ?

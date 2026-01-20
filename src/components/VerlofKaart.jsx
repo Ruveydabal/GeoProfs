@@ -1,7 +1,9 @@
 import moment from 'moment';
 import Checkbox from './basis-components/CheckBox';
+import BookmarkUnchecked from '../media/bookmark.png';
+import BookmarkChecked from '../media/bookmark-checked.png';
 
-function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds}) {
+function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, VerlofMarkerenAlsGezien}) {
     function UpdateCheck(value){
         if(value){
             setMultiGeselecteerdeKaartIds([...multiGeselecteerdeKaartIds, verlofData]);
@@ -17,12 +19,24 @@ function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, Verl
     }
     return (
         <div className="w-full h-auto border-1 border-solid border-[#D0D0D0] p-[20px] divide-y divide-[#D0D0D0] mb-[20px]">
-            <div className="w-full h-auto pb-[20px]">
-                {idsZichtbaar ? <p>{"verlof doc ID: " + verlofData.id}</p> : <></>}
-                <p className='text-xl'>{`${userData.voornaam} ${userData.achternaam}`}</p>
-                <p className='my-[5px]'>{verlofData.omschrijvingRedenVerlof}</p>
-                <p>{`Van ${moment(verlofData.startDatum.toDate()).format("DD-MM-YYYY")}, tot ${moment(verlofData.eindDatum.toDate()).format("DD-MM-YYYY")}`}</p>
+            <div className='flex flex-row'>
+                <div className="w-[calc(100%-30px)] h-auto pb-[20px]">
+                    {idsZichtbaar ? <p>{"verlof doc ID: " + verlofData.id}</p> : <></>}
+                    <p className='text-xl'>{`${userData.voornaam} ${userData.achternaam}`}</p>
+                    <p className='my-[5px]'>{verlofData.omschrijvingRedenVerlof}</p>
+                    <p>{`Van ${moment(verlofData.startDatum.toDate()).format("DD-MM-YYYY")}, tot ${moment(verlofData.eindDatum.toDate()).format("DD-MM-YYYY")}`}</p>
+                </div>
+                <div className='w-[30px]'>
+                    {
+                        typeKaart == "manager" ?
+                        <button className='w-[30px] h-[30px] cursor-pointer' onClick={() => VerlofMarkerenAlsGezien(verlofData, verlofData.statusVerlof_id?.id == 3)}>
+                            <img src={verlofData.statusVerlof_id?.id == 3 ? BookmarkUnchecked : BookmarkChecked} alt="" />
+                        </button>
+                        : <></>
+                    }
+                </div>
             </div>
+
             <div className="w-full h-auto pt-[20px]">
                 {
                     typeKaart == "openAanvragen" && verlofData.statusVerlof_id.id == 3 ? 
