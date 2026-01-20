@@ -9,7 +9,7 @@ import MaandNavigatie from '../components/MaandNavigatie'
 import WeekNavigatie from '../components/WeekNavigatie'
 import GebruikerLijst from '../components/GebruikerLijst.jsx';
 
-function Voorpagina({ voegToastToe, verwijderToast }) {
+function Voorpagina({ voegToastToe, verwijderToast, gebruiker }) {
   let navigate = useNavigate();
   const [MaandofWeekKalender, SetMaandofWeekKalender] = useState(false) //maand = false, week = true
   const [jaar, SetJaar] = useState(new Date().getFullYear()) //pakt het huidige jaar
@@ -202,7 +202,11 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
               <div className='h-[20px] w-full border-b border-solid border-[#D0D0D0]'></div>
               <div className='h-[20px] w-full'></div>
             </div>
-            <GebruikerLijst/>
+            {
+              gebruiker?.rol == "Manager"? 
+              <GebruikerLijst/> : <></>
+            }
+            
           </div>
           {/* render de kalender */}
           <div className='h-[calc(100%-20px)] w-[calc(80%-50px)] bg-[#f0f0f0]'>

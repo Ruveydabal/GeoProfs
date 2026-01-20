@@ -136,7 +136,7 @@ function App() {
         <Route path="/officemanager/voorpagina" element={
           <ProtectedRoute allowedRoles={["officemanager"]}>
             <HeaderZonderRefresh gebruiker={gebruiker}>
-              <Voorpagina voegToastToe={voegToastToe} verwijderToast={verwijderToast}/>
+              <Voorpagina voegToastToe={voegToastToe} verwijderToast={verwijderToast} gebruiker={gebruiker}/>
             </HeaderZonderRefresh>
           </ProtectedRoute>
         }/>
@@ -144,7 +144,7 @@ function App() {
         <Route path="/manager/voorpagina" element={
           <ProtectedRoute allowedRoles={["manager"]}>
             <HeaderZonderRefresh gebruiker={gebruiker}>
-              <Voorpagina voegToastToe={voegToastToe} verwijderToast={verwijderToast} />
+              <Voorpagina voegToastToe={voegToastToe} verwijderToast={verwijderToast} gebruiker={gebruiker}/>
             </HeaderZonderRefresh>
           </ProtectedRoute>
         }/>
@@ -152,7 +152,7 @@ function App() {
         <Route path="/medewerker/voorpagina" element={
           <ProtectedRoute allowedRoles={["medewerker"]}>
             <HeaderZonderRefresh gebruiker={gebruiker}>
-              <Voorpagina voegToastToe={voegToastToe} verwijderToast={verwijderToast}/>
+              <Voorpagina voegToastToe={voegToastToe} verwijderToast={verwijderToast} gebruiker={gebruiker}/>
             </HeaderZonderRefresh>
           </ProtectedRoute>
         }/>
