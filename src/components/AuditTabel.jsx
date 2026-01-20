@@ -152,7 +152,7 @@ function AuditTabel() {
 
                                             //check of tabel user is, dan gebruik naam
                                             audit?.uitgevoerdOp.tabel.tabelNaam == "user" ?
-                                            audit?.uitgevoerdOp.naam :
+                                            audit?.uitgevoerdOp.tabel.naam :
 
                                             //anders gebruik tabel en id
                                             audit?.uitgevoerdOp.tabel.tabelNaam + " id: " + audit?.uitgevoerdOp.id

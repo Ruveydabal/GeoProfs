@@ -16,7 +16,7 @@ import GebruikerToevoegen from './pages/GebruikerToevoegen';
 import VerlofAanvraag from './pages/VerlofAanvraag';
 import Profiel from './pages/Profiel';
 import AuditOverzicht from './pages/AuditOverzicht';
-import Verlofoverzicht from './pages/VerlofOverzicht';
+import Verlofoverzicht from './pages/Verlofoverzicht';
 import ToastContainer from './components/ToastContainer';
 
 function App() {
@@ -104,7 +104,7 @@ function App() {
 
         <Route path="/verlofaanvraag" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <VerlofAanvraag />
+            <VerlofAanvraag gebruiker={gebruiker} />
           </HeaderZonderRefresh>
         }/>
 
@@ -116,13 +116,13 @@ function App() {
 
         <Route path="/gebruiker-registratie" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <GebruikerToevoegen />
+            <GebruikerToevoegen gebruiker={gebruiker} />
           </HeaderZonderRefresh>
         }/>
 
         <Route path="/profiel/:userId" element={
           <HeaderZonderRefresh gebruiker={gebruiker}>
-            <Profiel setTrigger={setTrigger} />
+            <Profiel setTrigger={setTrigger} gebruiker={gebruiker} />
           </HeaderZonderRefresh>
         }/>
 
