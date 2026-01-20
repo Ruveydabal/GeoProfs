@@ -241,7 +241,7 @@ function Profiel({ setTrigger, gebruiker }) {
                                         Wachtwoord wijzigen
                                     </button>
                                 )}
-                                {gebruikersRol === "manager" && (
+                                {(gebruikersRol === "manager" || gebruikersRol === "medewerker") && (
                                     <button
                                         className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer'
                                         onClick={updateData} >
