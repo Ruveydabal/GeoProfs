@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { db, Timestamp } from "../firebase";
-import { collection, addDoc, doc, getDocs, setDoc } from "firebase/firestore";
+import { collection, addDoc, doc, getDocs, setDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
-function GebruikerToevoegen() {
+function GebruikerToevoegen({gebruiker}) {
   const navigate = useNavigate();
 
   const [voornaam, setVoornaam] = useState("");
@@ -64,6 +64,23 @@ function GebruikerToevoegen() {
       await addDoc(collection(db, "userPassword"), {
         user_id: doc(db, "user", userRef.id),
         wachtwoord,
+      });
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 1, titel: "aanmaken" },
+        tabel: { id: 1, tabelNaam: "user" },
+        uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+        },
+        typeUitvoering: { id: 2, titel: "goedgekeurd" },
+        uitgevoerdOp: {
+        id: userRef.id,
+        tabel: { id: 1, tabelNaam: "user", naam: voornaam + " " + achternaam },
+        },
+        laatstGeupdate: serverTimestamp(),
       });
 
       alert("Gebruiker succesvol aangemaakt!");
