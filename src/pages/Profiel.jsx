@@ -8,7 +8,7 @@ import ProfielLijstItem from '../components/ProfielLijstItem.jsx';
 import WachtwoordVeranderenPopup from '../components/WachtwoordVeranderenPopup.jsx';
 
 function Profiel({ setTrigger, gebruiker }) {
-    const { userId: id } = useParams();
+    const { userId: urlId } = useParams();
     const navigate = useNavigate();
 
     const jouwId = localStorage.getItem("userId");
@@ -31,13 +31,12 @@ function Profiel({ setTrigger, gebruiker }) {
     useEffect(() => {
         const fetchGebruiker = async () => {
             try {
-                const userId = localStorage.getItem("userId");
-                if (!userId) {
-                    console.error("Geen userId in localStorage gevonden.");
+                if (!urlId) {
+                    console.error("Geen userId gevonden in URL.");
                     return;
                 }
 
-                const gebruikerRef = doc(db, "user", userId);
+                const gebruikerRef = doc(db, "user", urlId);
                 const gebruikerSnap = await getDoc(gebruikerRef);
 
                 if (!gebruikerSnap.exists()) {
@@ -70,6 +69,12 @@ function Profiel({ setTrigger, gebruiker }) {
                 console.error("Fout bij ophalen gebruiker:", err);
             }
         };
+
+        //redirect als user dit profiel niet hoort te zien
+        if(gebruikersRol == "medewerker" && urlId != jouwId){
+            navigate(`/${gebruiker?.rol.toLowerCase().replaceAll(" ", "")}/voorpagina`)
+            return
+        }
         fetchGebruiker();
     }, []);
 
@@ -77,8 +82,7 @@ function Profiel({ setTrigger, gebruiker }) {
     const updateData = async () => {
         if (aanHetWijzigen) {
             try {
-                const userId = localStorage.getItem("userId");
-                const gebruikerRef = doc(db, "user", userId);
+                const gebruikerRef = doc(db, "user", urlId);
 
                 // RolID ophalen vanuit rol collectie
                 const rolQuery = query(
@@ -100,7 +104,8 @@ function Profiel({ setTrigger, gebruiker }) {
                     rol_id: rolRef,
                     afdeling,
                     inDienst: inDienst ? Timestamp.fromDate(inDienst.toDate()) : null,
-                    verlofSaldo: Number(verlofSaldo)
+                    verlofSaldo: Number(verlofSaldo),
+                    laatstGeupdate: serverTimestamp()
                 });
 
                 // Audit toevoegen
@@ -114,7 +119,7 @@ function Profiel({ setTrigger, gebruiker }) {
                     },
                     typeUitvoering: { id: 5, titel: "infoVeranderd" },
                     uitgevoerdOp: {
-                    id: id,
+                    id: urlId,
                     tabel: { id: 1, tabelNaam: "user", naam: voornaam + " " + achternaam },
                     },
                     laatstGeupdate: serverTimestamp(),
@@ -234,20 +239,20 @@ function Profiel({ setTrigger, gebruiker }) {
 
                             {/* Knoppen */}
                             <div className="flex flex-col mb-[30px]">
-                                {id === jouwId && !aanHetWijzigen && (
+                                {urlId === jouwId && !aanHetWijzigen && (
                                     <button
                                         className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer'
                                         onClick={() => setWachtwoordPopup(true)} >
                                         Wachtwoord wijzigen
                                     </button>
                                 )}
-                                {gebruikersRol === "manager" && (
+                                {gebruikersRol != "medewerker" ? 
                                     <button
                                         className='h-[40px] max-w-[90%] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] mb-[20px] cursor-pointer'
                                         onClick={updateData} >
                                         {aanHetWijzigen ? "Opslaan" : "Gegevens wijzigen"}
-                                    </button>
-                                )}
+                                    </button> : <></>
+                                }
                             </div>
                         </div>
                     </div>
