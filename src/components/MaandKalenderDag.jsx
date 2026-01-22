@@ -28,8 +28,8 @@ function MaandKalenderDag({dag, index, rol, DagNietInMaand, DagIsWeekend, aanvra
             {rol == "manager" || rol == "ceo" || rol == "office manager" ? 
                 <div className='w-full flex-1 overflow-auto'>
                    {!DagNietInMaand(index, dag) &&
-                        mensenAfwezig.map((aanvraag) => (
-                            <div key={aanvraag.id}>
+                        mensenAfwezig.map((aanvraag, i) => (
+                            <div className={`${i % 2 ? 'bg-[#fff]' : 'bg-[#DDE7F1]'} border-t-1 border-r-1 border-solid border-[#D0D0D0]`} key={aanvraag.id}>
                                 {aanvraag.gebruikerVoornaam}  
                             </div>
                         ))
