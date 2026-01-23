@@ -8,3 +8,5 @@
 > npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
 > npm install -D jsdom
 > npm i -D @testing-library/jest-dom
+
+Onze test frame work voor unit & integratie: https://vitest.dev/
