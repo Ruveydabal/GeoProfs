@@ -143,7 +143,7 @@ function Verlofoverzicht({gebruiker, idsZichtbaar}) {
           </div>
       </div>
       {verlofAfkeurenPopupWeergeven ?
-      <VerlofAfkeurenPopup setPopupWeergeven={setVerlofAfkeurenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
+      <VerlofAfkeurenPopup setVerlofAfkeurenPopupWeergeven={setVerlofAfkeurenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
       <></>
       }
       {verlofAnnulerenPopupWeergeven ?

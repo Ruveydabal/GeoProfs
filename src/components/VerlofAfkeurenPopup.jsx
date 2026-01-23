@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { db } from "../firebase";
 import { collection, doc, setDoc, addDoc, serverTimestamp  } from "firebase/firestore";
 
-function VerlofAfkeurenPopup({VerlofAfkeurenPopupWeergeven, verlofData, setHerladen, gebruiker}) {
+function VerlofAfkeurenPopup({setVerlofAfkeurenPopupWeergeven, verlofData, setHerladen, gebruiker}) {
 
   const [afkeurReden, setAfkeurReden] = useState("");
   const [foutMelding, setFoutMelding] = useState("");
@@ -45,7 +45,7 @@ function VerlofAfkeurenPopup({VerlofAfkeurenPopupWeergeven, verlofData, setHerla
         laatstGeupdate: serverTimestamp(),
       });
 
-      VerlofAfkeurenPopupWeergeven(false);
+      setVerlofAfkeurenPopupWeergeven(false);
       setAfkeurReden("");
       setHerladen(prev => !prev);
 
@@ -57,7 +57,7 @@ function VerlofAfkeurenPopup({VerlofAfkeurenPopupWeergeven, verlofData, setHerla
 
   function verlofAfkeurenAnnuleren(){
     setAfkeurReden("");
-    VerlofAfkeurenPopupWeergeven(false);
+    setVerlofAfkeurenPopupWeergeven(false);
   }
 
   return (
@@ -76,7 +76,7 @@ function VerlofAfkeurenPopup({VerlofAfkeurenPopupWeergeven, verlofData, setHerla
                 />
                 <div className='w-full flex justify-between'>
                   <button className='h-[40px] w-[150px] bg-[#fff] rounded-[15px] border-1 border-solid border-[#D0D0D0] cursor-pointer' onClick={() => (verlofAfkeurenAnnuleren())}>Annuleren</button>
-                  <button className='h-[40px] w-[150px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => (verlofAfkeurenBevestigen())}>Bevestigen</button>
+                  <button className='h-[40px] w-[150px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => verlofAfkeurenBevestigen()}>Bevestigen</button>
                   
                 </div>
             </div>
