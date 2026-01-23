@@ -147,6 +147,27 @@ function Voorpagina({ voegToastToe, verwijderToast }) {
     haalGoedgekeurdeAanvragenOp();
   }, []);
 
+  useEffect(() => {
+    const rol = localStorage.getItem("rol");
+
+    //Medewerker ziet nooit toast
+    if (rol !== "manager") return;
+
+    const heeftNieuweAanvraag = localStorage.getItem("nieuweVerlofAanvraag");
+
+    if (heeftNieuweAanvraag === "true") {
+      // Toast tonen (15 sec)
+      voegToastToe(
+        "Er is een nieuwe verlofaanvraag ingediend",
+        10000
+      );
+
+      //reset zodat hij niet opnieuw verschijnt
+      localStorage.removeItem("nieuweVerlofAanvraag");
+    }
+  }, []);
+
+
   return (
     <>
       <div className='flex w-full h-full flex-col text-[1.7vh]'>
