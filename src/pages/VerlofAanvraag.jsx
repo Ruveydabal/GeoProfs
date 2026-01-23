@@ -118,6 +118,9 @@ function VerlofAanvraag({gebruiker}) {
 
       alert("Verlofaanvraag is verzonden!");
 
+    localStorage.setItem("nieuweVerlofAanvraag", "true");
+
+
       const rol = localStorage.getItem("rol");
       if (rol) {
         navigate(`/${rol}/voorpagina`);
