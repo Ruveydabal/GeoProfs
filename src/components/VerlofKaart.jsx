@@ -1,0 +1,63 @@
+import moment from 'moment';
+import Checkbox from './basis-components/CheckBox';
+import BookmarkUnchecked from '../media/bookmark.png';
+import BookmarkChecked from '../media/bookmark-checked.png';
+
+function VerlofAanvraag({verlofData, typeKaart, userData, verlofStatusData, VerlofAfkeurenPopupWeergeven, idsZichtbaar, verlofGoedkeuren, VerlofAnnulerenPopupWeergeven, multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds, VerlofMarkerenAlsGezien}) {
+    function UpdateCheck(value){
+        if(value){
+            setMultiGeselecteerdeKaartIds([...multiGeselecteerdeKaartIds, verlofData]);
+        }
+        else{
+            setMultiGeselecteerdeKaartIds(multiGeselecteerdeKaartIds.filter(item => item.id !== verlofData.id));
+        }
+    }
+
+    if (!verlofData || !typeKaart){
+        "kaart kon niet laden."
+        return
+    }
+    return (
+        <div className="w-full h-auto border-1 border-solid border-[#D0D0D0] p-[20px] divide-y divide-[#D0D0D0] mb-[20px]">
+            <div className='flex flex-row'>
+                <div className="w-[calc(100%-30px)] h-auto pb-[20px]">
+                    {idsZichtbaar ? <p>{"verlof doc ID: " + verlofData.id}</p> : <></>}
+                    <p className='text-xl'>{`${userData.voornaam} ${userData.achternaam}`}</p>
+                    <p className='my-[5px]'>{verlofData.omschrijvingRedenVerlof}</p>
+                    <p>{`Van ${moment(verlofData.startDatum.toDate()).format("DD-MM-YYYY")}, tot ${moment(verlofData.eindDatum.toDate()).format("DD-MM-YYYY")}`}</p>
+                </div>
+                <div className='w-[30px]'>
+                    {
+                        typeKaart == "manager" ?
+                        <button className='w-[30px] h-[30px] cursor-pointer' onClick={() => VerlofMarkerenAlsGezien(verlofData, verlofData.statusVerlof_id?.id == 3)}>
+                            <img src={verlofData.statusVerlof_id?.id == 3 ? BookmarkUnchecked : BookmarkChecked} alt="" />
+                        </button>
+                        : <></>
+                    }
+                </div>
+            </div>
+
+            <div className="w-full h-auto pt-[20px]">
+                {
+                    typeKaart == "openAanvragen" && verlofData.statusVerlof_id.id == 3 ? 
+                    <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAnnulerenPopupWeergeven(verlofData)}>Annuleer Verzoek</button>
+                    :
+                    typeKaart == "manager" && (verlofData.statusVerlof_id.id == 3 || verlofData.statusVerlof_id.id == 4) ? 
+                    <div className='flex direction-row justify-between'>
+                        <div>
+                            <button className='h-[40px] w-[110px] bg-[#00BC00] text-white rounded-[15px] cursor-pointer mr-[20px]' onClick={() => verlofGoedkeuren(verlofData) }>Goedkeuren</button>
+                            <button className='h-[40px] w-[100px] bg-[#DF121B] text-white rounded-[15px] cursor-pointer' onClick={() => VerlofAfkeurenPopupWeergeven(verlofData)}>Afkeuren</button>
+                        </div>
+                        <Checkbox onChange={(e) => UpdateCheck(e.target.checked)}/>
+                    </div>
+                    :
+                    <p className='mb-[5px] text-[18px]'>{verlofStatusData.filter(x => x.id == verlofData.statusVerlof_id?.id)[0].omschrijving}</p>
+                }
+                {
+                     verlofData.statusVerlof_id.id == 2 ? <p>Reden van afkeur: {verlofData.afkeurReden}</p> : <></>
+                }
+            </div>
+        </div>
+    );
+}
+export default VerlofAanvraag;

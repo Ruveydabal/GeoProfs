@@ -1,0 +1,157 @@
+import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import VerlofAfkeurenPopup from "../components/VerlofAfkeurenPopup.jsx";
+import VerlofAnnulerenPopup from "../components/VerlofAnnulerenPopup.jsx";
+import VerlofOverzichtContainer from "../components/VerlofOverzichtContainer.jsx"
+import { db } from "../firebase";
+import { collection, doc, setDoc, addDoc, serverTimestamp  } from "firebase/firestore";
+
+function Verlofoverzicht({gebruiker, idsZichtbaar}) {
+  const navigate = useNavigate();
+  
+  const [multiGeselecteerdeKaartIds, setMultiGeselecteerdeKaartIds] = useState([]);
+  const [verlofAfkeurenPopupWeergeven, setVerlofAfkeurenPopupWeergeven] = useState(false); 
+  const [verlofAnnulerenPopupWeergeven, setVerlofAnnulerenPopupWeergeven] = useState(false); 
+  const [verlofData, setVerlofData] = useState(null); 
+  const [herladen, setHerladen] = useState(false);
+
+  //open afkeur popup wanneer een manager op afkeuren drukt op een verlof kaart
+  const VerlofAfkeurenPopupWeergeven = (verlofData) => {
+    setVerlofData(verlofData)
+    setVerlofAfkeurenPopupWeergeven(true)
+  };
+
+  const VerlofAnnulerenPopupWeergeven = (verlofData) => {
+    setVerlofData(verlofData)
+    setVerlofAnnulerenPopupWeergeven(true)
+  };
+
+  const verlofGoedkeuren = async (verlofData) => {
+    try {
+      const verlofRef = doc(db, "verlof", verlofData.id);
+      const statusVerlofRef = doc(db, "statusVerlof", "1");
+
+      // Verlof updaten
+      await setDoc(
+        verlofRef,
+        {
+        statusVerlof_id: statusVerlofRef,
+        laatstGeupdate: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 2, titel: "aanpassen" },
+        tabel: { id: 2, tabelNaam: "verlof" },
+        uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+        },
+        typeUitvoering: { id: 2, titel: "goedgekeurd" },
+        uitgevoerdOp: {
+        id: verlofData.id,
+        tabel: { id: 2, tabelNaam: "verlof" },
+        },
+        laatstGeupdate: serverTimestamp(),
+      });
+
+      setHerladen(prev => !prev);
+    } catch (error) {
+      console.error(error)
+    }
+  };
+
+  function MassaGoedkeuren() {
+    multiGeselecteerdeKaartIds.forEach(verlof => {
+      verlofGoedkeuren(verlof);
+    });
+    setMultiGeselecteerdeKaartIds([])
+  }
+
+  const VerlofMarkerenAlsGezien = async (verlofData, gezien) => {
+      try {
+      const verlofRef = doc(db, "verlof", verlofData.id);
+      var statusVerlofRef;
+      var typeUitvoering;
+
+      if (gezien) {
+        statusVerlofRef = doc(db, "statusVerlof", "4");
+        typeUitvoering = { id: 4, titel: "Gezien" };
+      }
+      else if (!gezien) {
+        statusVerlofRef = doc(db, "statusVerlof", "3");
+        typeUitvoering = { id: 3, titel: "In Afwachting" };
+      }
+      else {
+        return;
+      }
+
+      // Verlof updaten
+      await setDoc(
+        verlofRef,
+        {
+        statusVerlof_id: statusVerlofRef,
+        laatstGeupdate: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Audit toevoegen
+      await addDoc(collection(db, "auditTrail"), {
+        actie: { id: 2, titel: "aanpassen" },
+        tabel: { id: 2, tabelNaam: "verlof" },
+        uitgevoerdDoorUser: {
+        id: localStorage.getItem("userId"),
+        naam: gebruiker.voornaam,
+        achternaam: gebruiker.achternaam,
+        },
+        typeUitvoering: typeUitvoering,
+        uitgevoerdOp: {
+        id: verlofData.id,
+        tabel: { id: 2, tabelNaam: "verlof" },
+        },
+        laatstGeupdate: serverTimestamp(),
+      });
+
+      setHerladen(prev => !prev);
+    } catch (error) {
+      console.error(error)
+    }
+  };
+  
+  return (
+    <>
+      <div className="h-full w-full">
+        <div className='h-[120px] w-full flex items-center justify-between px-[50px]'>
+          <button className='h-[40px] w-[100px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate(`/${gebruiker?.rol?.toLowerCase().replaceAll(" ", "")}/voorpagina`)}>Home</button>
+          <button className='h-[40px] w-[200px] bg-[#2AAFF2] text-white rounded-[15px] cursor-pointer' onClick={() => navigate("/VerlofAanvraag")}>Verlof aanvragen</button>
+        </div>
+          <div className='flex h-[calc(100%-120px)] w-full px-[40px]'>
+            <VerlofOverzichtContainer
+              VerlofAfkeurenPopupWeergeven={VerlofAfkeurenPopupWeergeven}
+              VerlofAnnulerenPopupWeergeven={VerlofAnnulerenPopupWeergeven}
+              herladen={herladen}
+              idsZichtbaar={idsZichtbaar}
+              verlofGoedkeuren={verlofGoedkeuren}
+              multiGeselecteerdeKaartIds={multiGeselecteerdeKaartIds}
+              setMultiGeselecteerdeKaartIds={setMultiGeselecteerdeKaartIds}
+              MassaGoedkeuren={MassaGoedkeuren}
+              VerlofMarkerenAlsGezien={VerlofMarkerenAlsGezien}/>
+          </div>
+      </div>
+      {verlofAfkeurenPopupWeergeven ?
+      <VerlofAfkeurenPopup setVerlofAfkeurenPopupWeergeven={setVerlofAfkeurenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
+      <></>
+      }
+      {verlofAnnulerenPopupWeergeven ?
+      <VerlofAnnulerenPopup setVerlofAnnulerenPopupWeergeven={setVerlofAnnulerenPopupWeergeven} verlofData={verlofData} setHerladen={setHerladen} gebruiker={gebruiker}/> :
+      <></>
+      }
+  </>
+  );
+}
+
+export default Verlofoverzicht;
