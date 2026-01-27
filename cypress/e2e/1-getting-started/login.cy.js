@@ -5,66 +5,83 @@ describe('Login GeoProfs', () => {
     cy.visit('http://localhost:5173/')
   })
 
-  it('logt succesvol in als office manager en navigeert naar de goede pagina', () => {
-    //Email invullen
+  it('logt succesvol in als office manager', () => {
     cy.get('input[aria-label="email"]').type('officemanager@gmail.com')
-    
-    //Wachtwoord invullen
     cy.get('input[aria-label="wachtwoord"]').type('officemanager')
 
-    //Knop klikken
     cy.contains('Log in').click()
 
-    //Navigatie naar de goede pagina 
-    cy.visit('http://localhost:5173/offficemanager/voorpagina/')
+    // ✅ URL check
+    cy.url().should('include', '/officemanager/voorpagina')
+
+    // ✅ LocalStorage checks
+    cy.window().then((win) => {
+      expect(win.localStorage.getItem('isLoggedIn')).to.eq('true')
+      expect(win.localStorage.getItem('rol')).to.eq('officemanager')
+      expect(win.localStorage.getItem('userId')).to.exist
+    })
+
+    // ✅ Geen foutmelding
+    cy.contains('Vul zowel e-mailadres als wachtwoord in.').should('not.exist')
   })
 
-  it('logt succesvol in als manager en navigeert naar de goede pagina', () => {
-    //Email invullen
+  it('logt succesvol in als manager', () => {
     cy.get('input[aria-label="email"]').type('manager@gmail.com')
-    
-    //Wachtwoord invullen
     cy.get('input[aria-label="wachtwoord"]').type('manager')
 
-    //Knop klikken
     cy.contains('Log in').click()
 
-    //Navigatie naar de goede pagina 
-    cy.visit('http://localhost:5173/manager/voorpagina/')
+    cy.url().should('include', '/manager/voorpagina')
+
+    cy.window().then((win) => {
+      expect(win.localStorage.getItem('rol')).to.eq('manager')
+    })
   })
 
-  it('logt succesvol in als medewerker en navigeert naar de goede pagina', () => {
-    //Email invullen
+  it('logt succesvol in als medewerker', () => {
     cy.get('input[aria-label="email"]').type('medewerker@gmail.com')
-    
-    //Wachtwoord invullen
     cy.get('input[aria-label="wachtwoord"]').type('medewerker')
 
-    //Knop klikken
     cy.contains('Log in').click()
 
-    //Navigatie naar de goede pagina 
-    cy.visit('http://localhost:5173/medewerker/voorpagina/')
+    cy.url().should('include', '/medewerker/voorpagina')
+
+    cy.window().then((win) => {
+      expect(win.localStorage.getItem('rol')).to.eq('medewerker')
+    })
   })
 
-  it('logt in zonder email in te vullen', () => {
-    //Wachtwoord invullen
+  it('geeft foutmelding zonder email', () => {
     cy.get('input[aria-label="wachtwoord"]').type('medewerker')
-
-    //Knop klikken
     cy.contains('Log in').click()
+
+    // ❌ Blijft op loginpagina
+    cy.url().should('eq', 'http://localhost:5173/')
+
+    // ❌ Foutmelding zichtbaar
+    cy.contains('Vul zowel e-mailadres als wachtwoord in.').should('be.visible')
   })
 
-  it('logt in zonder wachtwoord in te vullen', () => {
-    //Email invullen
+  it('geeft foutmelding zonder wachtwoord', () => {
     cy.get('input[aria-label="email"]').type('medewerker@gmail.com')
-
-    //Knop klikken
     cy.contains('Log in').click()
+
+    cy.contains('Vul zowel e-mailadres als wachtwoord in.').should('be.visible')
   })
 
-  it('logt in zonder gegevens in te vullen', () => {
-    //Knop klikken
+  it('geeft foutmelding zonder gegevens', () => {
     cy.contains('Log in').click()
+
+    cy.contains('Vul zowel e-mailadres als wachtwoord in.').should('be.visible')
+  })
+
+  it('geeft foutmelding bij onjuist wachtwoord', () => {
+    cy.get('input[aria-label="email"]').type('medewerker@gmail.com')
+    cy.get('input[aria-label="wachtwoord"]').type('verkeerd')
+
+    cy.contains('Log in').click()
+
+    cy.contains('Onjuist wachtwoord.').should('be.visible')
+    cy.url().should('eq', 'http://localhost:5173/')
   })
 })
