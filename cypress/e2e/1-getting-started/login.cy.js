@@ -11,17 +11,17 @@ describe('Login GeoProfs', () => {
 
     cy.contains('Log in').click()
 
-    // ✅ URL check
+    // URL check
     cy.url().should('include', '/officemanager/voorpagina')
 
-    // ✅ LocalStorage checks
+    // LocalStorage checks
     cy.window().then((win) => {
       expect(win.localStorage.getItem('isLoggedIn')).to.eq('true')
       expect(win.localStorage.getItem('rol')).to.eq('officemanager')
       expect(win.localStorage.getItem('userId')).to.exist
     })
 
-    // ✅ Geen foutmelding
+    // Geen foutmelding
     cy.contains('Vul zowel e-mailadres als wachtwoord in.').should('not.exist')
   })
 
@@ -55,10 +55,10 @@ describe('Login GeoProfs', () => {
     cy.get('input[aria-label="wachtwoord"]').type('medewerker')
     cy.contains('Log in').click()
 
-    // ❌ Blijft op loginpagina
+    // Blijft op loginpagina
     cy.url().should('eq', 'http://localhost:5173/')
 
-    // ❌ Foutmelding zichtbaar
+    // Foutmelding zichtbaar
     cy.contains('Vul zowel e-mailadres als wachtwoord in.').should('be.visible')
   })
 
